@@ -428,7 +428,6 @@ async function updateProfileField(normName, fields){
   }catch(e){}
 }
 
-// Автоматична перевірка та нарахування досягнень
 async function checkAndAwardAchievements(profileId){
   const p = await getProfile(profileId);
   if(!p) return;
@@ -436,8 +435,10 @@ async function checkAndAwardAchievements(profileId){
   let changed = false;
 
   const isFounder = (profileId === normalizeName("Максим Лебідь"));
-  if(isFounder && !achivs.includes('Засновник 🏆')){
-    achivs.push('Засновник 🏆');
+  if(isFounder && !achivs.includes('ЗАСНОВНИК 🏆')){
+    // Очистимо старий варіант якщо був з помилкою
+    achivs = achivs.filter(a => a !== 'ЗААСНОВНИК 🏆');
+    achivs.push('ЗАСНОВНИК 🏆');
     changed = true;
   }
   if(p.isAdmin && !achivs.includes('Адміністратор ⚡️')){
@@ -445,32 +446,27 @@ async function checkAndAwardAchievements(profileId){
     changed = true;
   }
 
-  // 1. Гурман 🍔 (5+ броней)
   const history = p.history || [];
   if(history.length >= 5 && !achivs.includes('Гурман 🍔')){
     achivs.push('Гурман 🍔');
     changed = true;
   }
 
-  // 2. Душа компанії 🌟 (5+ подяк отримано)
   if((p.thanksCount || 0) >= 5 && !achivs.includes('Душа компанії 🌟')){
     achivs.push('Душа компанії 🌟');
     changed = true;
   }
 
-  // 3. Майстер продуктивності 🚀 (10+ броней)
   if(history.length >= 10 && !achivs.includes('Майстер продуктивності 🚀')){
     achivs.push('Майстер продуктивності 🚀');
     changed = true;
   }
 
-  // 4. Рання пташка ☕️ (хоча б раз бронь рівно о 12:30)
   if(history.some(h => h.start === '12:30') && !achivs.includes('Рання пташка ☕️')){
     achivs.push('Рання пташка ☕️');
     changed = true;
   }
 
-  // 5. Нічний дозор 🦉 (бронь створена після 21:00)
   if(history.some(h => {
     if(!h.createdAt) return false;
     const parts = h.createdAt.split(' о ');
@@ -484,26 +480,22 @@ async function checkAndAwardAchievements(profileId){
     changed = true;
   }
 
-  // 6. Колекціонер зірок ⭐ (15+ подяк отримано)
   if((p.thanksCount || 0) >= 15 && !achivs.includes('Колекціонер зірок ⭐')){
     achivs.push('Колекціонер зірок ⭐');
     changed = true;
   }
 
-  // 7. Філантроп 🙌 (20+ подяк роздано іншим)
   const sentThanksCount = Object.keys(p.thanksCooldowns || {}).length;
   if(sentThanksCount >= 20 && !achivs.includes('Філантроп 🙌')){
     achivs.push('Філантроп 🙌');
     changed = true;
   }
 
-  // 8. Дизайнер інтерфейсу 🎨 (є аватарка або змінено скін/тему)
   if((p.avatarBase64 || p.skin !== 'default' || p.theme !== 'light') && !achivs.includes('Дизайнер інтерфейсу 🎨')){
     achivs.push('Дизайнер інтерфейсу 🎨');
     changed = true;
   }
 
-  // 9. Ветеран Comfy 🏛️ (реєстрація була понад місяць тому)
   if(p.registeredAt){
     const regDate = new Date(p.registeredAt);
     const now = new Date();
@@ -522,6 +514,11 @@ async function checkAndAwardAchievements(profileId){
 async function ensureAdminExists(){
   const adminNorm = normalizeName("Максим Лебідь");
   const existing = await getProfile(adminNorm);
+  
+  let cleanAchivs = (existing?.achivs || []).filter(a => a !== 'ЗААСНОВНИК 🏆');
+  if(!cleanAchivs.includes('ЗАСНОВНИК 🏆')) cleanAchivs.push('ЗАСНОВНИК 🏆');
+  if(!cleanAchivs.includes('Адміністратор ⚡️')) cleanAchivs.push('Адміністратор ⚡️');
+
   const adminData = {
     id: adminNorm,
     name: "Максим Лебідь",
@@ -530,7 +527,7 @@ async function ensureAdminExists(){
     token: existing?.token || Math.random().toString(36).slice(2),
     avatarBase64: existing?.avatarBase64 || '',
     thanksCount: existing?.thanksCount || 0,
-    achivs: existing?.achivs || ['Адміністратор ⚡️', 'Засновник 🏆'],
+    achivs: cleanAchivs,
     position: 'Головний Адміністратор',
     quote: 'Повний контроль над системою Comfy Dinner!',
     theme: existing?.theme || currentTheme,
@@ -550,7 +547,7 @@ async function register(name, pin, store){
   const isAdminUser = (norm === normalizeName("Максим Лебідь"));
   const profile = {
     id: norm, name: name.trim(), pin, store, token: Math.random().toString(36).slice(2),
-    avatarBase64: '', thanksCount: 0, achivs: isAdminUser ? ['Адміністратор ⚡️', 'Засновник 🏆'] : ['Новачок 🟢', 'Командний гравець 🤝'],
+    avatarBase64: '', thanksCount: 0, achivs: isAdminUser ? ['Адміністратор ⚡️', 'ЗАСНОВНИК 🏆'] : ['Новачок 🟢', 'Командний гравець 🤝'],
     position: isAdminUser ? 'Головний Адміністратор' : 'Продавець-консультант', 
     quote: isAdminUser ? 'Повний контроль над системою Comfy Dinner!' : 'Працюємо на результат у Comfy!',
     theme: currentTheme, skin: currentSkin, isAdmin: isAdminUser, history: [], thanksCooldowns: {},
@@ -581,6 +578,17 @@ async function login(name, pin){
   await checkAndAwardAchievements(norm);
   return { ok:true };
 }
+
+// Функція виходу з профілю
+window.logoutUser = () => {
+  if(!confirm('Ви дійсно хочете вийти з акаунта?')) return;
+  playSound('click');
+  localStorage.removeItem('obed_session');
+  session = null;
+  document.getElementById('profileSheet').classList.remove('open');
+  document.getElementById('sheetBackdrop').classList.remove('open');
+  renderAll();
+};
 
 function initRealtimeData(){
   if(unsubscribeEntries) unsubscribeEntries();
@@ -753,7 +761,7 @@ function renderBoardTab(){
           <div class="entry-name-row">
             <span class="entry-name" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</span>
             ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
-            ${isFounder ? '<span class="founder-badge">🏆 ЗААСНОВНИК</span>' : (e.ownerId === normalizeName("Максим Лебідь") || e.isAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
+            ${isFounder ? '<span class="founder-badge">🏆 ЗАСНОВНИК</span>' : (e.ownerId === normalizeName("Максим Лебідь") || e.isAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
           </div>
           <div class="entry-time">🕒 Обід: ${e.start} – ${e.end} (30 хв)</div>
           ${createdText ? `<div class="entry-meta-info">👤 Хто та коли: ${escapeHtml(e.name)} • ${createdText}</div>` : ''}
@@ -808,7 +816,7 @@ function renderColleaguesTab(){
           <div class="entry-name-row">
             <span class="entry-name" onclick="window.openProfile('${p.id}')">${escapeHtml(p.name)}</span>
             ${isMe ? '<span class="you-badge">ТИ</span>' : ''}
-            ${isFounder ? '<span class="founder-badge">🏆 ЗААСНОВНИК</span>' : (isTargetAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
+            ${isFounder ? '<span class="founder-badge">🏆 ЗАСНОВНИК</span>' : (isTargetAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
           </div>
           <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">${escapeHtml(p.position || 'Продавець')}</div>
           <div class="entry-actions">
@@ -870,11 +878,11 @@ window.sendThanks = async (profileId) => {
     playSound('success');
     cooldowns[profileId] = now;
     await updateProfileField(session.id, { thanksCooldowns: cooldowns });
-    await checkAndAwardAchievements(session.id); // перевірка на ачівку Філантроп
+    await checkAndAwardAchievements(session.id);
     
     const newThanks = (targetProfile.thanksCount || 0) + 1;
     await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', profileId), { thanksCount: newThanks });
-    await checkAndAwardAchievements(profileId); // перевірка на ачівки Душа компанії / Колекціонер зірок
+    await checkAndAwardAchievements(profileId);
 
     alert('⭐ Подяку успішно надіслано!');
     if(document.getElementById('profileSheet').classList.contains('open')) openProfileModal(profileId);
@@ -900,7 +908,7 @@ async function openProfileModal(profileId){
       <div class="avatar" id="modalAvatarPreview" style="width:72px;height:72px;margin:0 auto 12px;font-size:22px;background:${bgStyle};${profile.avatarBase64?`background:url(${profile.avatarBase64}) center/cover;`:''}">
         ${profile.avatarBase64 ? '' : init}
       </div>
-      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)} ${isFounder ? '<span class="founder-badge">ЗААСНОВНИК</span>' : (isAdminTarget ? '<span class="admin-badge">ADMIN</span>' : '')}</h3>
+      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)} ${isFounder ? '<span class="founder-badge">ЗАСНОВНИК</span>' : (isAdminTarget ? '<span class="admin-badge">ADMIN</span>' : '')}</h3>
       <p style="color:var(--ink-soft);font-size:13px;margin:0 0 4px;">Магазин: ${profile.store || currentStore}</p>
       <p style="font-weight:700;font-size:13.5px;color:var(--comfy-green-dark);margin:0 0 12px;">${escapeHtml(profile.position || 'Працівник Comfy')}</p>
       <p style="font-style:italic;font-size:13px;color:var(--ink-soft);margin:0 0 16px;">«${escapeHtml(profile.quote || 'Без цитати')}»</p>
@@ -933,6 +941,7 @@ async function openProfileModal(profileId){
           <div class="field"><label>Цитата / Статус</label><input type="text" id="editQuote" value="${escapeHtml(profile.quote || '')}"></div>
           <div class="field"><label>Фото з галереї</label><input type="file" id="phoneImageInput" accept="image/*" style="padding:10px;"></div>
           <button class="btn" id="saveProfileBtn">Зберегти зміни</button>
+          <button class="btn btn-danger" style="margin-top:12px;" onclick="window.logoutUser()">🚪 Вийти з акаунта</button>
         </div>
       ` : `
         <button class="btn" onclick="window.sendThanks('${profileId}')">⭐ Подякувати колезі</button>
