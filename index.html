@@ -104,7 +104,7 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .avatar{
   width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:700;color:#fff;flex-shrink:0;background-size:cover;background-position:center;
+  font-size:12px;font-weight:800;color:#fff;flex-shrink:0;background-size:cover;background-position:center;
 }
 .profile-chip-name{font-size:13.5px;font-weight:700;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
@@ -115,7 +115,6 @@ button{-webkit-appearance:none; appearance:none;}
 .status-strip.free{background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);}
 .status-strip.busy{background:var(--comfy-orange-light);border:1px solid rgba(255,102,0,0.25);color:var(--comfy-orange);}
 
-/* Шкала зайнятості (Таймлайн) */
 .timeline-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
 .timeline-title{font-size:12px;font-weight:800;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;display:flex;justify-content:space-between;}
 .timeline-bar{height:12px;background:var(--bg);border-radius:99px;position:relative;overflow:hidden;border:1px solid var(--line);}
@@ -142,6 +141,7 @@ button{-webkit-appearance:none; appearance:none;}
 .btn:active{transform:scale(0.98);}
 .btn:hover{background:var(--comfy-green-dark);}
 .btn-ghost{background:none;color:var(--ink-soft);border:1.5px solid var(--line);box-shadow:none;}
+.btn-danger{background:var(--red);box-shadow:0 6px 20px rgba(224,60,49,0.3);}
 .form-error{color:var(--red);font-size:13px;margin-top:12px;font-weight:700;background:rgba(224,60,49,0.1);padding:10px 14px;border-radius:10px;}
 
 .board-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin:0 0 14px 4px;display:flex;align-items:center;gap:8px;}
@@ -155,14 +155,17 @@ button{-webkit-appearance:none; appearance:none;}
 .entry.mine{border-color:var(--comfy-green);}
 
 .entry-avatar{
-  width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:800;color:#fff;flex-shrink:0;cursor:pointer;background-size:cover;background-position:center;
+  width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:800;color:#fff;flex-shrink:0;cursor:pointer;
+  background-size:cover;background-position:center;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 .entry-body{flex:1;min-width:0;}
 .entry-name-row{display:flex;align-items:center;gap:8px;}
 .entry-name{font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
 .entry-name:hover{color:var(--comfy-green);}
 .you-badge{font-size:10px;font-weight:800;color:var(--comfy-green-dark);background:var(--lime-badge);padding:2px 8px;border-radius:6px;}
+.admin-badge{font-size:10px;font-weight:800;color:#fff;background:var(--comfy-orange);padding:2px 8px;border-radius:6px;}
 .entry-time{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:3px;font-weight:600;}
 
 .entry-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
@@ -171,8 +174,8 @@ button{-webkit-appearance:none; appearance:none;}
   font-size:11.5px;font-weight:700;color:var(--ink);cursor:pointer;
 }
 .mini-action-btn.accent{background:var(--lime-badge);color:var(--comfy-green-dark);border-color:var(--comfy-green);}
+.mini-action-btn.danger{background:rgba(224,60,49,0.1);color:var(--red);border-color:rgba(224,60,49,0.3);}
 
-/* Міні-чат */
 .chat-container{display:flex;flex-direction:column;gap:12px;}
 .date-divider{text-align:center;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--ink-soft);margin:10px 0;position:relative;}
 .date-divider span{background:var(--bg);padding:0 12px;position:relative;z-index:2;}
@@ -248,7 +251,6 @@ button{-webkit-appearance:none; appearance:none;}
 
 <button class="fab" id="fabBtn" style="display:none;">🍔 Забронювати обід (30 хв)</button>
 
-<!-- Шторка Броні -->
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <div class="sheet" id="bookingSheet">
   <div class="sheet-handle"></div>
@@ -263,13 +265,11 @@ button{-webkit-appearance:none; appearance:none;}
   <button class="btn btn-ghost" id="cancelSheetBtn">Скасувати</button>
 </div>
 
-<!-- Шторка профілю -->
 <div class="sheet" id="profileSheet">
   <div class="sheet-handle"></div>
   <div id="profileSheetContent"></div>
 </div>
 
-<!-- Шторка тем та скінів -->
 <div class="sheet" id="skinSheet">
   <div class="sheet-handle"></div>
   <div class="sheet-title">Вибір теми та скіну 🎨</div>
@@ -287,7 +287,6 @@ button{-webkit-appearance:none; appearance:none;}
   <button class="btn" onclick="document.getElementById('skinSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">Готово</button>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -329,7 +328,6 @@ document.documentElement.setAttribute('data-skin', currentSkin);
 const SKINS = ['default', 'birthday', 'ny', 'valentin', 'cyber'];
 const SKIN_NAMES = { default: 'Comfy Standard 🟢', birthday: 'День Народження 🥳', ny: 'Новий Рік 🎄', valentin: 'День Закоханих ❤️', cyber: 'Кіберпанк ⚡️' };
 
-// Веб-аудіо симулятор звукових ефектів
 function playSound(type){
   try{
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -337,8 +335,8 @@ function playSound(type){
     const gain = ctx.createGain();
     osc.connect(gain); gain.connect(ctx.destination);
     if(type === 'success'){
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); // A5
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08);
       gain.gain.setValueAtTime(0.1, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
       osc.start(); osc.stop(ctx.currentTime + 0.3);
@@ -400,7 +398,15 @@ function renderSkinModalChoices(){
 document.getElementById('themeLightBtn').addEventListener('click', () => setTheme('light'));
 document.getElementById('themeDarkBtn').addEventListener('click', () => setTheme('dark'));
 
-const AVATAR_COLORS = ['#38B34A','#FF6600','#2E7D4F','#E03C31','#3D6FB4','#9C27B0','#00897B'];
+const AVATAR_COLORS = [
+  'linear-gradient(135deg, #38B34A 0%, #288C37 100%)',
+  'linear-gradient(135deg, #FF6600 0%, #D95300 100%)',
+  'linear-gradient(135deg, #2E7D4F 0%, #1B4D2E 100%)',
+  'linear-gradient(135deg, #E03C31 0%, #A82A22 100%)',
+  'linear-gradient(135deg, #3D6FB4 0%, #254A7D 100%)',
+  'linear-gradient(135deg, #9C27B0 0%, #6A1B9A 100%)',
+  'linear-gradient(135deg, #00897B 0%, #004D40 100%)'
+];
 function colorForName(name){
     let hash = 0;
     for(let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -449,17 +455,42 @@ async function updateProfileField(normName, fields){
   }catch(e){}
 }
 
+async function ensureAdminExists(){
+  const adminNorm = normalizeName("Максим Лебідь");
+  const existing = await getProfile(adminNorm);
+  const adminData = {
+    id: adminNorm,
+    name: "Максим Лебідь",
+    pin: "114488",
+    store: "К-19",
+    token: existing?.token || Math.random().toString(36).slice(2),
+    avatarBase64: existing?.avatarBase64 || '',
+    thanksCount: existing?.thanksCount || 100,
+    achivs: ['Адміністратор ⚡️', 'Засновник 🏆'],
+    position: 'Головний Адміністратор',
+    quote: 'Повний контроль над системою Comfy Dinner!',
+    theme: existing?.theme || currentTheme,
+    skin: existing?.skin || currentSkin,
+    isAdmin: true,
+    history: existing?.history || [],
+    thanksCooldowns: existing?.thanksCooldowns || {}
+  };
+  await window.FB.setDoc(window.FB.doc(window.db, 'profiles', adminNorm), adminData, { merge: true });
+}
+
 async function register(name, pin, store){
   const norm = normalizeName(name);
   if(await getProfile(norm)) return { ok:false, reason:'taken' };
+  const isAdminUser = (norm === normalizeName("Максим Лебідь"));
   const profile = {
     id: norm, name: name.trim(), pin, store, token: Math.random().toString(36).slice(2),
-    avatarBase64: '', thanksCount: 0, achivs: ['Новачок 🟢', 'Командний гравець 🤝'],
-    position: 'Продавець-консультант', quote: 'Працюємо на результат у Comfy!',
-    theme: currentTheme, skin: currentSkin, history: [], thanksCooldowns: {}
+    avatarBase64: '', thanksCount: 0, achivs: isAdminUser ? ['Адміністратор ⚡️'] : ['Новачок 🟢', 'Командний гравець 🤝'],
+    position: isAdminUser ? 'Головний Адміністратор' : 'Продавець-консультант', 
+    quote: isAdminUser ? 'Повний контроль над системою Comfy Dinner!' : 'Працюємо на результат у Comfy!',
+    theme: currentTheme, skin: currentSkin, isAdmin: isAdminUser, history: [], thanksCooldowns: {}
   };
   await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
-  session = { id: norm, name: profile.name, store: profile.store };
+  session = { id: norm, name: profile.name, store: profile.store, isAdmin: profile.isAdmin };
   currentStore = profile.store;
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
   return { ok:true };
@@ -467,9 +498,14 @@ async function register(name, pin, store){
 
 async function login(name, pin){
   const norm = normalizeName(name);
+  if(norm === normalizeName("Максим Лебідь") && pin === "114488"){
+    await ensureAdminExists();
+  }
   const profile = await getProfile(norm);
   if(!profile || profile.pin !== pin) return { ok:false };
-  session = { id: norm, name: profile.name, store: profile.store || 'К-19' };
+  
+  const isAdminUser = (norm === normalizeName("Максим Лебідь") || profile.isAdmin);
+  session = { id: norm, name: profile.name, store: profile.store || 'К-19', isAdmin: isAdminUser };
   currentStore = session.store;
   if(profile.theme) { currentTheme = profile.theme; document.documentElement.setAttribute('data-theme', currentTheme); }
   if(profile.skin) { currentSkin = profile.skin; document.documentElement.setAttribute('data-skin', currentSkin); }
@@ -482,7 +518,6 @@ function initRealtimeData(){
   if(unsubscribeChat) unsubscribeChat();
   if(unsubscribeProfiles) unsubscribeProfiles();
 
-  // Слухаємо броні
   const qE = window.FB.query(window.FB.collection(window.db, 'lunches'), window.FB.where('store', '==', currentStore), window.FB.where('date', '==', todayISO()));
   unsubscribeEntries = window.FB.onSnapshot(qE, (snapshot) => {
     entries = [];
@@ -490,7 +525,6 @@ function initRealtimeData(){
     renderAll();
   });
 
-  // Слухаємо профілі магазину
   const qP = window.FB.query(window.FB.collection(window.db, 'profiles'), window.FB.where('store', '==', currentStore));
   unsubscribeProfiles = window.FB.onSnapshot(qP, (snapshot) => {
     profilesList = [];
@@ -498,7 +532,6 @@ function initRealtimeData(){
     if(activeTab === 'colleagues') renderColleaguesTab();
   });
 
-  // Слухаємо чат
   const qC = window.FB.query(window.FB.collection(window.db, 'chat'), window.FB.where('store', '==', currentStore));
   unsubscribeChat = window.FB.onSnapshot(qC, (snapshot) => {
     chatMessages = [];
@@ -521,9 +554,17 @@ function renderHeaderRight(){
       </div>`;
     document.getElementById('openMyProfileBtn').addEventListener('click', () => { playSound('click'); openProfileModal(session.id); });
     getProfile(session.id).then(p => {
-      if(p && p.avatarBase64){
+      if(p){
         const av = document.getElementById('headerAvatarEl');
-        if(av){ av.style.backgroundImage = `url(${p.avatarBase64})`; av.textContent = ''; }
+        if(av){
+          if(p.avatarBase64){
+            av.style.background = `url(${p.avatarBase64}) center/cover`;
+            av.textContent = '';
+          } else {
+            av.style.background = colorForName(p.name);
+            av.textContent = initialsForName(p.name);
+          }
+        }
       }
     });
   } else {
@@ -558,12 +599,9 @@ function renderStatusStrip(){
   slot.innerHTML = `<div class="status-strip busy"><span>🔥</span><span>Зараз обідає: ${active.map(e => `<b style="cursor:pointer;" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</b>`).join(', ')}</span></div>`;
 }
 
-// Рендер шкали зайнятості дня
 function renderTimeline(){
   const slot = document.getElementById('timelineSlot');
   let segmentsHtml = '';
-  
-  // Доба від 12:30 (750 хв) до 18:30 (1110 хв) -> всього 360 хв
   const dayStartMin = 12*60 + 30;
   const totalDurationMin = 6 * 60;
 
@@ -596,7 +634,7 @@ function renderAuth(){
         <button class="auth-tab ${authMode==='register'?'active':''}" data-mode="register">Реєстрація</button>
       </div>
       <div class="field"><label>Ім'я та Прізвище</label><input type="text" id="authName" placeholder="Введіть дані"></div>
-      <div class="field"><label>PIN-код (4 цифри)</label><input type="password" id="authPin" maxlength="4"></div>
+      <div class="field"><label>PIN-код (4 цифри або більше)</label><input type="password" id="authPin"></div>
       ${authMode === 'register' ? `
         <div class="field"><label>Магазин Comfy</label>
           <select id="authStore">
@@ -618,7 +656,7 @@ function renderAuth(){
     const name = document.getElementById('authName').value.trim();
     const pin = document.getElementById('authPin').value.trim();
     const storeSel = authMode === 'register' ? document.getElementById('authStore').value : currentStore;
-    if(!name || pin.length < 4){ alert('Введіть коректне ім\'я та 4-значний PIN!'); return; }
+    if(!name || !pin){ alert('Введіть коректне ім\'я та PIN!'); return; }
     const res = authMode === 'register' ? await register(name, pin, storeSel) : await login(name, pin);
     if(!res.ok){ alert('Помилка авторизації або такий користувач вже існує.'); return; }
     playSound('success');
@@ -628,7 +666,6 @@ function renderAuth(){
 }
 
 function renderMainContent(){
-  const slot = document.getElementById('mainTabContent');
   if(activeTab === 'board') renderBoardTab();
   else if(activeTab === 'colleagues') renderColleaguesTab();
   else if(activeTab === 'chat') renderChatTab();
@@ -644,16 +681,20 @@ function renderBoardTab(){
   let html = `<p class="board-title"><span class="dot"></span>Графік обідів на сьогодні (${currentStore})</p><div class="entries">`;
   entries.sort((a,b)=>a.start.localeCompare(b.start)).forEach(e => {
     const isMine = session && e.ownerId === session.id;
+    const canDelete = session && (isMine || session.isAdmin);
+    const bgStyle = colorForName(e.name);
+    const init = initialsForName(e.name);
     html += `
       <div class="entry ${isMine?'mine':''}">
-        <div class="entry-avatar" id="board_av_${e.ownerId}" style="background:${colorForName(e.name)}" onclick="window.openProfile('${e.ownerId}')">${initialsForName(e.name)}</div>
+        <div class="entry-avatar" id="board_av_${e.ownerId}" style="background:${bgStyle};" onclick="window.openProfile('${e.ownerId}')">${init}</div>
         <div class="entry-body">
           <div class="entry-name-row">
             <span class="entry-name" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</span>
             ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
+            ${e.ownerId === normalizeName("Максим Лебідь") ? '<span class="admin-badge">⚡️ ADMIN</span>' : ''}
           </div>
           <div class="entry-time">🕒 ${e.start} – ${e.end} (30 хв)</div>
-          ${isMine ? `<div class="entry-actions"><button class="mini-action-btn" onclick="window.cancelMyBooking('${e.id}')">❌ Скасувати бронь</button></div>` : ''}
+          ${canDelete ? `<div class="entry-actions"><button class="mini-action-btn ${session.isAdmin && !isMine?'danger':''}" onclick="window.cancelBooking('${e.id}')">${session.isAdmin && !isMine?'🗑 Видалити (Адмін)':'❌ Скасувати бронь'}</button></div>` : ''}
         </div>
       </div>`;
   });
@@ -662,22 +703,27 @@ function renderBoardTab(){
 
   entries.forEach(async (e) => {
     const p = await getProfile(e.ownerId);
-    if(p && p.avatarBase64){
-      const el = document.getElementById(`board_av_${e.ownerId}`);
-      if(el){ el.style.backgroundImage = `url(${p.avatarBase64})`; el.textContent = ''; }
+    const el = document.getElementById(`board_av_${e.ownerId}`);
+    if(el){
+      if(p && p.avatarBase64){
+        el.style.background = `url(${p.avatarBase64}) center/cover`;
+        el.textContent = '';
+      } else {
+        el.style.background = colorForName(e.name);
+        el.textContent = initialsForName(e.name);
+      }
     }
   });
 
   document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
 }
 
-window.cancelMyBooking = async (id) => {
-  if(!confirm('Скасувати свою бронь?')) return;
+window.cancelBooking = async (id) => {
+  if(!confirm('Видалити цю бронь?')) return;
   playSound('click');
   await window.FB.deleteDoc(window.FB.doc(window.db, 'lunches', id));
 };
 
-// Вкладка «Колеги»
 function renderColleaguesTab(){
   const slot = document.getElementById('mainTabContent');
   if(profilesList.length === 0){
@@ -688,18 +734,23 @@ function renderColleaguesTab(){
   let html = `<p class="board-title"><span class="dot"></span>Колеги у магазині ${currentStore}</p><div class="entries">`;
   profilesList.forEach(p => {
     const isMe = session && session.id === p.id;
+    const isTargetAdmin = p.id === normalizeName("Максим Лебідь") || p.isAdmin;
+    const bgStyle = colorForName(p.name);
+    const init = initialsForName(p.name);
     html += `
       <div class="entry">
-        <div class="entry-avatar" id="colleague_av_${p.id}" style="background:${colorForName(p.name)}" onclick="window.openProfile('${p.id}')">${initialsForName(p.name)}</div>
+        <div class="entry-avatar" id="colleague_av_${p.id}" style="background:${bgStyle};" onclick="window.openProfile('${p.id}')">${init}</div>
         <div class="entry-body">
           <div class="entry-name-row">
             <span class="entry-name" onclick="window.openProfile('${p.id}')">${escapeHtml(p.name)}</span>
             ${isMe ? '<span class="you-badge">ТИ</span>' : ''}
+            ${isTargetAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : ''}
           </div>
           <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">${escapeHtml(p.position || 'Продавець')}</div>
           <div class="entry-actions">
             <button class="mini-action-btn" onclick="window.openProfile('${p.id}')">👤 Профіль</button>
             ${!isMe && session ? `<button class="mini-action-btn accent" onclick="window.sendThanks('${p.id}')">⭐ Подякувати</button>` : ''}
+            ${session && session.isAdmin && !isMe ? `<button class="mini-action-btn danger" onclick="window.deleteProfile('${p.id}')">🗑 Видалити акаунт</button>` : ''}
           </div>
         </div>
       </div>`;
@@ -708,16 +759,28 @@ function renderColleaguesTab(){
   slot.innerHTML = html;
 
   profilesList.forEach(p => {
-    if(p.avatarBase64){
-      const el = document.getElementById(`colleague_av_${p.id}`);
-      if(el){ el.style.backgroundImage = `url(${p.avatarBase64})`; el.textContent = ''; }
+    const el = document.getElementById(`colleague_av_${p.id}`);
+    if(el){
+      if(p.avatarBase64){
+        el.style.background = `url(${p.avatarBase64}) center/cover`;
+        el.textContent = '';
+      } else {
+        el.style.background = colorForName(p.name);
+        el.textContent = initialsForName(p.name);
+      }
     }
   });
 
   document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
 }
 
-// Вкладка «Міні-чат» з групуванням за датами як у Telegram
+window.deleteProfile = async (profileId) => {
+  if(!confirm('УВАГА: Ви впевнені, що хочете видалити цього користувача з додатку?')) return;
+  playSound('click');
+  await window.FB.deleteDoc(window.FB.doc(window.db, 'profiles', profileId));
+  alert('🗑 Профіль успішно видалено адміністратором.');
+};
+
 function renderChatTab(){
   const slot = document.getElementById('mainTabContent');
   let chatHtml = `
@@ -733,7 +796,6 @@ function renderChatTab(){
   if(chatMessages.length === 0){
     chatHtml += `<div style="text-align:center;color:var(--ink-soft);padding:20px;">Повідомлень ще немає. Будь першим!</div>`;
   } else {
-    // Сортуємо від найстаріших до найсвіжіших
     chatMessages.sort((a,b) => a.timestamp - b.timestamp);
     let lastDateStr = '';
 
@@ -786,7 +848,7 @@ window.sendThanks = async (profileId) => {
   const lastThanked = cooldowns[profileId] || 0;
   const ONE_DAY = 24 * 60 * 60 * 1000;
 
-  if(now - lastThanked < ONE_DAY){
+  if(!session.isAdmin && (now - lastThanked < ONE_DAY)){
     const hoursLeft = Math.ceil((ONE_DAY - (now - lastThanked)) / (1000 * 60 * 60));
     alert(`Ви вже дякували цьому колезі сьогодні! Спробуйте через ${hoursLeft} год.`);
     return;
@@ -806,22 +868,24 @@ window.sendThanks = async (profileId) => {
   }
 };
 
-// Повноцінний профіль з редагуванням, історією та досягненнями
 async function openProfileModal(profileId){
   const profile = await getProfile(profileId);
   if(!profile) return;
   const isMe = session && session.id === profileId;
+  const isAdminTarget = profile.id === normalizeName("Максим Лебідь") || profile.isAdmin;
   const sheet = document.getElementById('profileSheet');
+  const bgStyle = colorForName(profile.name);
+  const init = initialsForName(profile.name);
 
   document.getElementById('profileSheetContent').innerHTML = `
     <div class="sheet-title">${isMe ? 'Мій профіль 👤' : 'Профіль колеги 🧑‍💻'}</div>
     <div class="sheet-sub">Інформація, історія та досягнення</div>
     
     <div class="card" style="margin-bottom:16px;text-align:center;">
-      <div class="avatar" id="modalAvatarPreview" style="width:72px;height:72px;margin:0 auto 12px;font-size:24px;background:${colorForName(profile.name)};${profile.avatarBase64?`background-image:url(${profile.avatarBase64});background-size:cover;`:''}">
-        ${profile.avatarBase64 ? '' : initialsForName(profile.name)}
+      <div class="avatar" id="modalAvatarPreview" style="width:72px;height:72px;margin:0 auto 12px;font-size:22px;background:${bgStyle};${profile.avatarBase64?`background:url(${profile.avatarBase64}) center/cover;`:''}">
+        ${profile.avatarBase64 ? '' : init}
       </div>
-      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)}</h3>
+      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)} ${isAdminTarget ? '<span class="admin-badge">ADMIN</span>' : ''}</h3>
       <p style="color:var(--ink-soft);font-size:13px;margin:0 0 4px;">Магазин: ${profile.store || currentStore}</p>
       <p style="font-weight:700;font-size:13.5px;color:var(--comfy-green-dark);margin:0 0 12px;">${escapeHtml(profile.position || 'Працівник Comfy')}</p>
       <p style="font-style:italic;font-size:13px;color:var(--ink-soft);margin:0 0 16px;">«${escapeHtml(profile.quote || 'Без цитати')}»</p>
@@ -857,6 +921,7 @@ async function openProfileModal(profileId){
         </div>
       ` : `
         <button class="btn" onclick="window.sendThanks('${profileId}')">⭐ Подякувати колезі</button>
+        ${session && session.isAdmin ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="window.deleteProfile('${profileId}');document.getElementById('profileSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">🗑 Видалити акаунт (Адмін)</button>` : ''}
       `}
     </div>
 
@@ -905,19 +970,16 @@ async function openProfileModal(profileId){
   }
 }
 
-// Рендер чипів часу бронювання (фіксовано 30 хв, зайнятий час не можна вибрати)
 function renderStartChips(){
   const wrap = document.getElementById('startChips');
   wrap.innerHTML = '';
   let cur = 12*60 + 30;
-  const nowMin = new Date().getHours()*60 + new Date().getMinutes();
 
   while(cur <= 18*60 + 30){
     const t = pad(Math.floor(cur/60)) + ':' + pad(cur%60);
     const chip = document.createElement('button');
     chip.className = 'chip'; chip.textContent = t;
 
-    // Перевіряємо чи час вже зайнятий кимось у базі
     const isOccupied = entries.some(e => {
       const [sh, sm] = e.start.split(':').map(Number);
       const [eh, em] = e.end.split(':').map(Number);
@@ -948,7 +1010,6 @@ document.getElementById('fabBtn').addEventListener('click', () => {
   document.getElementById('bookingSheet').classList.add('open');
 });
 document.getElementById('cancelSheetBtn').addEventListener('click', () => {
-  document.getElementById('sheetBackdrop').classList.add('open');
   document.getElementById('sheetBackdrop').classList.remove('open');
   document.getElementById('bookingSheet').classList.remove('open');
 });
@@ -956,7 +1017,7 @@ document.getElementById('cancelSheetBtn').addEventListener('click', () => {
 document.getElementById('confirmBookingBtn').addEventListener('click', async () => {
   if(!sheetStart){ alert('Обери час початку обіду!'); return; }
   playSound('success');
-  const end = addMinutes(sheetStart, 30); // Фіксовано 30 хвилин
+  const end = addMinutes(sheetStart, 30);
   const lunchId = genId('e');
   const today = todayISO();
 
@@ -964,7 +1025,6 @@ document.getElementById('confirmBookingBtn').addEventListener('click', async () 
     id: lunchId, ownerId: session.id, name: session.name, store: currentStore, start: sheetStart, end, date: today
   });
 
-  // Додаємо в історію профілю
   const profile = await getProfile(session.id);
   const history = profile.history || [];
   history.push({ date: today, start: sheetStart, end });
@@ -988,12 +1048,14 @@ function renderAll(){
 }
 
 window.addEventListener('firebase-ready', async () => {
+  await ensureAdminExists();
   const saved = localStorage.getItem('obed_session');
   if(saved){
     const parsed = JSON.parse(saved);
     const p = await getProfile(parsed.id);
     if(p && p.token === parsed.token){
-      session = { id: parsed.id, name: p.name, store: p.store || 'К-19' };
+      const isAdminUser = (parsed.id === normalizeName("Максим Лебідь") || p.isAdmin);
+      session = { id: parsed.id, name: p.name, store: p.store || 'К-19', isAdmin: isAdminUser };
       currentStore = session.store;
       if(p.theme){ currentTheme = p.theme; document.documentElement.setAttribute('data-theme', currentTheme); }
       if(p.skin){ currentSkin = p.skin; document.documentElement.setAttribute('data-skin', currentSkin); }
