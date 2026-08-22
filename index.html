@@ -439,8 +439,8 @@ button{-webkit-appearance:none; appearance:none;}
 <div class="wrap">
   <div class="header">
     <div class="brand">
-      <div class="brand-eyebrow">COMFY Trade by fearblader</div>
-      <div class="brand-title">Обідня <span>дошка</span></div>
+      <div class="brand-eyebrow">COMFY Trade</div>
+      <div class="brand-title">Обідня <span>дошка by fearblader</span></div>
     </div>
     <div id="headerRight"></div>
   </div>
@@ -524,7 +524,6 @@ button{-webkit-appearance:none; appearance:none;}
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
-<!-- ОСЬ ТУТ БУЛА ПРОБЛЕМА: ЗАГОРНУЛИ ВЕСЬ КОД У ТЕГ SCRIPT -->
 <script>
 const STORE = 'K-19';
 let entries = [];
@@ -543,7 +542,7 @@ function colorForName(name){
     const index = Math.abs(hash) % AVATAR_COLORS.length;
     return AVATAR_COLORS[index];
 }
-}
+
 function initialsForName(name){
   const parts = name.trim().split(/\s+/);
   return ((parts[0]?.[0]||'') + (parts[1]?.[0]||'')).toUpperCase();
