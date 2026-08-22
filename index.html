@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<meta name="theme-color" content="#182019">
+<title>Обідня дошка · К-19</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#F6F4ED;
+  --surface:#FFFFFF;
+  --ink:#182019;
+  --ink-soft:#5B665D;
+  --green:#2E7D4F;
+  --green-deep:#1D5638;
+  --lime:#B7E23A;
+  --amber:#E39A3B;
+  --red:#B4462A;
+  --line:#E4E0D4;
+  --radius:16px;
+  --safe-top:env(safe-area-inset-top, 0px);
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;overscroll-behavior-y:none;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Manrope',system-ui,sans-serif;
+  min-height:100vh;
+  padding-top:calc(16px + var(--safe-top));
+  padding-bottom:calc(100px + var(--safe-bottom));
+  padding-left:16px;
+  padding-right:16px;
+}
+input, button{font-family:'Manrope',sans-serif; font-size:16px;}
+button{-webkit-appearance:none; appearance:none;}
+
+.wrap{max-width:520px;margin:0 auto;}
+
+/* ---------- Header ---------- */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+}
+.brand{}
+.brand-eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--green);
+  font-weight:700;
+  margin-bottom:3px;
+}
+.brand-title{
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:-0.02em;
+  line-height:1.1;
+}
+.brand-title span{color:var(--green);}
+
+.clock-box{
+  font-family:'JetBrains Mono',monospace;
+  background:var(--ink);
+  color:var(--lime);
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:600;
+  text-align:center;
+  flex-shrink:0;
+}
+
+/* ---------- Profile chip in header (when logged in) ---------- */
+.profile-chip{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 12px 6px 6px;
+  cursor:pointer;
+}
+.avatar{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;
+  flex-shrink:0;
+}
+.profile-chip-name{font-size:13px;font-weight:700;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+.status-strip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border-radius:12px;
+  margin-bottom:14px;
+  font-size:13.5px;
+  font-weight:700;
+}
+.status-strip.free{
+  background:#F1EFE6;
+  color:var(--ink-soft);
+}
+.status-strip.busy{
+  background:#E3F1E8;
+  color:var(--green-deep);
+}
+.status-strip .status-icon{font-size:16px;flex-shrink:0;}
+.status-strip .status-text{flex:1;}
+.status-strip .status-countdown{
+  font-family:'JetBrains Mono',monospace;
+  font-size:14px;
+  font-weight:700;
+  flex-shrink:0;
+}
+
+.store-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  font-size:12.5px;
+}
+.store-label{color:var(--ink-soft);font-weight:500;}
+.store-pill{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:4px 12px;
+  font-weight:700;
+  font-family:'JetBrains Mono',monospace;
+  color:var(--green-deep);
+}
+.store-more{color:#A6AA9E;}
+
+/* ---------- Cards ---------- */
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px;
+}
+
+/* ---------- Auth card ---------- */
+.auth-card{margin-bottom:20px;}
+.auth-tabs{
+  display:flex;
+  background:#F1EFE6;
+  border-radius:10px;
+  padding:3px;
+  margin-bottom:18px;
+}
+.auth-tab{
+  flex:1;
+  text-align:center;
+  padding:9px;
+  border-radius:8px;
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--ink-soft);
+  cursor:pointer;
+  border:none;
+  background:none;
+}
+.auth-tab.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,0.06);}
+
+.field{margin-bottom:14px;}
+.field label{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+}
+.field input{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#FDFCF8;
+  color:var(--ink);
+}
+.field input:focus{outline:2px solid var(--green);outline-offset:1px;}
+.pin-hint{font-size:11.5px;color:var(--ink-soft);margin-top:5px;}
+
+.btn{
+  width:100%;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  border-radius:11px;
+  padding:14px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background 0.15s ease, transform 0.1s ease;
+}
+.btn:active{transform:scale(0.98);}
+.btn:hover{background:var(--green-deep);}
+.btn:disabled{background:#C8CDC5;cursor:not-allowed;}
+.btn-ghost{
+  background:none;
+  color:var(--ink-soft);
+  border:1px solid var(--line);
+}
+.btn-ghost:hover{background:#F1EFE6;}
+
+.form-error{
+  color:var(--red);
+  font-size:12.5px;
+  margin-top:10px;
+  font-weight:600;
+}
+
+/* ---------- Magic link banner ---------- */
+.link-banner{
+  background:var(--green-deep);
+  color:#fff;
+  border-radius:var(--radius);
+  padding:16px 18px;
+  margin-bottom:20px;
+  position:relative;
+}
+.link-banner-title{font-size:13.5px;font-weight:700;margin-bottom:4px;}
+.link-banner-sub{font-size:12px;color:#BFE3CB;line-height:1.5;margin-bottom:12px;}
+.link-banner-row{
+  display:flex;gap:8px;align-items:center;
+  background:rgba(255,255,255,0.1);
+  border-radius:9px;
+  padding:9px 10px;
+}
+.link-banner-url{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  color:var(--lime);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;
+}
+.link-banner-copy{
+  background:var(--lime);
+  color:var(--ink);
+  border:none;
+  border-radius:6px;
+  padding:6px 10px;
+  font-size:11.5px;
+  font-weight:700;
+  cursor:pointer;
+  flex-shrink:0;
+}
+.link-banner-dismiss{
+  position:absolute;top:10px;right:12px;
+  background:none;border:none;color:#BFE3CB;
+  font-size:16px;cursor:pointer;padding:4px;
+}
+
+/* ---------- Board ---------- */
+.board-title{
+  font-size:13px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--ink-soft);
+  margin:0 0 14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.board-title .dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--lime);
+  box-shadow:0 0 0 3px rgba(183,226,58,0.25);
+}
+
+.entries{display:flex;flex-direction:column;gap:10px;}
+
+.entry{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.entry.mine{border-color:var(--green); box-shadow:0 0 0 1px var(--green);}
+.entry.eating{border-color:var(--green);}
+.entry.soon{border-color:var(--amber);}
+
+.entry-avatar{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.entry-body{flex:1;min-width:0;}
+.entry-name-row{display:flex;align-items:center;gap:6px;}
+.entry-name{font-size:14.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.you-badge{
+  font-size:9.5px;font-weight:700;color:var(--green-deep);
+  background:#E3F1E8;padding:2px 6px;border-radius:5px;flex-shrink:0;
+}
+.entry-time{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:2px;
+}
+.entry-cancel{
+  background:none;border:none;color:#C4886F;
+  font-size:11.5px;font-weight:600;cursor:pointer;
+  text-decoration:underline;margin-top:4px;padding:0;
+}
+
+.entry-countdown{text-align:right;flex-shrink:0;}
+.countdown-label{
+  font-size:9.5px;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--ink-soft);
+  font-weight:600;
+  display:block;
+  margin-bottom:2px;
+}
+.countdown-digits{
+  font-family:'JetBrains Mono',monospace;
+  font-size:18px;
+  font-weight:700;
+}
+.entry.eating .countdown-digits{color:var(--green-deep);}
+.entry.soon .countdown-digits{color:var(--amber);}
+.entry.upcoming .countdown-digits{color:var(--ink-soft);}
+
+.empty-state{
+  text-align:center;
+  padding:36px 20px;
+  color:var(--ink-soft);
+  font-size:13.5px;
+}
+.empty-state strong{display:block;font-size:15px;color:var(--ink);margin-bottom:4px;}
+
+.loading-row{
+  text-align:center;
+  padding:30px;
+  color:var(--ink-soft);
+  font-size:13px;
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ---------- Floating action button ---------- */
+.fab{
+  position:fixed;
+  left:16px;right:16px;
+  bottom:calc(16px + var(--safe-bottom));
+  max-width:488px;
+  margin:0 auto;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 8px 24px rgba(46,125,79,0.35);
+  z-index:50;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.fab:active{transform:scale(0.98);}
+
+/* ---------- Bottom sheet modal ---------- */
+.sheet-backdrop{
+  position:fixed;inset:0;
+  background:rgba(24,32,25,0.5);
+  z-index:100;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.2s ease;
+}
+.sheet-backdrop.open{opacity:1;pointer-events:auto;}
+
+.sheet{
+  position:fixed;
+  left:0;right:0;bottom:0;
+  background:var(--surface);
+  border-radius:20px 20px 0 0;
+  padding:10px 20px calc(24px + var(--safe-bottom));
+  max-width:520px;margin:0 auto;
+  transform:translateY(100%);
+  transition:transform 0.25s cubic-bezier(0.32,0.72,0,1);
+  z-index:101;
+  max-height:85vh;
+  overflow-y:auto;
+}
+.sheet.open{transform:translateY(0);}
+.sheet-handle{
+  width:36px;height:4px;background:var(--line);border-radius:99px;
+  margin:0 auto 16px;
+}
+.sheet-title{font-size:17px;font-weight:800;margin-bottom:2px;}
+.sheet-sub{font-size:13px;color:var(--ink-soft);margin-bottom:18px;}
+
+.chip-group-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:8px;
+}
+.chip-row{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;
+}
+.chip{
+  padding:9px 14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#FDFCF8;
+  font-family:'JetBrains Mono',monospace;
+  font-size:13.5px;
+  font-weight:600;
+  cursor:pointer;
+  color:var(--ink);
+}
+.chip.selected{
+  background:var(--green);
+  border-color:var(--green);
+  color:#fff;
+}
+
+.custom-toggle{
+  font-size:12.5px;
+  color:var(--green-deep);
+  font-weight:700;
+  cursor:pointer;
+  margin-bottom:16px;
+  display:inline-block;
+  text-decoration:underline;
+}
+.custom-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+
+.summary-box{
+  background:#F1EFE6;
+  border-radius:10px;
+  padding:12px 14px;
+  font-size:13.5px;
+  margin-bottom:18px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.summary-box .val{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;
+  color:var(--green-deep);
+}
+
+.footnote{
+  margin-top:24px;
+  font-size:11.5px;
+  color:#9AA093;
+  text-align:center;
+  line-height:1.6;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="brand">
+      <div class="brand-eyebrow">COMFY Trade</div>
+      <div class="brand-title">Обідня <span>дошка</span></div>
+    </div>
+    <div id="headerRight"></div>
+  </div>
+
+  <div id="statusStripSlot"></div>
+
+  <div class="store-row">
+    <span class="store-label">Магазин:</span>
+    <span class="store-pill">К-19</span>
+    <span class="store-more">інші магазини — скоро</span>
+  </div>
+
+  <div id="linkBannerSlot"></div>
+
+  <div id="authSlot"></div>
+
+  <div id="boardSlot">
+    <div class="loading-row">завантаження дошки…</div>
+  </div>
+
+</div>
+
+<button class="fab" id="fabBtn" style="display:none;">+ Забронювати обід</button>
+
+<div class="sheet-backdrop" id="sheetBackdrop"></div>
+<div class="sheet" id="bookingSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Коли обідаєш?</div>
+  <div class="sheet-sub">Обери швидкий варіант або встанови точний час.</div>
+
+  <div class="chip-group-label">Початок</div>
+  <div class="chip-row" id="startChips"></div>
+
+  <div class="chip-group-label">Тривалість</div>
+  <div class="chip-row" id="durationChips">
+    <button class="chip" data-dur="30">30 хв</button>
+    <button class="chip" data-dur="45">45 хв</button>
+    <button class="chip" data-dur="60">1 год</button>
+  </div>
+
+  <span class="custom-toggle" id="customToggle">Встановити точний час вручну</span>
+  <div class="custom-row" id="customRow" style="display:none;">
+    <div class="field" style="margin-bottom:0;">
+      <label>Початок</label>
+      <input type="time" id="customStart">
+    </div>
+    <div class="field" style="margin-bottom:0;">
+      <label>Кінець</label>
+      <input type="time" id="customEnd">
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <span>Ти обідаєш</span>
+    <span class="val" id="summaryText">— оберіть час —</span>
+  </div>
+
+  <div class="form-error" id="sheetError" style="display:none;"></div>
+
+  <button class="btn" id="confirmBookingBtn" style="margin-bottom:10px;">Підтвердити</button>
+  <button class="btn btn-ghost" id="cancelSheetBtn">Скасувати</button>
+</div>
+
+<script>
+const STORE = 'K-19';
+
+let entries = [];
+let session = null; // {id, name}
+let sheetStart = null;
+let sheetDurationMin = null;
+
+const AVATAR_COLORS = ['#2E7D4F','#B4462A','#3D6FB4','#B48A2E','#7A4EB4','#2E9B8F'];
+
+function colorForName(name){
+  let hash = 0;
+  for(let i=0;i<name.length;i++) hash = name.charCodeAt(i) + ((hash<<5)-hash);
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+function initialsForName(name){
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0]||'') + (parts[1]?.[0]||'')).toUpperCase();
+}
+function pad(n){ return String(n).padStart(2,'0'); }
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+}
+function timeStrToDate(timeStr, dateISO){
+  const [h,m] = timeStr.split(':').map(Number);
+  const d = new Date(dateISO + 'T00:00:00');
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+function addMinutes(timeStr, minutes){
+  const [h,m] = timeStr.split(':').map(Number);
+  const total = h*60 + m + minutes;
+  const nh = Math.floor((total % (24*60)) / 60);
+  const nm = total % 60;
+  return pad(nh) + ':' + pad(nm);
+}
+function formatCountdown(ms){
+  if(ms < 0) ms = 0;
+  const totalSec = Math.floor(ms/1000);
+  const h = Math.floor(totalSec/3600);
+  const m = Math.floor((totalSec%3600)/60);
+  const s = totalSec%60;
+  if(h > 0) return pad(h)+':'+pad(m)+':'+pad(s);
+  return pad(m)+':'+pad(s);
+}
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+function genId(prefix){
+  return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+}
+
+/* ---------------- Storage ---------------- */
+function normalizeName(name){
+  return name.trim().toLowerCase().replace(/\s+/g,' ');
+}
+function profileKey(normName){
+  return 'profile:' + normName;
+}
+function entryKey(id){
+  return 'lunch:' + STORE + ':' + todayISO() + ':' + id;
+}
+function randomToken(){
+  return Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
+}
+
+async function getProfile(normName){
+  try{
+    const res = await window.storage.get(profileKey(normName), true);
+    return res && res.value ? JSON.parse(res.value) : null;
+  }catch(e){ return null; }
+}
+
+async function loadEntries(){
+  try{
+    const listRes = await window.storage.list('lunch:' + STORE + ':' + todayISO() + ':', true);
+    const keys = listRes && listRes.keys ? listRes.keys : [];
+    const results = await Promise.all(keys.map(async k => {
+      try{
+        const r = await window.storage.get(k, true);
+        return r && r.value ? JSON.parse(r.value) : null;
+      }catch(e){ return null; }
+    }));
+    entries = results.filter(Boolean);
+  }catch(e){
+    entries = [];
+  }
+}
+
+async function addEntry(entry){
+  try{
+    const res = await window.storage.set(entryKey(entry.id), JSON.stringify(entry), true);
+    return !!res;
+  }catch(e){ return false; }
+}
+
+async function removeEntry(id){
+  try{ await window.storage.delete(entryKey(id), true); return true; }
+  catch(e){ return false; }
+}
+
+/* ---------------- Session / auth ---------------- */
+async function checkUrlSession(){
+  const params = new URLSearchParams(window.location.search);
+  const u = params.get('u');
+  const t = params.get('t');
+  if(!u || !t) return false;
+  const profile = await getProfile(u);
+  if(profile && profile.token === t){
+    session = { id: u, name: profile.name };
+    return true;
+  }
+  return false;
+}
+
+function personalLink(id, token){
+  const base = window.location.origin + window.location.pathname;
+  return base + '?u=' + encodeURIComponent(id) + '&t=' + encodeURIComponent(token);
+}
+
+// Returns {ok:true, id, token} or {ok:false, reason: 'taken' | 'save_failed'}
+async function register(name, pin){
+  const norm = normalizeName(name);
+  const existing = await getProfile(norm);
+  if(existing) return { ok:false, reason:'taken' };
+
+  const token = randomToken();
+  const profile = { name: name.trim(), pin, store: STORE, token, createdAt: Date.now() };
+  const saved = await window.storage.set(profileKey(norm), JSON.stringify(profile), true).then(r => !!r).catch(() => false);
+  if(!saved) return { ok:false, reason:'save_failed' };
+
+  session = { id: norm, name: profile.name };
+  return { ok:true, id: norm, token };
+}
+
+// Returns {ok:true, id, token} or {ok:false, reason: 'not_found' | 'wrong_pin'}
+async function login(name, pin){
+  const norm = normalizeName(name);
+  const profile = await getProfile(norm);
+  if(!profile) return { ok:false, reason:'not_found' };
+  if(profile.pin !== pin) return { ok:false, reason:'wrong_pin' };
+
+  session = { id: norm, name: profile.name };
+  return { ok:true, id: norm, token: profile.token };
+}
+
+/* ---------------- Rendering: header ---------------- */
+function renderHeaderRight(){
+  const slot = document.getElementById('headerRight');
+  if(session){
+    slot.innerHTML = `
+      <div class="profile-chip" id="profileChipBtn">
+        <div class="avatar" style="background:${colorForName(session.name)}">${initialsForName(session.name)}</div>
+        <span class="profile-chip-name">${escapeHtml(session.name.split(' ')[0])}</span>
+      </div>`;
+    document.getElementById('profileChipBtn').addEventListener('click', logout);
+  } else {
+    slot.innerHTML = '';
+  }
+}
+
+function logout(){
+  if(!confirm('Вийти з профілю на цьому пристрої?')) return;
+  session = null;
+  const url = window.location.origin + window.location.pathname;
+  window.history.replaceState({}, '', url);
+  renderAll();
+}
+
+/* ---------------- Rendering: status strip ---------------- */
+function renderStatusStrip(){
+  const slot = document.getElementById('statusStripSlot');
+  const now = new Date();
+  const today = todayISO();
+
+  const active = entries.filter(e => {
+    const s = timeStrToDate(e.start, today);
+    const en = timeStrToDate(e.end, today);
+    return now >= s && now < en;
+  });
+
+  if(active.length === 0){
+    slot.innerHTML = `
+      <div class="status-strip free">
+        <span class="status-icon">🍽</span>
+        <span class="status-text">Столик вільний — ніхто зараз не обідає</span>
+      </div>`;
+    return;
+  }
+
+  // find soonest to return
+  let soonest = active[0];
+  active.forEach(e => {
+    const en = timeStrToDate(e.end, today);
+    const soonestEnd = timeStrToDate(soonest.end, today);
+    if(en < soonestEnd) soonest = e;
+  });
+  const soonestEnd = timeStrToDate(soonest.end, today);
+  const ms = soonestEnd - now;
+
+  const namesText = active.length === 1
+    ? escapeHtml(active[0].name)
+    : active.map(e => escapeHtml(e.name.split(' ')[0])).join(', ');
+
+  slot.innerHTML = `
+    <div class="status-strip busy">
+      <span class="status-icon">🍽</span>
+      <span class="status-text">Зараз обідає: ${namesText}</span>
+      <span class="status-countdown">${formatCountdown(ms)}</span>
+    </div>`;
+}
+
+/* ---------------- Rendering: auth card ---------------- */
+let authMode = 'register';
+
+function renderAuth(){
+  const slot = document.getElementById('authSlot');
+  const bannerSlot = document.getElementById('linkBannerSlot');
+  if(session){
+    slot.innerHTML = '';
+    return;
+  }
+  bannerSlot.innerHTML = '';
+
+  slot.innerHTML = `
+    <div class="card auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab ${authMode==='login'?'active':''}" data-mode="login">Вхід</button>
+        <button class="auth-tab ${authMode==='register'?'active':''}" data-mode="register">Реєстрація</button>
+      </div>
+      <div class="field">
+        <label>Ім'я</label>
+        <input type="text" id="authName" placeholder="Наприклад, Лебідь Максим" autocomplete="name">
+      </div>
+      <div class="field">
+        <label>PIN-код (4 цифри)</label>
+        <input type="text" id="authPin" placeholder="••••" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">
+        ${authMode==='register' ? '<div class="pin-hint">Придумай будь-які 4 цифри — це заміна пароля, щоб ніхто інший не бронював обід від твого імені.</div>' : ''}
+      </div>
+      <button class="btn" id="authSubmitBtn">${authMode==='login' ? 'Увійти' : 'Створити профіль'}</button>
+      <div class="form-error" id="authError" style="display:none;"></div>
+    </div>`;
+
+  slot.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      authMode = tab.getAttribute('data-mode');
+      renderAuth();
+    });
+  });
+
+  document.getElementById('authSubmitBtn').addEventListener('click', handleAuthSubmit);
+}
+
+async function handleAuthSubmit(){
+  const errorBox = document.getElementById('authError');
+  errorBox.style.display = 'none';
+  const name = document.getElementById('authName').value.trim();
+  const pin = document.getElementById('authPin').value.trim();
+
+  if(!name || name.length < 2){
+    errorBox.textContent = "Вкажи ім'я та прізвище.";
+    errorBox.style.display = 'block';
+    return;
+  }
+  if(!/^[0-9]{4}$/.test(pin)){
+    errorBox.textContent = 'PIN має складатись рівно з 4 цифр.';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('authSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = authMode === 'register' ? 'Створюємо…' : 'Входимо…';
+
+  let result;
+  if(authMode === 'register'){
+    result = await register(name, pin);
+    if(!result.ok){
+      btn.disabled = false;
+      btn.textContent = 'Створити профіль';
+      if(result.reason === 'taken'){
+        errorBox.textContent = 'Профіль з таким ім\'ям вже існує. Перейди на вкладку "Вхід".';
+      } else {
+        errorBox.textContent = 'Не вдалося зберегти профіль — проблема із з\'єднанням. Спробуй ще раз.';
+      }
+      errorBox.style.display = 'block';
+      return;
+    }
+    showLinkBanner(result.id, result.token, true);
+  } else {
+    result = await login(name, pin);
+    if(!result.ok){
+      btn.disabled = false;
+      btn.textContent = 'Увійти';
+      if(result.reason === 'not_found'){
+        errorBox.textContent = 'Профіль не знайдено. Якщо ти тут вперше — перейди на вкладку "Реєстрація".';
+      } else {
+        errorBox.textContent = 'Невірний PIN-код. Спробуй ще раз.';
+      }
+      errorBox.style.display = 'block';
+      return;
+    }
+    showLinkBanner(result.id, result.token, false);
+  }
+
+  btn.disabled = false;
+  renderAll();
+}
+
+/* ---------------- Magic link banner ---------------- */
+let bannerDismissed = false;
+
+function showLinkBanner(id, token, justRegistered){
+  bannerDismissed = false;
+  window._pendingBanner = { id, token, justRegistered };
+}
+
+function renderLinkBanner(){
+  const bannerSlot = document.getElementById('linkBannerSlot');
+  if(!session || bannerDismissed || !window._pendingBanner){
+    bannerSlot.innerHTML = '';
+    return;
+  }
+  const { id, token, justRegistered } = window._pendingBanner;
+  const link = personalLink(id, token);
+  bannerSlot.innerHTML = `
+    <div class="link-banner">
+      <button class="link-banner-dismiss" id="dismissBanner">✕</button>
+      <div class="link-banner-title">${justRegistered ? 'Профіль створено 🎉' : 'Вхід виконано'}</div>
+      <div class="link-banner-sub">Збережи це посилання в закладки або додай на головний екран телефона — наступного разу увійдеш одразу, без PIN-коду.</div>
+      <div class="link-banner-row">
+        <span class="link-banner-url">${link}</span>
+        <button class="link-banner-copy" id="copyLinkBtn">Копіювати</button>
+      </div>
+    </div>`;
+  document.getElementById('dismissBanner').addEventListener('click', () => {
+    bannerDismissed = true;
+    renderLinkBanner();
+  });
+  document.getElementById('copyLinkBtn').addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(link);
+      const btn = document.getElementById('copyLinkBtn');
+      btn.textContent = 'Скопійовано!';
+      setTimeout(() => { btn.textContent = 'Копіювати'; }, 1800);
+    }catch(e){
+      alert(link);
+    }
+  });
+}
+
+/* ---------------- Board ---------------- */
+function renderBoard(){
+  const slot = document.getElementById('boardSlot');
+  if(entries.length === 0){
+    slot.innerHTML = `
+      <p class="board-title"><span class="dot"></span>Хто обідає сьогодні — К-19</p>
+      <div class="card empty-state">
+        <strong>Столик не заброньовано 🍽</strong>
+        ${session ? 'Тисни кнопку внизу, щоб забронювати перший обід.' : "Увійди або зареєструйся, щоб забронювати обід."}
+      </div>`;
+    updateFab();
+    return;
+  }
+
+  const sorted = [...entries].sort((a,b) => a.start.localeCompare(b.start));
+  const now = new Date();
+  const today = todayISO();
+
+  let html = '<p class="board-title"><span class="dot"></span>Хто обідає сьогодні — К-19</p><div class="entries">';
+
+  sorted.forEach(entry => {
+    const startD = timeStrToDate(entry.start, today);
+    const endD = timeStrToDate(entry.end, today);
+    const isMine = session && entry.ownerId === session.id;
+
+    let state = 'upcoming';
+    let isEatingNow = false;
+
+    if(now >= startD && now < endD){
+      state = 'eating';
+      isEatingNow = true;
+    } else if(now >= endD){
+      state = 'done';
+    }
+
+    let countdownBlock;
+    if(isEatingNow){
+      const ms = endD - now;
+      const soon = ms < 5*60*1000;
+      countdownBlock = `
+        <div class="entry-countdown">
+          <span class="countdown-label">Залишилось</span>
+          <span class="countdown-digits" style="color:${soon ? 'var(--amber)' : 'var(--green-deep)'}">${formatCountdown(ms)}</span>
+        </div>`;
+    } else if(state === 'done'){
+      countdownBlock = `
+        <div class="entry-countdown">
+          <span class="countdown-label">Завершено</span>
+        </div>`;
+    } else {
+      countdownBlock = `
+        <div class="entry-countdown">
+          <span class="countdown-label">Початок о</span>
+          <span class="countdown-digits" style="color:var(--ink-soft); font-size:15px;">${entry.start}</span>
+        </div>`;
+    }
+
+    html += `
+      <div class="entry ${state} ${isMine?'mine':''}">
+        <div class="entry-avatar" style="background:${colorForName(entry.name)}">${initialsForName(entry.name)}</div>
+        <div class="entry-body">
+          <div class="entry-name-row">
+            <span class="entry-name">${escapeHtml(entry.name)}</span>
+            ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
+          </div>
+          <div class="entry-time">${entry.start}–${entry.end}</div>
+          ${isMine ? `<button class="entry-cancel" data-id="${entry.id}">Скасувати</button>` : ''}
+        </div>
+        ${countdownBlock}
+      </div>`;
+  });
+
+  html += '</div>';
+  slot.innerHTML = html;
+
+  slot.querySelectorAll('.entry-cancel').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      btn.disabled = true;
+      btn.textContent = 'Скасовуємо…';
+      await removeEntry(id);
+      await loadEntries();
+      renderBoard();
+    });
+  });
+
+  updateFab();
+}
+
+function updateFab(){
+  const fab = document.getElementById('fabBtn');
+  fab.style.display = session ? 'flex' : 'none';
+}
+
+/* ---------------- Booking sheet ---------------- */
+function generateStartOptions(){
+  const opts = [];
+  let cur = 11*60 + 30; // 11:30
+  const end = 16*60; // 16:00
+  while(cur <= end){
+    opts.push(pad(Math.floor(cur/60)) + ':' + pad(cur%60));
+    cur += 30;
+  }
+  return opts;
+}
+
+function renderStartChips(){
+  const wrap = document.getElementById('startChips');
+  wrap.innerHTML = '';
+  generateStartOptions().forEach(t => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.textContent = t;
+    chip.dataset.time = t;
+    chip.addEventListener('click', () => {
+      sheetStart = t;
+      document.getElementById('customRow').style.display = 'none';
+      document.getElementById('customToggle').textContent = 'Встановити точний час вручну';
+      wrap.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      updateSummary();
+    });
+    wrap.appendChild(chip);
+  });
+}
+
+document.getElementById('durationChips').querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    sheetDurationMin = parseInt(chip.dataset.dur, 10);
+    document.querySelectorAll('#durationChips .chip').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+    updateSummary();
+  });
+});
+
+document.getElementById('customToggle').addEventListener('click', () => {
+  const row = document.getElementById('customRow');
+  const isOpen = row.style.display !== 'none';
+  row.style.display = isOpen ? 'none' : 'grid';
+  document.getElementById('customToggle').textContent = isOpen ? 'Встановити точний час вручну' : 'Сховати точний час';
+  if(!isOpen){
+    document.getElementById('startChips').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('#durationChips .chip').forEach(c => c.classList.remove('selected'));
+    sheetStart = null; sheetDurationMin = null;
+  }
+});
+
+document.getElementById('customStart').addEventListener('input', updateSummary);
+document.getElementById('customEnd').addEventListener('input', updateSummary);
+
+function getEffectiveTimes(){
+  const customOpen = document.getElementById('customRow').style.display !== 'none';
+  if(customOpen){
+    const s = document.getElementById('customStart').value;
+    const e = document.getElementById('customEnd').value;
+    return { start: s || null, end: e || null };
+  }
+  if(sheetStart && sheetDurationMin){
+    return { start: sheetStart, end: addMinutes(sheetStart, sheetDurationMin) };
+  }
+  return { start: null, end: null };
+}
+
+function updateSummary(){
+  const { start, end } = getEffectiveTimes();
+  const summary = document.getElementById('summaryText');
+  if(start && end){
+    summary.textContent = start + ' – ' + end;
+  } else {
+    summary.textContent = '— оберіть час —';
+  }
+}
+
+function openSheet(){
+  document.getElementById('sheetBackdrop').classList.add('open');
+  document.getElementById('bookingSheet').classList.add('open');
+  document.getElementById('sheetError').style.display = 'none';
+}
+function closeSheet(){
+  document.getElementById('sheetBackdrop').classList.remove('open');
+  document.getElementById('bookingSheet').classList.remove('open');
+}
+
+document.getElementById('fabBtn').addEventListener('click', openSheet);
+document.getElementById('sheetBackdrop').addEventListener('click', closeSheet);
+document.getElementById('cancelSheetBtn').addEventListener('click', closeSheet);
+
+document.getElementById('confirmBookingBtn').addEventListener('click', async () => {
+  const errorBox = document.getElementById('sheetError');
+  errorBox.style.display = 'none';
+  const { start, end } = getEffectiveTimes();
+
+  if(!start || !end){
+    errorBox.textContent = 'Обери час початку та тривалість (або встанови вручну).';
+    errorBox.style.display = 'block';
+    return;
+  }
+  if(start >= end){
+    errorBox.textContent = 'Час кінця має бути пізніше за час початку.';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('confirmBookingBtn');
+  btn.disabled = true;
+  btn.textContent = 'Зберігаємо…';
+
+  const saved = await addEntry({
+    id: genId('e'),
+    ownerId: session.id,
+    name: session.name,
+    store: STORE,
+    start, end,
+    date: todayISO()
+  });
+
+  if(!saved){
+    errorBox.textContent = 'Не вдалося зберегти бронь — проблема із з\'єднанням. Спробуй ще раз.';
+    errorBox.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Підтвердити';
+    return;
+  }
+
+  await loadEntries();
+  renderBoard();
+
+  btn.disabled = false;
+  btn.textContent = 'Підтвердити';
+  closeSheet();
+
+  sheetStart = null; sheetDurationMin = null;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('customStart').value = '';
+  document.getElementById('customEnd').value = '';
+  document.getElementById('customRow').style.display = 'none';
+  updateSummary();
+});
+
+/* ---------------- Main render / init ---------------- */
+function renderAll(){
+  renderHeaderRight();
+  renderStatusStrip();
+  renderAuth();
+  renderLinkBanner();
+  renderBoard();
+}
+
+async function init(){
+  await checkUrlSession();
+  await loadEntries();
+  renderStartChips();
+  renderAll();
+
+  setInterval(() => { renderStatusStrip(); renderBoard(); }, 1000);
+  setInterval(async () => {
+    await loadEntries();
+    if(!document.getElementById('bookingSheet').classList.contains('open')){
+      renderStatusStrip();
+      renderBoard();
+    }
+  }, 8000);
+}
+
+init();
+</script>
+</body>
+</html>
