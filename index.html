@@ -27,7 +27,6 @@
   --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
 
-/* Тематичні скіни */
 html[data-skin="birthday"]{
   --comfy-green:#8B5CF6; --comfy-green-dark:#6D28D9; --comfy-orange:#EC4899; --comfy-orange-light:#FCE7F3; --lime-badge:#EDE9FE;
 }
@@ -41,7 +40,6 @@ html[data-skin="cyber"]{
   --comfy-green:#10B981; --comfy-green-dark:#059669; --comfy-orange:#F59E0B; --comfy-orange-light:#FEF3C7; --lime-badge:#D1FAE5;
 }
 
-/* Темна тема */
 html[data-theme="dark"]{
   --bg:#0F1411;
   --surface:#1A231C;
@@ -55,37 +53,21 @@ html[data-theme="dark"]{
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;overscroll-behavior-y:none;}
 body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:'Manrope',system-ui,sans-serif;
-  min-height:100vh;
-  padding-top:calc(20px + var(--safe-top));
-  padding-bottom:calc(110px + var(--safe-bottom));
-  padding-left:16px;
-  padding-right:16px;
-  transition:background 0.3s, color 0.3s;
+  background:var(--bg); color:var(--ink);
+  font-family:'Manrope',system-ui,sans-serif; min-height:100vh;
+  padding-top:calc(20px + var(--safe-top)); padding-bottom:calc(110px + var(--safe-bottom));
+  padding-left:16px; padding-right:16px; transition:background 0.3s, color 0.3s;
 }
-input, button, select{font-family:'Manrope',sans-serif; font-size:16px;}
+input, button, select, textarea{font-family:'Manrope',sans-serif; font-size:16px;}
 button{-webkit-appearance:none; appearance:none;}
 
 .wrap{max-width:500px;margin:0 auto;}
 
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  margin-bottom:16px;
-}
-
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;}
 .comfy-brand-box{
-  display:inline-flex;
-  align-items:center;
+  display:inline-flex;align-items:center;
   background:linear-gradient(135deg, var(--comfy-green) 0%, var(--comfy-green-dark) 100%);
-  padding:10px 18px;
-  border-radius:999px;
-  gap:10px;
-  box-shadow:0 8px 20px rgba(56,179,74,0.3);
+  padding:10px 18px;border-radius:999px;gap:10px;box-shadow:0 8px 20px rgba(56,179,74,0.3);
 }
 .comfy-brand-text{font-size:20px;font-weight:800;color:#FFFFFF;text-transform:uppercase;line-height:1;}
 .comfy-dot{width:14px;height:14px;background-color:var(--comfy-orange);border-radius:50%;flex-shrink:0;}
@@ -98,9 +80,17 @@ button{-webkit-appearance:none; appearance:none;}
   cursor:pointer;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);
 }
 
-.stats-counter-bar{
-  display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:16px;
+.nav-tabs{
+  display:flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:4px;margin-bottom:16px;gap:4px;box-shadow:0 2px 8px rgba(0,0,0,0.02);
 }
+.nav-tab{
+  flex:1;text-align:center;padding:10px 6px;border-radius:10px;font-size:13px;font-weight:700;
+  color:var(--ink-soft);cursor:pointer;border:none;background:none;transition:all 0.2s;
+}
+.nav-tab.active{background:var(--comfy-green);color:#fff;box-shadow:0 4px 12px rgba(56,179,74,0.3);}
+
+.stats-counter-bar{display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:16px;}
 .stat-box{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);
   padding:10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);
@@ -125,8 +115,11 @@ button{-webkit-appearance:none; appearance:none;}
 .status-strip.free{background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);}
 .status-strip.busy{background:var(--comfy-orange-light);border:1px solid rgba(255,102,0,0.25);color:var(--comfy-orange);}
 
-.store-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:13px;padding:0 4px;}
-.store-pill{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--comfy-green-dark);}
+/* Шкала зайнятості (Таймлайн) */
+.timeline-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
+.timeline-title{font-size:12px;font-weight:800;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;display:flex;justify-content:space-between;}
+.timeline-bar{height:12px;background:var(--bg);border-radius:99px;position:relative;overflow:hidden;border:1px solid var(--line);}
+.timeline-segment{position:absolute;top:0;bottom:0;background:var(--comfy-orange);border-radius:4px;}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 10px 30px rgba(0,0,0,0.04);}
 .auth-card{margin-bottom:20px;}
@@ -136,7 +129,7 @@ button{-webkit-appearance:none; appearance:none;}
 
 .field{margin-bottom:16px;}
 .field label{display:block;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:6px;}
-.field input, .field select{
+.field input, .field select, .field textarea{
   width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
   background:var(--bg);color:var(--ink);font-weight:600;
 }
@@ -144,7 +137,9 @@ button{-webkit-appearance:none; appearance:none;}
 .btn{
   width:100%;background:var(--comfy-green);color:#fff;border:none;border-radius:var(--radius-sm);
   padding:16px;font-size:15.5px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(56,179,74,0.3);
+  transition:transform 0.1s;
 }
+.btn:active{transform:scale(0.98);}
 .btn:hover{background:var(--comfy-green-dark);}
 .btn-ghost{background:none;color:var(--ink-soft);border:1.5px solid var(--line);box-shadow:none;}
 .form-error{color:var(--red);font-size:13px;margin-top:12px;font-weight:700;background:rgba(224,60,49,0.1);padding:10px 14px;border-radius:10px;}
@@ -170,20 +165,27 @@ button{-webkit-appearance:none; appearance:none;}
 .you-badge{font-size:10px;font-weight:800;color:var(--comfy-green-dark);background:var(--lime-badge);padding:2px 8px;border-radius:6px;}
 .entry-time{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:3px;font-weight:600;}
 
-.entry-actions{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.entry-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
 .mini-action-btn{
-  background:var(--bg);border:1px solid var(--line);padding:4px 10px;border-radius:6px;
-  font-size:11px;font-weight:700;color:var(--ink);cursor:pointer;
+  background:var(--bg);border:1px solid var(--line);padding:6px 12px;border-radius:8px;
+  font-size:11.5px;font-weight:700;color:var(--ink);cursor:pointer;
 }
 .mini-action-btn.accent{background:var(--lime-badge);color:var(--comfy-green-dark);border-color:var(--comfy-green);}
 
-.swap-request-banner{
-  background:var(--comfy-orange-light);border:1.5px dashed var(--comfy-orange);border-radius:12px;
-  padding:12px;margin-top:10px;font-size:13px;
+/* Міні-чат */
+.chat-container{display:flex;flex-direction:column;gap:12px;}
+.date-divider{text-align:center;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--ink-soft);margin:10px 0;position:relative;}
+.date-divider span{background:var(--bg);padding:0 12px;position:relative;z-index:2;}
+.date-divider::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line);z-index:1;}
+
+.chat-bubble{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.02);position:relative;
 }
-.swap-buttons{display:flex;gap:8px;margin-top:8px;}
-.swap-btn-accept{background:var(--comfy-green);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:800;cursor:pointer;font-size:12px;}
-.swap-btn-deny{background:var(--red);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:800;cursor:pointer;font-size:12px;}
+.chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.chat-author{font-size:13px;font-weight:800;color:var(--comfy-green-dark);cursor:pointer;}
+.chat-time{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);}
+.chat-text{font-size:14px;line-height:1.4;word-break:break-word;}
 
 .fab{
   position:fixed;left:16px;right:16px;bottom:calc(20px + var(--safe-bottom));max-width:468px;margin:0 auto;
@@ -205,12 +207,13 @@ button{-webkit-appearance:none; appearance:none;}
 .sheet-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:20px;}
 
 .chip-group-label{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:10px;}
-.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;max-height:160px;overflow-y:auto;}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;max-height:180px;overflow-y:auto;}
 .chip{
   padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);
   font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:700;cursor:pointer;color:var(--ink);
 }
 .chip.selected{background:var(--comfy-green);border-color:var(--comfy-green);color:#fff;}
+.chip.disabled{opacity:0.35;pointer-events:none;background:var(--line);}
 </style>
 </head>
 <body>
@@ -221,56 +224,67 @@ button{-webkit-appearance:none; appearance:none;}
         <span class="comfy-brand-text">Comfy Dinner</span>
         <div class="comfy-dot"></div>
       </div>
-      <div class="brand-eyebrow">К-19 • PRO Edition</div>
+      <div class="brand-eyebrow" id="storeSubtitle">К-19 • PRO Edition</div>
     </div>
     <div class="header-controls">
-      <button class="icon-btn" id="themeToggleBtn" title="Тема">🌙</button>
-      <button class="icon-btn" id="skinToggleBtn" title="Скін">🎨</button>
+      <button class="icon-btn" id="skinModalBtn" title="Скіни та теми">🎨</button>
       <div id="headerRight"></div>
     </div>
   </div>
 
-  <div class="stats-counter-bar" id="statsBar"></div>
-  <div id="statusStripSlot"></div>
-
-  <div class="store-row">
-    <span style="color:var(--ink-soft)">Магазин:</span>
-    <span class="store-pill">К-19</span>
-    <span style="color:var(--ink-soft);margin-left:auto;font-size:12px;">🍔 Всім смачного!</span>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-tab="board">🍽 Графік</button>
+    <button class="nav-tab" data-tab="colleagues">👥 Колеги</button>
+    <button class="nav-tab" data-tab="chat">💬 Міні-чат</button>
   </div>
 
+  <div class="stats-counter-bar" id="statsBar"></div>
+  <div id="statusStripSlot"></div>
+  <div id="timelineSlot"></div>
+
   <div id="authSlot"></div>
-  <div id="boardSlot"><div style="text-align:center;padding:30px;color:var(--ink-soft);">⏳ завантаження…</div></div>
+  <div id="mainTabContent"></div>
 </div>
 
-<button class="fab" id="fabBtn" style="display:none;">🍔 Забронювати обід</button>
+<button class="fab" id="fabBtn" style="display:none;">🍔 Забронювати обід (30 хв)</button>
 
 <!-- Шторка Броні -->
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <div class="sheet" id="bookingSheet">
   <div class="sheet-handle"></div>
   <div class="sheet-title">Коли обідаєш? 🕒</div>
-  <div class="sheet-sub">Обери час та тривалість перерви.</div>
+  <div class="sheet-sub">Тривалість фіксована — 30 хвилин. Зайнятий час позначено сірим.</div>
 
-  <div class="chip-group-label">Початок (з 12:30 до 18:30)</div>
+  <div class="chip-group-label">Обери вільний час (з 12:30 до 18:30)</div>
   <div class="chip-row" id="startChips"></div>
-
-  <div class="chip-group-label">Тривалість</div>
-  <div class="chip-row" id="durationChips" style="max-height:none;">
-    <button class="chip" data-dur="30">30 хв</button>
-    <button class="chip" data-dur="45">45 хв</button>
-    <button class="chip" data-dur="60">1 год</button>
-  </div>
 
   <div class="form-error" id="sheetError" style="display:none;"></div>
   <button class="btn" id="confirmBookingBtn" style="margin-bottom:10px;">Підтвердити бронь</button>
   <button class="btn btn-ghost" id="cancelSheetBtn">Скасувати</button>
 </div>
 
-<!-- Шторка профілю та статистики -->
+<!-- Шторка профілю -->
 <div class="sheet" id="profileSheet">
   <div class="sheet-handle"></div>
   <div id="profileSheetContent"></div>
+</div>
+
+<!-- Шторка тем та скінів -->
+<div class="sheet" id="skinSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Вибір теми та скіну 🎨</div>
+  <div class="sheet-sub">Змінюй стиль додатку під свій настрій. Твоя тема зберігається у профілі!</div>
+  
+  <div class="chip-group-label">Режим оформлення</div>
+  <div class="chip-row" style="max-height:none;">
+    <button class="chip" id="themeLightBtn">☀️ Світла тема</button>
+    <button class="chip" id="themeDarkBtn">🌙 Темна тема</button>
+  </div>
+
+  <div class="chip-group-label">Колірний скін</div>
+  <div class="chip-row" style="max-height:none;" id="skinChoices"></div>
+  
+  <button class="btn" onclick="document.getElementById('skinSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">Готово</button>
 </div>
 
 <!-- Firebase SDK -->
@@ -296,12 +310,16 @@ button{-webkit-appearance:none; appearance:none;}
 </script>
 
 <script>
-const STORE = 'K-19';
+let currentStore = 'К-19';
 let entries = [];
+let profilesList = [];
+let chatMessages = [];
 let session = null;
 let sheetStart = null;
-let sheetDurationMin = null;
+let activeTab = 'board';
 let unsubscribeEntries = null;
+let unsubscribeChat = null;
+let unsubscribeProfiles = null;
 
 let currentTheme = localStorage.getItem('comfy_theme') || 'light';
 let currentSkin = localStorage.getItem('comfy_skin') || 'default';
@@ -309,22 +327,78 @@ document.documentElement.setAttribute('data-theme', currentTheme);
 document.documentElement.setAttribute('data-skin', currentSkin);
 
 const SKINS = ['default', 'birthday', 'ny', 'valentin', 'cyber'];
-const SKIN_NAMES = { default: 'Comfy Standard', birthday: 'День Народження', ny: 'Новий Рік 🎄', valentin: 'День Закоханих ❤️', cyber: 'Кіберпанк 🟢' };
+const SKIN_NAMES = { default: 'Comfy Standard 🟢', birthday: 'День Народження 🥳', ny: 'Новий Рік 🎄', valentin: 'День Закоханих ❤️', cyber: 'Кіберпанк ⚡️' };
 
-document.getElementById('themeToggleBtn').addEventListener('click', () => {
-  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', currentTheme);
-  localStorage.setItem('comfy_theme', currentTheme);
-  document.getElementById('themeToggleBtn').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+// Веб-аудіо симулятор звукових ефектів
+function playSound(type){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if(type === 'success'){
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); // A5
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(); osc.stop(ctx.currentTime + 0.3);
+    } else if(type === 'click'){
+      osc.frequency.setValueAtTime(400, ctx.currentTime);
+      gain.gain.setValueAtTime(0.05, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+      osc.start(); osc.stop(ctx.currentTime + 0.05);
+    }
+  }catch(e){}
+}
+
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    playSound('click');
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeTab = tab.dataset.tab;
+    renderMainContent();
+  });
 });
 
-document.getElementById('skinToggleBtn').addEventListener('click', () => {
-  const nextIdx = (SKINS.indexOf(currentSkin) + 1) % SKINS.length;
-  currentSkin = SKINS[nextIdx];
-  document.documentElement.setAttribute('data-skin', currentSkin);
-  localStorage.setItem('comfy_skin', currentSkin);
-  alert('Скін змінено на: ' + SKIN_NAMES[currentSkin]);
+document.getElementById('skinModalBtn').addEventListener('click', () => {
+  playSound('click');
+  document.getElementById('sheetBackdrop').classList.add('open');
+  document.getElementById('skinSheet').classList.add('open');
+  renderSkinModalChoices();
 });
+
+function setTheme(theme){
+  currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('comfy_theme', theme);
+  if(session) updateProfileField(session.id, { theme });
+  renderSkinModalChoices();
+}
+
+function setSkin(skin){
+  currentSkin = skin;
+  document.documentElement.setAttribute('data-skin', skin);
+  localStorage.setItem('comfy_skin', skin);
+  if(session) updateProfileField(session.id, { skin });
+  renderSkinModalChoices();
+}
+
+function renderSkinModalChoices(){
+  const wrap = document.getElementById('skinChoices');
+  wrap.innerHTML = '';
+  SKINS.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = `chip ${currentSkin === s ? 'selected' : ''}`;
+    btn.textContent = SKIN_NAMES[s];
+    btn.addEventListener('click', () => setSkin(s));
+    wrap.appendChild(btn);
+  });
+  document.getElementById('themeLightBtn').className = `chip ${currentTheme==='light'?'selected':''}`;
+  document.getElementById('themeDarkBtn').className = `chip ${currentTheme==='dark'?'selected':''}`;
+}
+document.getElementById('themeLightBtn').addEventListener('click', () => setTheme('light'));
+document.getElementById('themeDarkBtn').addEventListener('click', () => setTheme('dark'));
 
 const AVATAR_COLORS = ['#38B34A','#FF6600','#2E7D4F','#E03C31','#3D6FB4','#9C27B0','#00897B'];
 function colorForName(name){
@@ -333,6 +407,7 @@ function colorForName(name){
     return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 function initialsForName(name){
+  if(!name) return '?';
   const parts = name.trim().split(/\s+/);
   return ((parts[0]?.[0]||'') + (parts[1]?.[0]||'')).toUpperCase();
 }
@@ -340,6 +415,11 @@ function pad(n){ return String(n).padStart(2,'0'); }
 function todayISO(){
   const d = new Date();
   return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+}
+function formatDatePretty(dateStr){
+  const [y, m, d] = dateStr.split('-');
+  const months = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+  return `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
 }
 function timeStrToDate(timeStr, dateISO){
   const [h,m] = timeStr.split(':').map(Number);
@@ -363,12 +443,24 @@ async function getProfile(normName){
   }catch(e){ return null; }
 }
 
-async function register(name, pin){
+async function updateProfileField(normName, fields){
+  try{
+    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', normName), fields);
+  }catch(e){}
+}
+
+async function register(name, pin, store){
   const norm = normalizeName(name);
   if(await getProfile(norm)) return { ok:false, reason:'taken' };
-  const profile = { name: name.trim(), pin, store: STORE, token: Math.random().toString(36).slice(2), avatarBase64: '', thanksCount: 0, achivs: ['Новачок 🟢'] };
+  const profile = {
+    id: norm, name: name.trim(), pin, store, token: Math.random().toString(36).slice(2),
+    avatarBase64: '', thanksCount: 0, achivs: ['Новачок 🟢', 'Командний гравець 🤝'],
+    position: 'Продавець-консультант', quote: 'Працюємо на результат у Comfy!',
+    theme: currentTheme, skin: currentSkin, history: [], thanksCooldowns: {}
+  };
   await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
-  session = { id: norm, name: profile.name };
+  session = { id: norm, name: profile.name, store: profile.store };
+  currentStore = profile.store;
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
   return { ok:true };
 }
@@ -377,62 +469,46 @@ async function login(name, pin){
   const norm = normalizeName(name);
   const profile = await getProfile(norm);
   if(!profile || profile.pin !== pin) return { ok:false };
-  session = { id: norm, name: profile.name };
+  session = { id: norm, name: profile.name, store: profile.store || 'К-19' };
+  currentStore = session.store;
+  if(profile.theme) { currentTheme = profile.theme; document.documentElement.setAttribute('data-theme', currentTheme); }
+  if(profile.skin) { currentSkin = profile.skin; document.documentElement.setAttribute('data-skin', currentSkin); }
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
   return { ok:true };
 }
 
-function requestNotificationPermission(){
-  if("Notification" in window && Notification.permission !== "granted"){
-    Notification.requestPermission();
-  }
-}
-
-function checkDinnerNotifications(){
-  if(!session || Notification.permission !== "granted") return;
-  const now = new Date();
-  entries.forEach(e => {
-    if(e.ownerId === session.id){
-      const startD = timeStrToDate(e.start, todayISO());
-      const diffMin = Math.round((startD - now) / 60000);
-      if([15, 10, 5].includes(diffMin) && !e[`notified_${diffMin}`]){
-        new Notification("Comfy Dinner 🍔", { body: `Твій обід почнеться через ${diffMin} хв (${e.start})!` });
-        e[`notified_${diffMin}`] = true;
-      }
-    }
-  });
-}
-
-function initRealtimeEntries(){
+function initRealtimeData(){
   if(unsubscribeEntries) unsubscribeEntries();
-  const q = window.FB.query(window.FB.collection(window.db, 'lunches'), window.FB.where('store', '==', STORE), window.FB.where('date', '==', todayISO()));
-  unsubscribeEntries = window.FB.onSnapshot(q, (snapshot) => {
+  if(unsubscribeChat) unsubscribeChat();
+  if(unsubscribeProfiles) unsubscribeProfiles();
+
+  // Слухаємо броні
+  const qE = window.FB.query(window.FB.collection(window.db, 'lunches'), window.FB.where('store', '==', currentStore), window.FB.where('date', '==', todayISO()));
+  unsubscribeEntries = window.FB.onSnapshot(qE, (snapshot) => {
     entries = [];
     snapshot.forEach(doc => entries.push(doc.data()));
     renderAll();
-    checkDinnerNotifications();
+  });
+
+  // Слухаємо профілі магазину
+  const qP = window.FB.query(window.FB.collection(window.db, 'profiles'), window.FB.where('store', '==', currentStore));
+  unsubscribeProfiles = window.FB.onSnapshot(qP, (snapshot) => {
+    profilesList = [];
+    snapshot.forEach(doc => profilesList.push(doc.data()));
+    if(activeTab === 'colleagues') renderColleaguesTab();
+  });
+
+  // Слухаємо чат
+  const qC = window.FB.query(window.FB.collection(window.db, 'chat'), window.FB.where('store', '==', currentStore));
+  unsubscribeChat = window.FB.onSnapshot(qC, (snapshot) => {
+    chatMessages = [];
+    snapshot.forEach(doc => chatMessages.push(doc.data()));
+    if(activeTab === 'chat') renderChatTab();
   });
 }
 
-async function sendSwapRequest(targetEntryId){
-  await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', targetEntryId), {
-    swapRequest: { fromId: session.id, fromName: session.name, status: 'pending' }
-  });
-  alert('Запит на обмін надіслано колезі!');
-}
-
-async function respondSwap(entryId, accept, targetEntry){
-  if(accept){
-    const myEntry = entries.find(e => e.ownerId === session.id);
-    if(myEntry){
-      await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', myEntry.id), { start: targetEntry.start, end: targetEntry.end });
-      await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', entryId), { start: myEntry.start, end: myEntry.end, swapRequest: null });
-      alert('Успішно помінялися часом!');
-      return;
-    }
-  }
-  await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', entryId), { swapRequest: { status: 'denied' } });
-  alert('Запит відхилено.');
+function renderStoreSubtitle(){
+  document.getElementById('storeSubtitle').textContent = `${currentStore} • PRO Edition`;
 }
 
 function renderHeaderRight(){
@@ -443,7 +519,7 @@ function renderHeaderRight(){
         <div class="avatar" id="headerAvatarEl" style="background:${colorForName(session.name)}">${initialsForName(session.name)}</div>
         <span class="profile-chip-name">${escapeHtml(session.name.split(' ')[0])}</span>
       </div>`;
-    document.getElementById('openMyProfileBtn').addEventListener('click', () => openProfileModal(session.id));
+    document.getElementById('openMyProfileBtn').addEventListener('click', () => { playSound('click'); openProfileModal(session.id); });
     getProfile(session.id).then(p => {
       if(p && p.avatarBase64){
         const av = document.getElementById('headerAvatarEl');
@@ -479,7 +555,34 @@ function renderStatusStrip(){
     slot.innerHTML = `<div class="status-strip free"><span>☕️</span><span>Столик вільний — ніхто зараз не обідає</span></div>`;
     return;
   }
-  slot.innerHTML = `<div class="status-strip busy"><span>🔥</span><span>Зараз обідає: ${active.map(e => escapeHtml(e.name)).join(', ')}</span></div>`;
+  slot.innerHTML = `<div class="status-strip busy"><span>🔥</span><span>Зараз обідає: ${active.map(e => `<b style="cursor:pointer;" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</b>`).join(', ')}</span></div>`;
+}
+
+// Рендер шкали зайнятості дня
+function renderTimeline(){
+  const slot = document.getElementById('timelineSlot');
+  let segmentsHtml = '';
+  
+  // Доба від 12:30 (750 хв) до 18:30 (1110 хв) -> всього 360 хв
+  const dayStartMin = 12*60 + 30;
+  const totalDurationMin = 6 * 60;
+
+  entries.forEach(e => {
+    const [sh, sm] = e.start.split(':').map(Number);
+    const [eh, em] = e.end.split(':').map(Number);
+    const startMin = sh*60 + sm;
+    const endMin = eh*60 + em;
+
+    const leftPct = Math.max(0, ((startMin - dayStartMin) / totalDurationMin) * 100);
+    const widthPct = Math.min(100 - leftPct, ((endMin - startMin) / totalDurationMin) * 100);
+    segmentsHtml += `<div class="timeline-segment" style="left:${leftPct}%; width:${widthPct}%;"></div>`;
+  });
+
+  slot.innerHTML = `
+    <div class="timeline-card">
+      <div class="timeline-title"><span>Графік завантаженості</span><span>12:30 — 18:30</span></div>
+      <div class="timeline-bar">${segmentsHtml}</div>
+    </div>`;
 }
 
 let authMode = 'register';
@@ -494,43 +597,53 @@ function renderAuth(){
       </div>
       <div class="field"><label>Ім'я та Прізвище</label><input type="text" id="authName" placeholder="Введіть дані"></div>
       <div class="field"><label>PIN-код (4 цифри)</label><input type="password" id="authPin" maxlength="4"></div>
+      ${authMode === 'register' ? `
+        <div class="field"><label>Магазин Comfy</label>
+          <select id="authStore">
+            <option value="К-19" selected>К-19 (Основний)</option>
+            <option value="К-1">К-1</option>
+            <option value="К-5">К-5</option>
+            <option value="ТРЦ Blockbuster">ТРЦ Blockbuster</option>
+            <option value="ТРЦ Retroville">ТРЦ Retroville</option>
+          </select>
+        </div>` : ''}
       <button class="btn" id="authSubmitBtn">${authMode==='login' ? 'Увійти' : 'Створити профіль'}</button>
       <div class="form-error" id="authError" style="display:none;"></div>
     </div>`;
-  slot.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => { authMode = t.dataset.mode; renderAuth(); }));
+  slot.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => {
+    playSound('click'); authMode = t.dataset.mode; renderAuth();
+  }));
   document.getElementById('authSubmitBtn').addEventListener('click', async () => {
+    playSound('click');
     const name = document.getElementById('authName').value.trim();
     const pin = document.getElementById('authPin').value.trim();
-    const res = authMode === 'register' ? await register(name, pin) : await login(name, pin);
-    if(!res.ok){ alert('Помилка авторизації'); return; }
-    requestNotificationPermission();
+    const storeSel = authMode === 'register' ? document.getElementById('authStore').value : currentStore;
+    if(!name || pin.length < 4){ alert('Введіть коректне ім\'я та 4-значний PIN!'); return; }
+    const res = authMode === 'register' ? await register(name, pin, storeSel) : await login(name, pin);
+    if(!res.ok){ alert('Помилка авторизації або такий користувач вже існує.'); return; }
+    playSound('success');
+    initRealtimeData();
     renderAll();
   });
 }
 
-function renderBoard(){
-  const slot = document.getElementById('boardSlot');
+function renderMainContent(){
+  const slot = document.getElementById('mainTabContent');
+  if(activeTab === 'board') renderBoardTab();
+  else if(activeTab === 'colleagues') renderColleaguesTab();
+  else if(activeTab === 'chat') renderChatTab();
+}
+
+function renderBoardTab(){
+  const slot = document.getElementById('mainTabContent');
   if(entries.length === 0){
-    slot.innerHTML = `<p class="board-title"><span class="dot"></span>Графік обідів</p><div class="card" style="text-align:center;">🍽 Столик вільний. Займи свій час першим!</div>`;
+    slot.innerHTML = `<p class="board-title"><span class="dot"></span>Графік обідів (${currentStore})</p><div class="card" style="text-align:center;">🍽 Столик вільний. Займи свій час першим!</div>`;
+    document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
     return;
   }
-  let html = '<p class="board-title"><span class="dot"></span>Графік обідів на сьогодні</p><div class="entries">';
+  let html = `<p class="board-title"><span class="dot"></span>Графік обідів на сьогодні (${currentStore})</p><div class="entries">`;
   entries.sort((a,b)=>a.start.localeCompare(b.start)).forEach(e => {
     const isMine = session && e.ownerId === session.id;
-    
-    let swapBlock = '';
-    if(e.swapRequest && e.swapRequest.status === 'pending'){
-      if(isMine){
-        swapBlock = `<div class="swap-request-banner">🔄 Запит обміну від <b>${escapeHtml(e.swapRequest.fromName)}</b>!
-          <div class="swap-buttons">
-            <button class="swap-btn-accept" onclick="window.acceptSwap('${e.id}', true)">Прийняти</button>
-            <button class="swap-btn-deny" onclick="window.acceptSwap('${e.id}', false)">Відмовити</button>
-          </div></div>`;
-      } else {
-        swapBlock = `<div style="font-size:11px;color:var(--comfy-orange);margin-top:4px;">⏳ Очікує підтвердження обміну...</div>`;
-      }
-    }
-
     html += `
       <div class="entry ${isMine?'mine':''}">
         <div class="entry-avatar" id="board_av_${e.ownerId}" style="background:${colorForName(e.name)}" onclick="window.openProfile('${e.ownerId}')">${initialsForName(e.name)}</div>
@@ -539,16 +652,14 @@ function renderBoard(){
             <span class="entry-name" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</span>
             ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
           </div>
-          <div class="entry-time">🕒 ${e.start} – ${e.end}</div>
-          ${!isMine && session ? `<div class="entry-actions"><button class="mini-action-btn" onclick="window.sendSwap('${e.id}')">🔄 Помінятися</button><button class="mini-action-btn accent" onclick="window.sendThanks('${e.ownerId}')">⭐ Подяка</button></div>` : ''}
-          ${swapBlock}
+          <div class="entry-time">🕒 ${e.start} – ${e.end} (30 хв)</div>
+          ${isMine ? `<div class="entry-actions"><button class="mini-action-btn" onclick="window.cancelMyBooking('${e.id}')">❌ Скасувати бронь</button></div>` : ''}
         </div>
       </div>`;
   });
   html += '</div>';
   slot.innerHTML = html;
 
-  // Підтягуємо реальні аватарки у список броні, якщо вони є
   entries.forEach(async (e) => {
     const p = await getProfile(e.ownerId);
     if(p && p.avatarBase64){
@@ -560,19 +671,142 @@ function renderBoard(){
   document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
 }
 
-window.sendSwap = (id) => sendSwapRequest(id);
-window.acceptSwap = (id, accept) => respondSwap(id, accept, entries.find(x=>x.id===id));
-window.openProfile = (ownerId) => openProfileModal(ownerId);
-window.sendThanks = async (ownerId) => {
-  const profile = await getProfile(ownerId);
-  if(profile){
-    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', ownerId), { thanksCount: (profile.thanksCount||0) + 1 });
+window.cancelMyBooking = async (id) => {
+  if(!confirm('Скасувати свою бронь?')) return;
+  playSound('click');
+  await window.FB.deleteDoc(window.FB.doc(window.db, 'lunches', id));
+};
+
+// Вкладка «Колеги»
+function renderColleaguesTab(){
+  const slot = document.getElementById('mainTabContent');
+  if(profilesList.length === 0){
+    slot.innerHTML = `<div class="card" style="text-align:center;">Немає зареєстрованих колег у магазині ${currentStore}.</div>`;
+    document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
+    return;
+  }
+  let html = `<p class="board-title"><span class="dot"></span>Колеги у магазині ${currentStore}</p><div class="entries">`;
+  profilesList.forEach(p => {
+    const isMe = session && session.id === p.id;
+    html += `
+      <div class="entry">
+        <div class="entry-avatar" id="colleague_av_${p.id}" style="background:${colorForName(p.name)}" onclick="window.openProfile('${p.id}')">${initialsForName(p.name)}</div>
+        <div class="entry-body">
+          <div class="entry-name-row">
+            <span class="entry-name" onclick="window.openProfile('${p.id}')">${escapeHtml(p.name)}</span>
+            ${isMe ? '<span class="you-badge">ТИ</span>' : ''}
+          </div>
+          <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">${escapeHtml(p.position || 'Продавець')}</div>
+          <div class="entry-actions">
+            <button class="mini-action-btn" onclick="window.openProfile('${p.id}')">👤 Профіль</button>
+            ${!isMe && session ? `<button class="mini-action-btn accent" onclick="window.sendThanks('${p.id}')">⭐ Подякувати</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+  });
+  html += '</div>';
+  slot.innerHTML = html;
+
+  profilesList.forEach(p => {
+    if(p.avatarBase64){
+      const el = document.getElementById(`colleague_av_${p.id}`);
+      if(el){ el.style.backgroundImage = `url(${p.avatarBase64})`; el.textContent = ''; }
+    }
+  });
+
+  document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
+}
+
+// Вкладка «Міні-чат» з групуванням за датами як у Telegram
+function renderChatTab(){
+  const slot = document.getElementById('mainTabContent');
+  let chatHtml = `
+    <p class="board-title"><span class="dot"></span>Робочий чат магазину (${currentStore})</p>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="field" style="margin-bottom:10px;">
+        <textarea id="chatInputText" rows="2" placeholder="${session ? 'Написати повідомлення у чат...' : 'Увійдіть, щоб писати у чат'}"></textarea>
+      </div>
+      <button class="btn" id="sendChatBtn" ${!session?'disabled':''}>Надіслати в чат 💬</button>
+    </div>
+    <div class="chat-container" id="chatMessagesContainer">`;
+
+  if(chatMessages.length === 0){
+    chatHtml += `<div style="text-align:center;color:var(--ink-soft);padding:20px;">Повідомлень ще немає. Будь першим!</div>`;
+  } else {
+    // Сортуємо від найстаріших до найсвіжіших
+    chatMessages.sort((a,b) => a.timestamp - b.timestamp);
+    let lastDateStr = '';
+
+    chatMessages.forEach(m => {
+      const dateKey = m.date || todayISO();
+      const prettyDate = formatDatePretty(dateKey);
+      if(prettyDate !== lastDateStr){
+        lastDateStr = prettyDate;
+        chatHtml += `<div class="date-divider"><span>${prettyDate}</span></div>`;
+      }
+      chatHtml += `
+        <div class="chat-bubble">
+          <div class="chat-header">
+            <span class="chat-author" onclick="window.openProfile('${m.authorId}')">${escapeHtml(m.authorName)}</span>
+            <span class="chat-time">${m.time || ''}</span>
+          </div>
+          <div class="chat-text">${escapeHtml(m.text)}</div>
+        </div>`;
+    });
+  }
+
+  chatHtml += '</div>';
+  slot.innerHTML = chatHtml;
+
+  if(session){
+    document.getElementById('sendChatBtn').addEventListener('click', async () => {
+      const text = document.getElementById('chatInputText').value.trim();
+      if(!text) return;
+      playSound('click');
+      const now = new Date();
+      const timeStr = pad(now.getHours()) + ':' + pad(now.getMinutes());
+      await window.FB.setDoc(window.FB.doc(window.db, 'chat', genId('msg')), {
+        id: genId('msg'), store: currentStore, authorId: session.id, authorName: session.name,
+        text, date: todayISO(), time: timeStr, timestamp: Date.now()
+      });
+      document.getElementById('chatInputText').value = '';
+    });
+  }
+
+  document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
+}
+
+window.openProfile = (profileId) => openProfileModal(profileId);
+
+window.sendThanks = async (profileId) => {
+  if(!session) return;
+  const myProfile = await getProfile(session.id);
+  const now = Date.now();
+  const cooldowns = myProfile.thanksCooldowns || {};
+  const lastThanked = cooldowns[profileId] || 0;
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+
+  if(now - lastThanked < ONE_DAY){
+    const hoursLeft = Math.ceil((ONE_DAY - (now - lastThanked)) / (1000 * 60 * 60));
+    alert(`Ви вже дякували цьому колезі сьогодні! Спробуйте через ${hoursLeft} год.`);
+    return;
+  }
+
+  const targetProfile = await getProfile(profileId);
+  if(targetProfile){
+    playSound('success');
+    cooldowns[profileId] = now;
+    await updateProfileField(session.id, { thanksCooldowns: cooldowns });
+    const newThanks = (targetProfile.thanksCount || 0) + 1;
+    let newAchivs = targetProfile.achivs || [];
+    if(newThanks >= 5 && !newAchivs.includes('Душа компанії 🌟')) newAchivs.push('Душа компанії 🌟');
+    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', profileId), { thanksCount: newThanks, achivs: newAchivs });
     alert('⭐ Подяку успішно надіслано!');
-    if(document.getElementById('profileSheet').classList.contains('open')) openProfileModal(ownerId);
+    if(document.getElementById('profileSheet').classList.contains('open')) openProfileModal(profileId);
   }
 };
 
-// Відкриття профілю (свого чи чужого) з вибором фото з галереї телефона
+// Повноцінний профіль з редагуванням, історією та досягненнями
 async function openProfileModal(profileId){
   const profile = await getProfile(profileId);
   if(!profile) return;
@@ -581,14 +815,16 @@ async function openProfileModal(profileId){
 
   document.getElementById('profileSheetContent').innerHTML = `
     <div class="sheet-title">${isMe ? 'Мій профіль 👤' : 'Профіль колеги 🧑‍💻'}</div>
-    <div class="sheet-sub">Інформація та статистика</div>
+    <div class="sheet-sub">Інформація, історія та досягнення</div>
     
     <div class="card" style="margin-bottom:16px;text-align:center;">
       <div class="avatar" id="modalAvatarPreview" style="width:72px;height:72px;margin:0 auto 12px;font-size:24px;background:${colorForName(profile.name)};${profile.avatarBase64?`background-image:url(${profile.avatarBase64});background-size:cover;`:''}">
         ${profile.avatarBase64 ? '' : initialsForName(profile.name)}
       </div>
       <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)}</h3>
-      <p style="color:var(--ink-soft);font-size:13px;margin:0 0 16px;">Магазин: ${profile.store || STORE}</p>
+      <p style="color:var(--ink-soft);font-size:13px;margin:0 0 4px;">Магазин: ${profile.store || currentStore}</p>
+      <p style="font-weight:700;font-size:13.5px;color:var(--comfy-green-dark);margin:0 0 12px;">${escapeHtml(profile.position || 'Працівник Comfy')}</p>
+      <p style="font-style:italic;font-size:13px;color:var(--ink-soft);margin:0 0 16px;">«${escapeHtml(profile.quote || 'Без цитати')}»</p>
       
       <div style="display:flex;justify-content:space-around;background:var(--bg);border-radius:12px;padding:12px;margin-bottom:16px;">
         <div>
@@ -601,15 +837,23 @@ async function openProfileModal(profileId){
         </div>
       </div>
 
-      <p style="font-size:13px;text-align:left;margin-bottom:6px;"><b>Досягнення та бейджики:</b></p>
+      <p style="font-size:13px;text-align:left;margin-bottom:6px;"><b>Публічні досягнення:</b></p>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
-        ${profile.achivs?.map(a => `<span style="background:var(--lime-badge);color:var(--comfy-green-dark);padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;">${escapeHtml(a)}</span>`).join('') || 'Немає'}
+        ${profile.achivs?.map(a => `<span style="background:var(--lime-badge);color:var(--comfy-green-dark);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;">${escapeHtml(a)}</span>`).join('') || 'Немає'}
+      </div>
+
+      <p style="font-size:13px;text-align:left;margin-bottom:6px;"><b>Історія обідів:</b></p>
+      <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:left;max-height:120px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12px;margin-bottom:16px;">
+        ${profile.history?.length ? profile.history.slice(-10).reverse().map(h => `<div>• ${h.date}: ${h.start} – ${h.end}</div>`).join('') : '<div style="color:var(--ink-soft);">Архів порожній</div>'}
       </div>
 
       ${isMe ? `
-        <div class="field" style="text-align:left;margin-bottom:10px;">
-          <label>Змінити фото профілю з галереї</label>
-          <input type="file" id="phoneImageInput" accept="image/*" style="padding:10px;">
+        <div style="text-align:left;border-top:1px solid var(--line);padding-top:16px;margin-top:16px;">
+          <p style="font-size:13px;font-weight:800;margin-bottom:10px;">Редагування профілю:</p>
+          <div class="field"><label>Посада</label><input type="text" id="editPosition" value="${escapeHtml(profile.position || '')}"></div>
+          <div class="field"><label>Цитата / Статус</label><input type="text" id="editQuote" value="${escapeHtml(profile.quote || '')}"></div>
+          <div class="field"><label>Фото з галереї</label><input type="file" id="phoneImageInput" accept="image/*" style="padding:10px;"></div>
+          <button class="btn" id="saveProfileBtn">Зберегти зміни</button>
         </div>
       ` : `
         <button class="btn" onclick="window.sendThanks('${profileId}')">⭐ Подякувати колезі</button>
@@ -622,12 +866,20 @@ async function openProfileModal(profileId){
   sheet.classList.add('open');
 
   if(isMe){
+    document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+      playSound('click');
+      const position = document.getElementById('editPosition').value.trim();
+      const quote = document.getElementById('editQuote').value.trim();
+      await updateProfileField(profileId, { position, quote });
+      alert('✅ Збережено!');
+      openProfileModal(profileId);
+    });
+
     document.getElementById('phoneImageInput').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if(!file) return;
       const reader = new FileReader();
       reader.onload = async (event) => {
-        // Стискаємо зображення через canvas для бази даних
         const img = new Image();
         img.onload = async () => {
           const canvas = document.createElement('canvas');
@@ -640,11 +892,11 @@ async function openProfileModal(profileId){
           ctx.drawImage(img, 0, 0, w, h);
           const base64Str = canvas.toDataURL('image/jpeg', 0.8);
 
-          await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', profileId), { avatarBase64: base64Str });
-          alert('✅ Аватарку успішно оновлено!');
+          await updateProfileField(profileId, { avatarBase64: base64Str });
+          playSound('success');
+          alert('✅ Аватарку оновлено!');
           openProfileModal(profileId);
           renderHeaderRight();
-          renderBoard();
         };
         img.src = event.target.result;
       };
@@ -653,57 +905,86 @@ async function openProfileModal(profileId){
   }
 }
 
+// Рендер чипів часу бронювання (фіксовано 30 хв, зайнятий час не можна вибрати)
 function renderStartChips(){
   const wrap = document.getElementById('startChips');
   wrap.innerHTML = '';
   let cur = 12*60 + 30;
+  const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+
   while(cur <= 18*60 + 30){
     const t = pad(Math.floor(cur/60)) + ':' + pad(cur%60);
     const chip = document.createElement('button');
     chip.className = 'chip'; chip.textContent = t;
-    chip.addEventListener('click', () => {
-      sheetStart = t;
-      wrap.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-      chip.classList.add('selected');
+
+    // Перевіряємо чи час вже зайнятий кимось у базі
+    const isOccupied = entries.some(e => {
+      const [sh, sm] = e.start.split(':').map(Number);
+      const [eh, em] = e.end.split(':').map(Number);
+      return cur >= (sh*60 + sm) && cur < (eh*60 + em);
     });
+
+    if(isOccupied){
+      chip.classList.add('disabled');
+      chip.title = 'Цей час вже зайнятий';
+    } else {
+      chip.addEventListener('click', () => {
+        playSound('click');
+        sheetStart = t;
+        wrap.querySelectorAll('.chip:not(.disabled)').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+      });
+    }
+
     wrap.appendChild(chip);
     cur += 15;
   }
 }
 
-document.querySelectorAll('#durationChips .chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    sheetDurationMin = parseInt(chip.dataset.dur, 10);
-    document.querySelectorAll('#durationChips .chip').forEach(c => c.classList.remove('selected'));
-    chip.classList.add('selected');
-  });
-});
-
 document.getElementById('fabBtn').addEventListener('click', () => {
+  playSound('click');
+  renderStartChips();
   document.getElementById('sheetBackdrop').classList.add('open');
   document.getElementById('bookingSheet').classList.add('open');
 });
 document.getElementById('cancelSheetBtn').addEventListener('click', () => {
+  document.getElementById('sheetBackdrop').classList.add('open');
   document.getElementById('sheetBackdrop').classList.remove('open');
   document.getElementById('bookingSheet').classList.remove('open');
 });
 
 document.getElementById('confirmBookingBtn').addEventListener('click', async () => {
-  if(!sheetStart || !sheetDurationMin){ alert('Обери час та тривалість!'); return; }
-  const end = addMinutes(sheetStart, sheetDurationMin);
-  await window.FB.setDoc(window.FB.doc(window.db, 'lunches', genId('e')), {
-    id: genId('e'), ownerId: session.id, name: session.name, store: STORE, start: sheetStart, end, date: todayISO()
+  if(!sheetStart){ alert('Обери час початку обіду!'); return; }
+  playSound('success');
+  const end = addMinutes(sheetStart, 30); // Фіксовано 30 хвилин
+  const lunchId = genId('e');
+  const today = todayISO();
+
+  await window.FB.setDoc(window.FB.doc(window.db, 'lunches', lunchId), {
+    id: lunchId, ownerId: session.id, name: session.name, store: currentStore, start: sheetStart, end, date: today
   });
+
+  // Додаємо в історію профілю
+  const profile = await getProfile(session.id);
+  const history = profile.history || [];
+  history.push({ date: today, start: sheetStart, end });
+  let newAchivs = profile.achivs || [];
+  if(history.length >= 5 && !newAchivs.includes('Гурман 🍔')) newAchivs.push('Гурман 🍔');
+  await updateProfileField(session.id, { history, achivs: newAchivs });
+
   document.getElementById('sheetBackdrop').classList.remove('open');
   document.getElementById('bookingSheet').classList.remove('open');
+  sheetStart = null;
 });
 
 function renderAll(){
+  renderStoreSubtitle();
   renderHeaderRight();
   renderStatsBar();
   renderStatusStrip();
+  renderTimeline();
   renderAuth();
-  renderBoard();
+  renderMainContent();
 }
 
 window.addEventListener('firebase-ready', async () => {
@@ -711,10 +992,14 @@ window.addEventListener('firebase-ready', async () => {
   if(saved){
     const parsed = JSON.parse(saved);
     const p = await getProfile(parsed.id);
-    if(p && p.token === parsed.token) session = { id: parsed.id, name: p.name };
+    if(p && p.token === parsed.token){
+      session = { id: parsed.id, name: p.name, store: p.store || 'К-19' };
+      currentStore = session.store;
+      if(p.theme){ currentTheme = p.theme; document.documentElement.setAttribute('data-theme', currentTheme); }
+      if(p.skin){ currentSkin = p.skin; document.documentElement.setAttribute('data-skin', currentSkin); }
+    }
   }
-  renderStartChips();
-  initRealtimeEntries();
+  initRealtimeData();
 });
 </script>
 </body>
