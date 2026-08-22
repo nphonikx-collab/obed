@@ -41,7 +41,6 @@ button{-webkit-appearance:none; appearance:none;}
 
 .wrap{max-width:520px;margin:0 auto;}
 
-/* ---------- Header ---------- */
 .header{
   display:flex;
   justify-content:space-between;
@@ -49,7 +48,6 @@ button{-webkit-appearance:none; appearance:none;}
   gap:12px;
   margin-bottom:18px;
 }
-.brand{}
 .brand-eyebrow{
   font-family:'JetBrains Mono',monospace;
   font-size:11px;
@@ -67,19 +65,6 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .brand-title span{color:var(--green);}
 
-.clock-box{
-  font-family:'JetBrains Mono',monospace;
-  background:var(--ink);
-  color:var(--lime);
-  padding:8px 12px;
-  border-radius:10px;
-  font-size:16px;
-  font-weight:600;
-  text-align:center;
-  flex-shrink:0;
-}
-
-/* ---------- Profile chip in header (when logged in) ---------- */
 .profile-chip{
   display:flex;
   align-items:center;
@@ -144,7 +129,6 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .store-more{color:#A6AA9E;}
 
-/* ---------- Cards ---------- */
 .card{
   background:var(--surface);
   border:1px solid var(--line);
@@ -152,7 +136,6 @@ button{-webkit-appearance:none; appearance:none;}
   padding:20px;
 }
 
-/* ---------- Auth card ---------- */
 .auth-card{margin-bottom:20px;}
 .auth-tabs{
   display:flex;
@@ -225,7 +208,6 @@ button{-webkit-appearance:none; appearance:none;}
   font-weight:600;
 }
 
-/* ---------- Magic link banner ---------- */
 .link-banner{
   background:var(--green-deep);
   color:#fff;
@@ -265,7 +247,6 @@ button{-webkit-appearance:none; appearance:none;}
   font-size:16px;cursor:pointer;padding:4px;
 }
 
-/* ---------- Board ---------- */
 .board-title{
   font-size:13px;
   font-weight:700;
@@ -337,9 +318,6 @@ button{-webkit-appearance:none; appearance:none;}
   font-size:18px;
   font-weight:700;
 }
-.entry.eating .countdown-digits{color:var(--green-deep);}
-.entry.soon .countdown-digits{color:var(--amber);}
-.entry.upcoming .countdown-digits{color:var(--ink-soft);}
 
 .empty-state{
   text-align:center;
@@ -357,7 +335,6 @@ button{-webkit-appearance:none; appearance:none;}
   font-family:'JetBrains Mono',monospace;
 }
 
-/* ---------- Floating action button ---------- */
 .fab{
   position:fixed;
   left:16px;right:16px;
@@ -378,7 +355,6 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .fab:active{transform:scale(0.98);}
 
-/* ---------- Bottom sheet modal ---------- */
 .sheet-backdrop{
   position:fixed;inset:0;
   background:rgba(24,32,25,0.5);
@@ -457,19 +433,10 @@ button{-webkit-appearance:none; appearance:none;}
   font-weight:700;
   color:var(--green-deep);
 }
-
-.footnote{
-  margin-top:24px;
-  font-size:11.5px;
-  color:#9AA093;
-  text-align:center;
-  line-height:1.6;
-}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <div class="header">
     <div class="brand">
       <div class="brand-eyebrow">COMFY Trade</div>
@@ -487,13 +454,11 @@ button{-webkit-appearance:none; appearance:none;}
   </div>
 
   <div id="linkBannerSlot"></div>
-
   <div id="authSlot"></div>
 
   <div id="boardSlot">
     <div class="loading-row">завантаження дошки…</div>
   </div>
-
 </div>
 
 <button class="fab" id="fabBtn" style="display:none;">+ Забронювати обід</button>
@@ -537,13 +502,36 @@ button{-webkit-appearance:none; appearance:none;}
   <button class="btn btn-ghost" id="cancelSheetBtn">Скасувати</button>
 </div>
 
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // СЮДИ ВСТАВ СВОЇ ДАНІ З FIREBASE КОНСОЛІ
+  const firebaseConfig = {
+    apiKey: "ЗАМІНИ_СВОЇМ_API_KEY",
+    authDomain: "ЗАМІНИ_СВОЇМ_AUTH_DOMAIN",
+    projectId: "ЗАМІНИ_СВОЇМ_PROJECT_ID",
+    storageBucket: "ЗАМІНИ_СВОЇМ_STORAGE_BUCKET",
+    messagingSenderId: "ЗАМІНИ_СВОЇМ_MESSAGING_SENDER_ID",
+    appId: "ЗАМІНИ_СВОЇМ_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.db = db;
+  window.FB = { collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, query, where, getDocs };
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
 <script>
 const STORE = 'K-19';
-
 let entries = [];
-let session = null; // {id, name}
+let session = null;
 let sheetStart = null;
 let sheetDurationMin = null;
+let unsubscribeEntries = null;
 
 const AVATAR_COLORS = ['#2E7D4F','#B4462A','#3D6FB4','#B48A2E','#7A4EB4','#2E9B8F'];
 
@@ -592,56 +580,84 @@ function genId(prefix){
   return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
 }
 
-/* ---------------- Storage ---------------- */
 function normalizeName(name){
   return name.trim().toLowerCase().replace(/\s+/g,' ');
-}
-function profileKey(normName){
-  return 'profile:' + normName;
-}
-function entryKey(id){
-  return 'lunch:' + STORE + ':' + todayISO() + ':' + id;
 }
 function randomToken(){
   return Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
 }
 
+// --- Firestore Database operations ---
 async function getProfile(normName){
   try{
-    const res = await window.storage.get(profileKey(normName), true);
-    return res && res.value ? JSON.parse(res.value) : null;
+    const ref = window.FB.doc(window.db, 'profiles', normName);
+    const snap = await window.FB.getDoc(ref);
+    return snap.exists() ? snap.data() : null;
   }catch(e){ return null; }
 }
 
-async function loadEntries(){
-  try{
-    const listRes = await window.storage.list('lunch:' + STORE + ':' + todayISO() + ':', true);
-    const keys = listRes && listRes.keys ? listRes.keys : [];
-    const results = await Promise.all(keys.map(async k => {
-      try{
-        const r = await window.storage.get(k, true);
-        return r && r.value ? JSON.parse(r.value) : null;
-      }catch(e){ return null; }
-    }));
-    entries = results.filter(Boolean);
-  }catch(e){
-    entries = [];
+async function register(name, pin){
+  const norm = normalizeName(name);
+  const existing = await getProfile(norm);
+  if(existing) return { ok:false, reason:'taken' };
+
+  const token = randomToken();
+  const profile = { name: name.trim(), pin, store: STORE, token, createdAt: Date.now() };
+  try {
+    await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
+    session = { id: norm, name: profile.name };
+    return { ok:true, id: norm, token };
+  } catch(e){
+    return { ok:false, reason:'save_failed' };
   }
 }
 
-async function addEntry(entry){
+async function login(name, pin){
+  const norm = normalizeName(name);
+  const profile = await getProfile(norm);
+  if(!profile) return { ok:false, reason:'not_found' };
+  if(profile.pin !== pin) return { ok:false, reason:'wrong_pin' };
+
+  session = { id: norm, name: profile.name };
+  return { ok:true, id: norm, token: profile.token };
+}
+
+async function addEntryToDb(entry){
   try{
-    const res = await window.storage.set(entryKey(entry.id), JSON.stringify(entry), true);
-    return !!res;
+    await window.FB.setDoc(window.FB.doc(window.db, 'lunches', entry.id), entry);
+    return true;
   }catch(e){ return false; }
 }
 
-async function removeEntry(id){
-  try{ await window.storage.delete(entryKey(id), true); return true; }
-  catch(e){ return false; }
+async function removeEntryFromDb(id){
+  try{
+    await window.FB.deleteDoc(window.FB.doc(window.db, 'lunches', id));
+    return true;
+  }catch(e){ return false; }
 }
 
-/* ---------------- Session / auth ---------------- */
+function initRealtimeEntries(){
+  if(unsubscribeEntries) unsubscribeEntries();
+  const q = window.FB.query(
+    window.FB.collection(window.db, 'lunches'),
+    window.FB.where('store', '==', STORE),
+    window.FB.where('date', '==', todayISO())
+  );
+  
+  unsubscribeEntries = window.FB.onSnapshot(q, (snapshot) => {
+    entries = [];
+    snapshot.forEach((doc) => {
+      entries.push(doc.data());
+    });
+    if(!document.getElementById('bookingSheet').classList.contains('open')){
+      renderStatusStrip();
+      renderBoard();
+    }
+  }, (error) => {
+    console.error("Firestore error: ", error);
+  });
+}
+
 async function checkUrlSession(){
   const params = new URLSearchParams(window.location.search);
   const u = params.get('u');
@@ -660,33 +676,7 @@ function personalLink(id, token){
   return base + '?u=' + encodeURIComponent(id) + '&t=' + encodeURIComponent(token);
 }
 
-// Returns {ok:true, id, token} or {ok:false, reason: 'taken' | 'save_failed'}
-async function register(name, pin){
-  const norm = normalizeName(name);
-  const existing = await getProfile(norm);
-  if(existing) return { ok:false, reason:'taken' };
-
-  const token = randomToken();
-  const profile = { name: name.trim(), pin, store: STORE, token, createdAt: Date.now() };
-  const saved = await window.storage.set(profileKey(norm), JSON.stringify(profile), true).then(r => !!r).catch(() => false);
-  if(!saved) return { ok:false, reason:'save_failed' };
-
-  session = { id: norm, name: profile.name };
-  return { ok:true, id: norm, token };
-}
-
-// Returns {ok:true, id, token} or {ok:false, reason: 'not_found' | 'wrong_pin'}
-async function login(name, pin){
-  const norm = normalizeName(name);
-  const profile = await getProfile(norm);
-  if(!profile) return { ok:false, reason:'not_found' };
-  if(profile.pin !== pin) return { ok:false, reason:'wrong_pin' };
-
-  session = { id: norm, name: profile.name };
-  return { ok:true, id: norm, token: profile.token };
-}
-
-/* ---------------- Rendering: header ---------------- */
+/* Rendering */
 function renderHeaderRight(){
   const slot = document.getElementById('headerRight');
   if(session){
@@ -709,7 +699,6 @@ function logout(){
   renderAll();
 }
 
-/* ---------------- Rendering: status strip ---------------- */
 function renderStatusStrip(){
   const slot = document.getElementById('statusStripSlot');
   const now = new Date();
@@ -730,7 +719,6 @@ function renderStatusStrip(){
     return;
   }
 
-  // find soonest to return
   let soonest = active[0];
   active.forEach(e => {
     const en = timeStrToDate(e.end, today);
@@ -752,9 +740,7 @@ function renderStatusStrip(){
     </div>`;
 }
 
-/* ---------------- Rendering: auth card ---------------- */
 let authMode = 'register';
-
 function renderAuth(){
   const slot = document.getElementById('authSlot');
   const bannerSlot = document.getElementById('linkBannerSlot');
@@ -771,13 +757,13 @@ function renderAuth(){
         <button class="auth-tab ${authMode==='register'?'active':''}" data-mode="register">Реєстрація</button>
       </div>
       <div class="field">
-        <label>Ім'я</label>
+        <label>Ім'я та Прізвище</label>
         <input type="text" id="authName" placeholder="Наприклад, Лебідь Максим" autocomplete="name">
       </div>
       <div class="field">
         <label>PIN-код (4 цифри)</label>
         <input type="text" id="authPin" placeholder="••••" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">
-        ${authMode==='register' ? '<div class="pin-hint">Придумай будь-які 4 цифри — це заміна пароля, щоб ніхто інший не бронював обід від твого імені.</div>' : ''}
+        ${authMode==='register' ? '<div class="pin-hint">Придумай будь-які 4 цифри — заміна пароля для твого профілю.</div>' : ''}
       </div>
       <button class="btn" id="authSubmitBtn">${authMode==='login' ? 'Увійти' : 'Створити профіль'}</button>
       <div class="form-error" id="authError" style="display:none;"></div>
@@ -820,11 +806,7 @@ async function handleAuthSubmit(){
     if(!result.ok){
       btn.disabled = false;
       btn.textContent = 'Створити профіль';
-      if(result.reason === 'taken'){
-        errorBox.textContent = 'Профіль з таким ім\'ям вже існує. Перейди на вкладку "Вхід".';
-      } else {
-        errorBox.textContent = 'Не вдалося зберегти профіль — проблема із з\'єднанням. Спробуй ще раз.';
-      }
+      errorBox.textContent = result.reason === 'taken' ? 'Профіль з таким ім\'ям вже існує.' : 'Помилка з\'єднання.';
       errorBox.style.display = 'block';
       return;
     }
@@ -834,11 +816,7 @@ async function handleAuthSubmit(){
     if(!result.ok){
       btn.disabled = false;
       btn.textContent = 'Увійти';
-      if(result.reason === 'not_found'){
-        errorBox.textContent = 'Профіль не знайдено. Якщо ти тут вперше — перейди на вкладку "Реєстрація".';
-      } else {
-        errorBox.textContent = 'Невірний PIN-код. Спробуй ще раз.';
-      }
+      errorBox.textContent = result.reason === 'not_found' ? 'Профіль не знайдено.' : 'Невірний PIN-код.';
       errorBox.style.display = 'block';
       return;
     }
@@ -849,9 +827,7 @@ async function handleAuthSubmit(){
   renderAll();
 }
 
-/* ---------------- Magic link banner ---------------- */
 let bannerDismissed = false;
-
 function showLinkBanner(id, token, justRegistered){
   bannerDismissed = false;
   window._pendingBanner = { id, token, justRegistered };
@@ -869,7 +845,7 @@ function renderLinkBanner(){
     <div class="link-banner">
       <button class="link-banner-dismiss" id="dismissBanner">✕</button>
       <div class="link-banner-title">${justRegistered ? 'Профіль створено 🎉' : 'Вхід виконано'}</div>
-      <div class="link-banner-sub">Збережи це посилання в закладки або додай на головний екран телефона — наступного разу увійдеш одразу, без PIN-коду.</div>
+      <div class="link-banner-sub">Збережи це посилання, щоб наступного разу заходити без введення PIN.</div>
       <div class="link-banner-row">
         <span class="link-banner-url">${link}</span>
         <button class="link-banner-copy" id="copyLinkBtn">Копіювати</button>
@@ -880,18 +856,13 @@ function renderLinkBanner(){
     renderLinkBanner();
   });
   document.getElementById('copyLinkBtn').addEventListener('click', async () => {
-    try{
-      await navigator.clipboard.writeText(link);
-      const btn = document.getElementById('copyLinkBtn');
-      btn.textContent = 'Скопійовано!';
-      setTimeout(() => { btn.textContent = 'Копіювати'; }, 1800);
-    }catch(e){
-      alert(link);
-    }
+    await navigator.clipboard.writeText(link);
+    const btn = document.getElementById('copyLinkBtn');
+    btn.textContent = 'Скопійовано!';
+    setTimeout(() => { btn.textContent = 'Копіювати'; }, 1800);
   });
 }
 
-/* ---------------- Board ---------------- */
 function renderBoard(){
   const slot = document.getElementById('boardSlot');
   if(entries.length === 0){
@@ -971,9 +942,7 @@ function renderBoard(){
       const id = btn.getAttribute('data-id');
       btn.disabled = true;
       btn.textContent = 'Скасовуємо…';
-      await removeEntry(id);
-      await loadEntries();
-      renderBoard();
+      await removeEntryFromDb(id);
     });
   });
 
@@ -985,11 +954,10 @@ function updateFab(){
   fab.style.display = session ? 'flex' : 'none';
 }
 
-/* ---------------- Booking sheet ---------------- */
 function generateStartOptions(){
   const opts = [];
-  let cur = 11*60 + 30; // 11:30
-  const end = 16*60; // 16:00
+  let cur = 11*60 + 30;
+  const end = 16*60;
   while(cur <= end){
     opts.push(pad(Math.floor(cur/60)) + ':' + pad(cur%60));
     cur += 30;
@@ -1057,11 +1025,7 @@ function getEffectiveTimes(){
 function updateSummary(){
   const { start, end } = getEffectiveTimes();
   const summary = document.getElementById('summaryText');
-  if(start && end){
-    summary.textContent = start + ' – ' + end;
-  } else {
-    summary.textContent = '— оберіть час —';
-  }
+  summary.textContent = start && end ? start + ' – ' + end : '— оберіть час —';
 }
 
 function openSheet(){
@@ -1084,7 +1048,7 @@ document.getElementById('confirmBookingBtn').addEventListener('click', async () 
   const { start, end } = getEffectiveTimes();
 
   if(!start || !end){
-    errorBox.textContent = 'Обери час початку та тривалість (або встанови вручну).';
+    errorBox.textContent = 'Обери час початку та тривалість.';
     errorBox.style.display = 'block';
     return;
   }
@@ -1098,7 +1062,7 @@ document.getElementById('confirmBookingBtn').addEventListener('click', async () 
   btn.disabled = true;
   btn.textContent = 'Зберігаємо…';
 
-  const saved = await addEntry({
+  const saved = await addEntryToDb({
     id: genId('e'),
     ownerId: session.id,
     name: session.name,
@@ -1108,15 +1072,12 @@ document.getElementById('confirmBookingBtn').addEventListener('click', async () 
   });
 
   if(!saved){
-    errorBox.textContent = 'Не вдалося зберегти бронь — проблема із з\'єднанням. Спробуй ще раз.';
+    errorBox.textContent = 'Не вдалося зберегти бронь.';
     errorBox.style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'Підтвердити';
     return;
   }
-
-  await loadEntries();
-  renderBoard();
 
   btn.disabled = false;
   btn.textContent = 'Підтвердити';
@@ -1130,7 +1091,6 @@ document.getElementById('confirmBookingBtn').addEventListener('click', async () 
   updateSummary();
 });
 
-/* ---------------- Main render / init ---------------- */
 function renderAll(){
   renderHeaderRight();
   renderStatusStrip();
@@ -1139,23 +1099,14 @@ function renderAll(){
   renderBoard();
 }
 
-async function init(){
+window.addEventListener('firebase-ready', async () => {
   await checkUrlSession();
-  await loadEntries();
   renderStartChips();
+  initRealtimeEntries();
   renderAll();
 
   setInterval(() => { renderStatusStrip(); renderBoard(); }, 1000);
-  setInterval(async () => {
-    await loadEntries();
-    if(!document.getElementById('bookingSheet').classList.contains('open')){
-      renderStatusStrip();
-      renderBoard();
-    }
-  }, 8000);
-}
-
-init();
+});
 </script>
 </body>
 </html>
