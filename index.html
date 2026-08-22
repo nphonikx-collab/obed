@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <meta name="theme-color" content="#38B34A">
-<title>Comfy Dinner · К-19 PRO</title>
+<title>Comfy Dinner · К-19 by fearblader</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
 
@@ -148,11 +148,12 @@ button{-webkit-appearance:none; appearance:none;}
   box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 .entry-body{flex:1;min-width:0;}
-.entry-name-row{display:flex;align-items:center;gap:8px;}
+.entry-name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .entry-name{font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
 .entry-name:hover{color:var(--comfy-green);}
 .you-badge{font-size:10px;font-weight:800;color:var(--comfy-green-dark);background:var(--lime-badge);padding:2px 8px;border-radius:6px;}
 .admin-badge{font-size:10px;font-weight:800;color:#fff;background:var(--comfy-orange);padding:2px 8px;border-radius:6px;}
+.founder-badge{font-size:10px;font-weight:800;color:#fff;background:linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);padding:2px 8px;border-radius:6px;}
 .entry-time{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink);margin-top:4px;font-weight:700;}
 .entry-meta-info{font-size:11px;color:var(--ink-soft);margin-top:2px;font-family:'JetBrains Mono',monospace;}
 
@@ -163,33 +164,6 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .mini-action-btn.accent{background:var(--lime-badge);color:var(--comfy-green-dark);border-color:var(--comfy-green);}
 .mini-action-btn.danger{background:rgba(224,60,49,0.1);color:var(--red);border-color:rgba(224,60,49,0.3);}
-
-.chat-container{display:flex;flex-direction:column;gap:12px;position:relative;}
-.date-divider{text-align:center;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--ink-soft);margin:10px 0;position:relative;}
-.date-divider span{background:var(--bg);padding:0 12px;position:relative;z-index:2;}
-.date-divider::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line);z-index:1;}
-
-.chat-bubble{
-  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.02);position:relative;
-}
-.chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.chat-author{font-size:13px;font-weight:800;color:var(--comfy-green-dark);cursor:pointer;}
-.chat-time{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);}
-.chat-text{font-size:14px;line-height:1.4;word-break:break-word;}
-.mention-tag{background:var(--lime-badge);color:var(--comfy-green-dark);padding:2px 6px;border-radius:4px;font-weight:700;}
-
-/* Меню вибору користувача при введенні @ */
-.mention-dropdown{
-  position:absolute;bottom:90px;left:16px;right:16px;background:var(--surface);
-  border:1.5px solid var(--comfy-green);border-radius:var(--radius-sm);box-shadow:0 10px 25px rgba(0,0,0,0.15);
-  max-height:160px;overflow-y:auto;z-index:60;display:none;
-}
-.mention-item{
-  padding:10px 14px;font-size:13.5px;font-weight:700;cursor:pointer;border-bottom:1px solid var(--line);
-  display:flex;align-items:center;gap:8px;
-}
-.mention-item:hover{background:var(--lime-badge);color:var(--comfy-green-dark);}
 
 .fab{
   position:fixed;left:16px;right:16px;bottom:calc(20px + var(--safe-bottom));max-width:468px;margin:0 auto;
@@ -228,7 +202,7 @@ button{-webkit-appearance:none; appearance:none;}
         <span class="comfy-brand-text">Comfy Dinner</span>
         <div class="comfy-dot"></div>
       </div>
-      <div class="brand-eyebrow" id="storeSubtitle">К-19 • PRO Edition</div>
+      <div class="brand-eyebrow" id="storeSubtitle">К-19 • by fearblader</div>
     </div>
     <div class="header-controls">
       <button class="icon-btn" id="skinModalBtn" title="Скіни та теми">🎨</button>
@@ -239,7 +213,6 @@ button{-webkit-appearance:none; appearance:none;}
   <div class="nav-tabs">
     <button class="nav-tab active" data-tab="board">🍽 Графік</button>
     <button class="nav-tab" data-tab="colleagues">👥 Колеги</button>
-    <button class="nav-tab" data-tab="chat">💬 Міні-чат</button>
   </div>
 
   <div class="stats-counter-bar" id="statsBar"></div>
@@ -313,12 +286,10 @@ button{-webkit-appearance:none; appearance:none;}
 let currentStore = 'К-19';
 let entries = [];
 let profilesList = [];
-let chatMessages = [];
 let session = null;
 let sheetStart = null;
 let activeTab = 'board';
 let unsubscribeEntries = null;
-let unsubscribeChat = null;
 let unsubscribeProfiles = null;
 
 let currentTheme = localStorage.getItem('comfy_theme') || 'light';
@@ -367,19 +338,25 @@ document.getElementById('skinModalBtn').addEventListener('click', () => {
   renderSkinModalChoices();
 });
 
-function setTheme(theme){
+async function setTheme(theme){
   currentTheme = theme;
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('comfy_theme', theme);
-  if(session) updateProfileField(session.id, { theme });
+  if(session) {
+    await updateProfileField(session.id, { theme });
+    await checkAndAwardAchievements(session.id);
+  }
   renderSkinModalChoices();
 }
 
-function setSkin(skin){
+async function setSkin(skin){
   currentSkin = skin;
   document.documentElement.setAttribute('data-skin', skin);
   localStorage.setItem('comfy_skin', skin);
-  if(session) updateProfileField(session.id, { skin });
+  if(session) {
+    await updateProfileField(session.id, { skin });
+    await checkAndAwardAchievements(session.id);
+  }
   renderSkinModalChoices();
 }
 
@@ -423,11 +400,6 @@ function todayISO(){
   const d = new Date();
   return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
 }
-function formatDatePretty(dateStr){
-  const [y, m, d] = dateStr.split('-');
-  const months = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
-  return `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
-}
 function timeStrToDate(timeStr, dateISO){
   const [h,m] = timeStr.split(':').map(Number);
   const d = new Date(dateISO + 'T00:00:00');
@@ -456,6 +428,97 @@ async function updateProfileField(normName, fields){
   }catch(e){}
 }
 
+// Автоматична перевірка та нарахування досягнень
+async function checkAndAwardAchievements(profileId){
+  const p = await getProfile(profileId);
+  if(!p) return;
+  let achivs = [...(p.achivs || [])];
+  let changed = false;
+
+  const isFounder = (profileId === normalizeName("Максим Лебідь"));
+  if(isFounder && !achivs.includes('Засновник 🏆')){
+    achivs.push('Засновник 🏆');
+    changed = true;
+  }
+  if(p.isAdmin && !achivs.includes('Адміністратор ⚡️')){
+    achivs.push('Адміністратор ⚡️');
+    changed = true;
+  }
+
+  // 1. Гурман 🍔 (5+ броней)
+  const history = p.history || [];
+  if(history.length >= 5 && !achivs.includes('Гурман 🍔')){
+    achivs.push('Гурман 🍔');
+    changed = true;
+  }
+
+  // 2. Душа компанії 🌟 (5+ подяк отримано)
+  if((p.thanksCount || 0) >= 5 && !achivs.includes('Душа компанії 🌟')){
+    achivs.push('Душа компанії 🌟');
+    changed = true;
+  }
+
+  // 3. Майстер продуктивності 🚀 (10+ броней)
+  if(history.length >= 10 && !achivs.includes('Майстер продуктивності 🚀')){
+    achivs.push('Майстер продуктивності 🚀');
+    changed = true;
+  }
+
+  // 4. Рання пташка ☕️ (хоча б раз бронь рівно о 12:30)
+  if(history.some(h => h.start === '12:30') && !achivs.includes('Рання пташка ☕️')){
+    achivs.push('Рання пташка ☕️');
+    changed = true;
+  }
+
+  // 5. Нічний дозор 🦉 (бронь створена після 21:00)
+  if(history.some(h => {
+    if(!h.createdAt) return false;
+    const parts = h.createdAt.split(' о ');
+    if(parts[1]){
+      const [hh] = parts[1].split(':').map(Number);
+      return hh >= 21;
+    }
+    return false;
+  }) && !achivs.includes('Нічний дозор 🦉')){
+    achivs.push('Нічний дозор 🦉');
+    changed = true;
+  }
+
+  // 6. Колекціонер зірок ⭐ (15+ подяк отримано)
+  if((p.thanksCount || 0) >= 15 && !achivs.includes('Колекціонер зірок ⭐')){
+    achivs.push('Колекціонер зірок ⭐');
+    changed = true;
+  }
+
+  // 7. Філантроп 🙌 (20+ подяк роздано іншим)
+  const sentThanksCount = Object.keys(p.thanksCooldowns || {}).length;
+  if(sentThanksCount >= 20 && !achivs.includes('Філантроп 🙌')){
+    achivs.push('Філантроп 🙌');
+    changed = true;
+  }
+
+  // 8. Дизайнер інтерфейсу 🎨 (є аватарка або змінено скін/тему)
+  if((p.avatarBase64 || p.skin !== 'default' || p.theme !== 'light') && !achivs.includes('Дизайнер інтерфейсу 🎨')){
+    achivs.push('Дизайнер інтерфейсу 🎨');
+    changed = true;
+  }
+
+  // 9. Ветеран Comfy 🏛️ (реєстрація була понад місяць тому)
+  if(p.registeredAt){
+    const regDate = new Date(p.registeredAt);
+    const now = new Date();
+    const diffDays = (now - regDate) / (1000 * 60 * 60 * 24);
+    if(diffDays >= 30 && !achivs.includes('Ветеран Comfy 🏛️')){
+      achivs.push('Ветеран Comfy 🏛️');
+      changed = true;
+    }
+  }
+
+  if(changed){
+    await updateProfileField(profileId, { achivs });
+  }
+}
+
 async function ensureAdminExists(){
   const adminNorm = normalizeName("Максим Лебідь");
   const existing = await getProfile(adminNorm);
@@ -466,17 +529,19 @@ async function ensureAdminExists(){
     store: "К-19",
     token: existing?.token || Math.random().toString(36).slice(2),
     avatarBase64: existing?.avatarBase64 || '',
-    thanksCount: existing?.thanksCount || 100,
-    achivs: ['Адміністратор ⚡️', 'Засновник 🏆'],
+    thanksCount: existing?.thanksCount || 0,
+    achivs: existing?.achivs || ['Адміністратор ⚡️', 'Засновник 🏆'],
     position: 'Головний Адміністратор',
     quote: 'Повний контроль над системою Comfy Dinner!',
     theme: existing?.theme || currentTheme,
     skin: existing?.skin || currentSkin,
     isAdmin: true,
     history: existing?.history || [],
-    thanksCooldowns: existing?.thanksCooldowns || {}
+    thanksCooldowns: existing?.thanksCooldowns || {},
+    registeredAt: existing?.registeredAt || new Date().toISOString()
   };
   await window.FB.setDoc(window.FB.doc(window.db, 'profiles', adminNorm), adminData, { merge: true });
+  await checkAndAwardAchievements(adminNorm);
 }
 
 async function register(name, pin, store){
@@ -485,12 +550,14 @@ async function register(name, pin, store){
   const isAdminUser = (norm === normalizeName("Максим Лебідь"));
   const profile = {
     id: norm, name: name.trim(), pin, store, token: Math.random().toString(36).slice(2),
-    avatarBase64: '', thanksCount: 0, achivs: isAdminUser ? ['Адміністратор ⚡️'] : ['Новачок 🟢', 'Командний гравець 🤝'],
+    avatarBase64: '', thanksCount: 0, achivs: isAdminUser ? ['Адміністратор ⚡️', 'Засновник 🏆'] : ['Новачок 🟢', 'Командний гравець 🤝'],
     position: isAdminUser ? 'Головний Адміністратор' : 'Продавець-консультант', 
     quote: isAdminUser ? 'Повний контроль над системою Comfy Dinner!' : 'Працюємо на результат у Comfy!',
-    theme: currentTheme, skin: currentSkin, isAdmin: isAdminUser, history: [], thanksCooldowns: {}
+    theme: currentTheme, skin: currentSkin, isAdmin: isAdminUser, history: [], thanksCooldowns: {},
+    registeredAt: new Date().toISOString()
   };
   await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
+  await checkAndAwardAchievements(norm);
   session = { id: norm, name: profile.name, store: profile.store, isAdmin: profile.isAdmin };
   currentStore = profile.store;
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
@@ -511,12 +578,12 @@ async function login(name, pin){
   if(profile.theme) { currentTheme = profile.theme; document.documentElement.setAttribute('data-theme', currentTheme); }
   if(profile.skin) { currentSkin = profile.skin; document.documentElement.setAttribute('data-skin', currentSkin); }
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
+  await checkAndAwardAchievements(norm);
   return { ok:true };
 }
 
 function initRealtimeData(){
   if(unsubscribeEntries) unsubscribeEntries();
-  if(unsubscribeChat) unsubscribeChat();
   if(unsubscribeProfiles) unsubscribeProfiles();
 
   const qE = window.FB.query(window.FB.collection(window.db, 'lunches'), window.FB.where('store', '==', currentStore), window.FB.where('date', '==', todayISO()));
@@ -532,17 +599,10 @@ function initRealtimeData(){
     snapshot.forEach(doc => profilesList.push(doc.data()));
     if(activeTab === 'colleagues') renderColleaguesTab();
   });
-
-  const qC = window.FB.query(window.FB.collection(window.db, 'chat'), window.FB.where('store', '==', currentStore));
-  unsubscribeChat = window.FB.onSnapshot(qC, (snapshot) => {
-    chatMessages = [];
-    snapshot.forEach(doc => chatMessages.push(doc.data()));
-    if(activeTab === 'chat') renderChatTab();
-  });
 }
 
 function renderStoreSubtitle(){
-  document.getElementById('storeSubtitle').textContent = `${currentStore} • PRO Edition`;
+  document.getElementById('storeSubtitle').textContent = `${currentStore} • by fearblader`;
 }
 
 function renderHeaderRight(){
@@ -669,7 +729,6 @@ function renderAuth(){
 function renderMainContent(){
   if(activeTab === 'board') renderBoardTab();
   else if(activeTab === 'colleagues') renderColleaguesTab();
-  else if(activeTab === 'chat') renderChatTab();
 }
 
 function renderBoardTab(){
@@ -686,6 +745,7 @@ function renderBoardTab(){
     const bgStyle = colorForName(e.name);
     const init = initialsForName(e.name);
     const createdText = e.createdAt ? `Створено: ${e.createdAt}` : '';
+    const isFounder = (e.ownerId === normalizeName("Максим Лебідь"));
     html += `
       <div class="entry ${isMine?'mine':''}">
         <div class="entry-avatar" id="board_av_${e.ownerId}" style="background:${bgStyle};" onclick="window.openProfile('${e.ownerId}')">${init}</div>
@@ -693,7 +753,7 @@ function renderBoardTab(){
           <div class="entry-name-row">
             <span class="entry-name" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</span>
             ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
-            ${e.ownerId === normalizeName("Максим Лебідь") ? '<span class="admin-badge">⚡️ ADMIN</span>' : ''}
+            ${isFounder ? '<span class="founder-badge">🏆 ЗААСНОВНИК</span>' : (e.ownerId === normalizeName("Максим Лебідь") || e.isAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
           </div>
           <div class="entry-time">🕒 Обід: ${e.start} – ${e.end} (30 хв)</div>
           ${createdText ? `<div class="entry-meta-info">👤 Хто та коли: ${escapeHtml(e.name)} • ${createdText}</div>` : ''}
@@ -737,7 +797,8 @@ function renderColleaguesTab(){
   let html = `<p class="board-title"><span class="dot"></span>Колеги у магазині ${currentStore}</p><div class="entries">`;
   profilesList.forEach(p => {
     const isMe = session && session.id === p.id;
-    const isTargetAdmin = p.id === normalizeName("Максим Лебідь") || p.isAdmin;
+    const isFounder = (p.id === normalizeName("Максим Лебідь"));
+    const isTargetAdmin = isFounder || p.isAdmin;
     const bgStyle = colorForName(p.name);
     const init = initialsForName(p.name);
     html += `
@@ -747,13 +808,13 @@ function renderColleaguesTab(){
           <div class="entry-name-row">
             <span class="entry-name" onclick="window.openProfile('${p.id}')">${escapeHtml(p.name)}</span>
             ${isMe ? '<span class="you-badge">ТИ</span>' : ''}
-            ${isTargetAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : ''}
+            ${isFounder ? '<span class="founder-badge">🏆 ЗААСНОВНИК</span>' : (isTargetAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
           </div>
           <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">${escapeHtml(p.position || 'Продавець')}</div>
           <div class="entry-actions">
             <button class="mini-action-btn" onclick="window.openProfile('${p.id}')">👤 Профіль</button>
             ${!isMe && session ? `<button class="mini-action-btn accent" onclick="window.sendThanks('${p.id}')">⭐ Подякувати</button>` : ''}
-            ${session && session.isAdmin && !isMe ? `<button class="mini-action-btn danger" onclick="window.deleteProfile('${p.id}')">🗑 Видалити акаунт</button>` : ''}
+            ${session && session.isAdmin && !isMe && !isFounder ? `<button class="mini-action-btn danger" onclick="window.deleteProfile('${p.id}')">🗑 Видалити акаунт</button>` : ''}
           </div>
         </div>
       </div>`;
@@ -778,116 +839,15 @@ function renderColleaguesTab(){
 }
 
 window.deleteProfile = async (profileId) => {
+  if(profileId === normalizeName("Максим Лебідь")){
+    alert('⚠️ Неможливо видалити головного засновника!');
+    return;
+  }
   if(!confirm('УВАГА: Ви впевнені, що хочете видалити цього користувача з додатку?')) return;
   playSound('click');
   await window.FB.deleteDoc(window.FB.doc(window.db, 'profiles', profileId));
   alert('🗑 Профіль успішно видалено адміністратором.');
 };
-
-function renderChatTab(){
-  const slot = document.getElementById('mainTabContent');
-  let chatHtml = `
-    <p class="board-title"><span class="dot"></span>Робочий чат магазину (${currentStore})</p>
-    <div class="card" style="margin-bottom:16px; position:relative;">
-      <div class="field" style="margin-bottom:10px; position:relative;">
-        <textarea id="chatInputText" rows="2" placeholder="${session ? 'Написати повідомлення (використовуйте @ для згадки)...' : 'Увійдіть, щоб писати у чат'}"></textarea>
-        <div class="mention-dropdown" id="mentionDropdown"></div>
-      </div>
-      <button class="btn" id="sendChatBtn" ${!session?'disabled':''}>Надіслати в чат 💬</button>
-    </div>
-    <div class="chat-container" id="chatMessagesContainer">`;
-
-  if(chatMessages.length === 0){
-    chatHtml += `<div style="text-align:center;color:var(--ink-soft);padding:20px;">Повідомлень ще немає. Будь першим!</div>`;
-  } else {
-    chatMessages.sort((a,b) => a.timestamp - b.timestamp);
-    let lastDateStr = '';
-
-    chatMessages.forEach(m => {
-      const dateKey = m.date || todayISO();
-      const prettyDate = formatDatePretty(dateKey);
-      if(prettyDate !== lastDateStr){
-        lastDateStr = prettyDate;
-        chatHtml += `<div class="date-divider"><span>${prettyDate}</span></div>`;
-      }
-      
-      // Підсвітка згадок @імя
-      let formattedText = escapeHtml(m.text);
-      profilesList.forEach(p => {
-        const mentionRegex = new RegExp(`@${p.name}`, 'gi');
-        formattedText = formattedText.replace(mentionRegex, `<span class="mention-tag">@${p.name}</span>`);
-      });
-
-      chatHtml += `
-        <div class="chat-bubble">
-          <div class="chat-header">
-            <span class="chat-author" onclick="window.openProfile('${m.authorId}')">${escapeHtml(m.authorName)}</span>
-            <span class="chat-time">${m.time || ''}</span>
-          </div>
-          <div class="chat-text">${formattedText}</div>
-        </div>`;
-    });
-  }
-
-  chatHtml += '</div>';
-  slot.innerHTML = html;
-
-  if(session){
-    const chatInput = document.getElementById('chatInputText');
-    const mentionDropdown = document.getElementById('mentionDropdown');
-
-    chatInput.addEventListener('input', (e) => {
-      const val = chatInput.value;
-      const cursorIdx = chatInput.selectionStart;
-      const textBeforeCursor = val.slice(0, cursorIdx);
-      const match = textBeforeCursor.match(/@([\wА-Яа-яЄєІіЇї]*)$/);
-
-      if(match){
-        const queryStr = match[1].toLowerCase();
-        const filtered = profilesList.filter(p => p.name.toLowerCase().includes(queryStr));
-        if(filtered.length > 0){
-          mentionDropdown.style.display = 'block';
-          mentionDropdown.innerHTML = filtered.map(p => `
-            <div class="mention-item" onclick="window.selectMention('${p.name}')">
-              <div class="avatar" style="width:24px;height:24px;font-size:10px;background:${colorForName(p.name)}">${initialsForName(p.name)}</div>
-              <span>${escapeHtml(p.name)}</span>
-            </div>`).join('');
-        } else {
-          mentionDropdown.style.display = 'none';
-        }
-      } else {
-        mentionDropdown.style.display = 'none';
-      }
-    });
-
-    window.selectMention = (name) => {
-      const val = chatInput.value;
-      const cursorIdx = chatInput.selectionStart;
-      const textBeforeCursor = val.slice(0, cursorIdx);
-      const textAfterCursor = val.slice(cursorIdx);
-      const updatedBefore = textBeforeCursor.replace(/@[\wА-Яа-яЄєІіЇї]*$/, `@${name} `);
-      chatInput.value = updatedBefore + textAfterCursor;
-      mentionDropdown.style.display = 'none';
-      chatInput.focus();
-    };
-
-    document.getElementById('sendChatBtn').addEventListener('click', async () => {
-      const text = chatInput.value.trim();
-      if(!text) return;
-      playSound('click');
-      const now = new Date();
-      const timeStr = pad(now.getHours()) + ':' + pad(now.getMinutes());
-      await window.FB.setDoc(window.FB.doc(window.db, 'chat', genId('msg')), {
-        id: genId('msg'), store: currentStore, authorId: session.id, authorName: session.name,
-        text, date: todayISO(), time: timeStr, timestamp: Date.now()
-      });
-      chatInput.value = '';
-      mentionDropdown.style.display = 'none';
-    });
-  }
-
-  document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
-}
 
 window.openProfile = (profileId) => openProfileModal(profileId);
 
@@ -910,20 +870,24 @@ window.sendThanks = async (profileId) => {
     playSound('success');
     cooldowns[profileId] = now;
     await updateProfileField(session.id, { thanksCooldowns: cooldowns });
+    await checkAndAwardAchievements(session.id); // перевірка на ачівку Філантроп
+    
     const newThanks = (targetProfile.thanksCount || 0) + 1;
-    let newAchivs = targetProfile.achivs || [];
-    if(newThanks >= 5 && !newAchivs.includes('Душа компанії 🌟')) newAchivs.push('Душа компанії 🌟');
-    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', profileId), { thanksCount: newThanks, achivs: newAchivs });
+    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', profileId), { thanksCount: newThanks });
+    await checkAndAwardAchievements(profileId); // перевірка на ачівки Душа компанії / Колекціонер зірок
+
     alert('⭐ Подяку успішно надіслано!');
     if(document.getElementById('profileSheet').classList.contains('open')) openProfileModal(profileId);
   }
 };
 
 async function openProfileModal(profileId){
+  await checkAndAwardAchievements(profileId);
   const profile = await getProfile(profileId);
   if(!profile) return;
   const isMe = session && session.id === profileId;
-  const isAdminTarget = profile.id === normalizeName("Максим Лебідь") || profile.isAdmin;
+  const isFounder = (profile.id === normalizeName("Максим Лебідь"));
+  const isAdminTarget = isFounder || profile.isAdmin;
   const sheet = document.getElementById('profileSheet');
   const bgStyle = colorForName(profile.name);
   const init = initialsForName(profile.name);
@@ -936,7 +900,7 @@ async function openProfileModal(profileId){
       <div class="avatar" id="modalAvatarPreview" style="width:72px;height:72px;margin:0 auto 12px;font-size:22px;background:${bgStyle};${profile.avatarBase64?`background:url(${profile.avatarBase64}) center/cover;`:''}">
         ${profile.avatarBase64 ? '' : init}
       </div>
-      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)} ${isAdminTarget ? '<span class="admin-badge">ADMIN</span>' : ''}</h3>
+      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)} ${isFounder ? '<span class="founder-badge">ЗААСНОВНИК</span>' : (isAdminTarget ? '<span class="admin-badge">ADMIN</span>' : '')}</h3>
       <p style="color:var(--ink-soft);font-size:13px;margin:0 0 4px;">Магазин: ${profile.store || currentStore}</p>
       <p style="font-weight:700;font-size:13.5px;color:var(--comfy-green-dark);margin:0 0 12px;">${escapeHtml(profile.position || 'Працівник Comfy')}</p>
       <p style="font-style:italic;font-size:13px;color:var(--ink-soft);margin:0 0 16px;">«${escapeHtml(profile.quote || 'Без цитати')}»</p>
@@ -952,7 +916,7 @@ async function openProfileModal(profileId){
         </div>
       </div>
 
-      <p style="font-size:13px;text-align:left;margin-bottom:6px;"><b>Публічні досягнення:</b></p>
+      <p style="font-size:13px;text-align:left;margin-bottom:6px;"><b>Публічні досягнення (${profile.achivs?.length || 0}):</b></p>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
         ${profile.achivs?.map(a => `<span style="background:var(--lime-badge);color:var(--comfy-green-dark);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;">${escapeHtml(a)}</span>`).join('') || 'Немає'}
       </div>
@@ -972,7 +936,7 @@ async function openProfileModal(profileId){
         </div>
       ` : `
         <button class="btn" onclick="window.sendThanks('${profileId}')">⭐ Подякувати колезі</button>
-        ${session && session.isAdmin ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="window.deleteProfile('${profileId}');document.getElementById('profileSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">🗑 Видалити акаунт (Адмін)</button>` : ''}
+        ${session && session.isAdmin && !isFounder ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="window.deleteProfile('${profileId}');document.getElementById('profileSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">🗑 Видалити акаунт (Адмін)</button>` : ''}
       `}
     </div>
 
@@ -987,6 +951,7 @@ async function openProfileModal(profileId){
       const position = document.getElementById('editPosition').value.trim();
       const quote = document.getElementById('editQuote').value.trim();
       await updateProfileField(profileId, { position, quote });
+      await checkAndAwardAchievements(profileId);
       alert('✅ Збережено!');
       openProfileModal(profileId);
     });
@@ -1009,6 +974,7 @@ async function openProfileModal(profileId){
           const base64Str = canvas.toDataURL('image/jpeg', 0.8);
 
           await updateProfileField(profileId, { avatarBase64: base64Str });
+          await checkAndAwardAchievements(profileId);
           playSound('success');
           alert('✅ Аватарку оновлено!');
           openProfileModal(profileId);
@@ -1080,10 +1046,10 @@ document.getElementById('confirmBookingBtn').addEventListener('click', async () 
 
   const profile = await getProfile(session.id);
   const history = profile.history || [];
-  history.push({ date: today, start: sheetStart, end });
-  let newAchivs = profile.achivs || [];
-  if(history.length >= 5 && !newAchivs.includes('Гурман 🍔')) newAchivs.push('Гурман 🍔');
-  await updateProfileField(session.id, { history, achivs: newAchivs });
+  history.push({ date: today, start: sheetStart, end, createdAt: createdTimeStr });
+  
+  await updateProfileField(session.id, { history });
+  await checkAndAwardAchievements(session.id);
 
   document.getElementById('sheetBackdrop').classList.remove('open');
   document.getElementById('bookingSheet').classList.remove('open');
