@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" data-theme="light" data-skin="default">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <meta name="theme-color" content="#38B34A">
-<title>Comfy Dinner · К-19</title>
+<title>Comfy Dinner · К-19 PRO</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
 
@@ -27,6 +27,31 @@
   --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
 
+/* Тематичні скіни */
+html[data-skin="birthday"]{
+  --comfy-green:#8B5CF6; --comfy-green-dark:#6D28D9; --comfy-orange:#EC4899; --comfy-orange-light:#FCE7F3; --lime-badge:#EDE9FE;
+}
+html[data-skin="ny"]{
+  --comfy-green:#0EA5E9; --comfy-green-dark:#0284C7; --comfy-orange:#EF4444; --comfy-orange-light:#FEE2E2; --lime-badge:#E0F2FE;
+}
+html[data-skin="valentin"]{
+  --comfy-green:#F43F5E; --comfy-green-dark:#BE123C; --comfy-orange:#FB7185; --comfy-orange-light:#FFE4E6; --lime-badge:#FFF1F2;
+}
+html[data-skin="cyber"]{
+  --comfy-green:#10B981; --comfy-green-dark:#059669; --comfy-orange:#F59E0B; --comfy-orange-light:#FEF3C7; --lime-badge:#D1FAE5;
+}
+
+/* Темна тема */
+html[data-theme="dark"]{
+  --bg:#0F1411;
+  --surface:#1A231C;
+  --ink:#F3F4F6;
+  --ink-soft:#9CA3AF;
+  --line:#2A382E;
+  --comfy-orange-light:#2A1D15;
+  --lime-badge:#14331C;
+}
+
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;overscroll-behavior-y:none;}
 body{
@@ -38,19 +63,19 @@ body{
   padding-bottom:calc(110px + var(--safe-bottom));
   padding-left:16px;
   padding-right:16px;
+  transition:background 0.3s, color 0.3s;
 }
-input, button{font-family:'Manrope',sans-serif; font-size:16px;}
+input, button, select{font-family:'Manrope',sans-serif; font-size:16px;}
 button{-webkit-appearance:none; appearance:none;}
 
 .wrap{max-width:500px;margin:0 auto;}
 
-/* Хедера стиль Comfy */
 .header{
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:12px;
-  margin-bottom:20px;
+  margin-bottom:16px;
 }
 
 .comfy-brand-box{
@@ -61,461 +86,146 @@ button{-webkit-appearance:none; appearance:none;}
   border-radius:999px;
   gap:10px;
   box-shadow:0 8px 20px rgba(56,179,74,0.3);
-  transform:translateZ(0);
-  transition:transform 0.2s;
 }
-.comfy-brand-box:active{transform:scale(0.97);}
-.comfy-brand-text{
-  font-family:'Manrope',sans-serif;
-  font-size:20px;
-  font-weight:800;
-  color:#FFFFFF;
-  letter-spacing:-0.03em;
-  text-transform:uppercase;
-  line-height:1;
-}
-.comfy-dot{
-  width:14px;
-  height:14px;
-  background-color:var(--comfy-orange);
-  border-radius:50%;
-  flex-shrink:0;
-  box-shadow:0 0 10px rgba(255,102,0,0.6);
+.comfy-brand-text{font-size:20px;font-weight:800;color:#FFFFFF;text-transform:uppercase;line-height:1;}
+.comfy-dot{width:14px;height:14px;background-color:var(--comfy-orange);border-radius:50%;flex-shrink:0;}
+.brand-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;margin-top:6px;margin-left:6px;}
+
+.header-controls{display:flex;gap:8px;align-items:center;}
+.icon-btn{
+  background:var(--surface);border:1px solid var(--line);
+  width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);
 }
 
-.brand-eyebrow{
-  font-family:'JetBrains Mono',monospace;
-  font-size:10px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:var(--ink-soft);
-  font-weight:700;
-  margin-top:6px;
-  margin-left:6px;
+/* Панель лічильника колег */
+.stats-counter-bar{
+  display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:16px;
 }
+.stat-box{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);
+}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--comfy-green);}
+.stat-lbl{font-size:10px;text-transform:uppercase;color:var(--ink-soft);font-weight:700;margin-top:2px;}
 
-/* Чіп профілю */
 .profile-chip{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:6px 14px 6px 6px;
-  cursor:pointer;
-  box-shadow:0 2px 8px rgba(0,0,0,0.04);
-  transition:all 0.15s;
+  display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);
+  border-radius:999px;padding:6px 14px 6px 6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);
 }
-.profile-chip:hover{border-color:var(--comfy-green);}
 .avatar{
-  width:32px;height:32px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:700;color:#fff;
-  flex-shrink:0;
-  box-shadow:inset 0 -2px 4px rgba(0,0,0,0.15);
+  width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;flex-shrink:0;background-size:cover;background-position:center;
 }
 .profile-chip-name{font-size:13.5px;font-weight:700;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-/* Статус-стріп (зараз обідає) */
 .status-strip{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px 18px;
-  border-radius:var(--radius-sm);
-  margin-bottom:16px;
-  font-size:14px;
-  font-weight:700;
-  box-shadow:0 4px 12px rgba(0,0,0,0.03);
+  display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:var(--radius-sm);
+  margin-bottom:16px;font-size:14px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,0.03);
 }
-.status-strip.free{
-  background:var(--surface);
-  border:1px solid var(--line);
-  color:var(--ink-soft);
-}
-.status-strip.busy{
-  background:var(--comfy-orange-light);
-  border:1px solid rgba(255,102,0,0.25);
-  color:#B34700;
-}
-.status-icon{font-size:20px;flex-shrink:0;}
-.status-text{flex:1;}
-.status-countdown{
-  font-family:'JetBrains Mono',monospace;
-  font-size:15px;
-  font-weight:700;
-  background:rgba(255,102,0,0.15);
-  padding:4px 8px;
-  border-radius:8px;
-}
+.status-strip.free{background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);}
+.status-strip.busy{background:var(--comfy-orange-light);border:1px solid rgba(255,102,0,0.25);color:var(--comfy-orange);}
+.status-countdown{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;background:rgba(255,102,0,0.15);padding:4px 8px;border-radius:8px;}
 
-/* Інфо про магазин */
-.store-row{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:20px;
-  font-size:13px;
-  padding:0 4px;
-}
-.store-label{color:var(--ink-soft);font-weight:500;}
-.store-pill{
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:4px 12px;
-  font-weight:700;
-  font-family:'JetBrains Mono',monospace;
-  color:var(--comfy-green-dark);
-  box-shadow:0 2px 4px rgba(0,0,0,0.02);
-}
-.store-more{color:#8FA393;margin-left:auto;font-weight:500;}
+.store-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:13px;padding:0 4px;}
+.store-pill{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--comfy-green-dark);}
 
-/* Картки та форми */
-.card{
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:22px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.04);
-}
-
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 10px 30px rgba(0,0,0,0.04);}
 .auth-card{margin-bottom:20px;}
-.auth-tabs{
-  display:flex;
-  background:var(--bg);
-  border-radius:12px;
-  padding:4px;
-  margin-bottom:20px;
-  border:1px solid var(--line);
-}
-.auth-tab{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  border-radius:10px;
-  font-size:14px;
-  font-weight:700;
-  color:var(--ink-soft);
-  cursor:pointer;
-  border:none;
-  background:none;
-  transition:all 0.2s;
-}
+.auth-tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:20px;border:1px solid var(--line);}
+.auth-tab{flex:1;text-align:center;padding:10px;border-radius:10px;font-size:14px;font-weight:700;color:var(--ink-soft);cursor:pointer;border:none;background:none;}
 .auth-tab.active{background:var(--surface);color:var(--ink);box-shadow:0 4px 12px rgba(0,0,0,0.08);}
 
 .field{margin-bottom:16px;}
-.field label{
-  display:block;
-  font-size:11.5px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:0.06em;
-  color:var(--ink-soft);
-  margin-bottom:6px;
+.field label{display:block;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:6px;}
+.field input, .field select{
+  width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  background:var(--bg);color:var(--ink);font-weight:600;
 }
-.field input{
-  width:100%;
-  padding:14px 16px;
-  border:1.5px solid var(--line);
-  border-radius:var(--radius-sm);
-  background:#FAFCF9;
-  color:var(--ink);
-  font-weight:600;
-  transition:all 0.15s;
-}
-.field input:focus{outline:none;border-color:var(--comfy-green);background:#FFFFFF;box-shadow:0 0 0 4px rgba(56,179,74,0.15);}
-.pin-hint{font-size:12px;color:var(--ink-soft);margin-top:6px;line-height:1.4;}
 
-/* Кнопки */
 .btn{
-  width:100%;
-  background:var(--comfy-green);
-  color:#fff;
-  border:none;
-  border-radius:var(--radius-sm);
-  padding:16px;
-  font-size:15.5px;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow:0 6px 20px rgba(56,179,74,0.3);
-  transition:all 0.2s ease;
+  width:100%;background:var(--comfy-green);color:#fff;border:none;border-radius:var(--radius-sm);
+  padding:16px;font-size:15.5px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(56,179,74,0.3);
 }
-.btn:active{transform:scale(0.98);}
-.btn:hover{background:var(--comfy-green-dark);box-shadow:0 8px 25px rgba(56,179,74,0.4);}
-.btn:disabled{background:#C8CDC5;cursor:not-allowed;box-shadow:none;}
-.btn-ghost{
-  background:none;
-  color:var(--ink-soft);
-  border:1.5px solid var(--line);
-  box-shadow:none;
-}
-.btn-ghost:hover{background:var(--bg);color:var(--ink);border-color:var(--ink-soft);}
+.btn:hover{background:var(--comfy-green-dark);}
+.btn-ghost{background:none;color:var(--ink-soft);border:1.5px solid var(--line);box-shadow:none;}
+.form-error{color:var(--red);font-size:13px;margin-top:12px;font-weight:700;background:rgba(224,60,49,0.1);padding:10px 14px;border-radius:10px;}
 
-.form-error{
-  color:var(--red);
-  font-size:13px;
-  margin-top:12px;
-  font-weight:700;
-  background:rgba(224,60,49,0.1);
-  padding:10px 14px;
-  border-radius:10px;
-}
-
-/* Банер посилання */
 .link-banner{
-  background:linear-gradient(135deg, #1C3B24 0%, #112617 100%);
-  color:#fff;
-  border-radius:var(--radius);
-  padding:20px;
-  margin-bottom:20px;
-  position:relative;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-  border:1px solid rgba(56,179,74,0.3);
+  background:linear-gradient(135deg, #1C3B24 0%, #112617 100%);color:#fff;border-radius:var(--radius);
+  padding:20px;margin-bottom:20px;position:relative;border:1px solid rgba(56,179,74,0.3);
 }
 .link-banner-title{font-size:15px;font-weight:800;margin-bottom:6px;color:#7FEB94;}
 .link-banner-sub{font-size:12.5px;color:#C2E8CC;line-height:1.5;margin-bottom:14px;}
-.link-banner-row{
-  display:flex;gap:8px;align-items:center;
-  background:rgba(255,255,255,0.08);
-  border-radius:10px;
-  padding:10px 12px;
-  border:1px solid rgba(255,255,255,0.1);
-}
-.link-banner-url{
-  font-family:'JetBrains Mono',monospace;
-  font-size:11.5px;
-  color:#A8F5B8;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;
-}
-.link-banner-copy{
-  background:var(--comfy-orange);
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  padding:8px 12px;
-  font-size:12px;
-  font-weight:800;
-  cursor:pointer;
-  flex-shrink:0;
-  transition:transform 0.1s;
-}
-.link-banner-copy:active{transform:scale(0.95);}
-.link-banner-dismiss{
-  position:absolute;top:14px;right:16px;
-  background:none;border:none;color:#8FA393;
-  font-size:18px;cursor:pointer;padding:4px;
-}
-.link-banner-dismiss:hover{color:#fff;}
+.link-banner-row{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;}
+.link-banner-url{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#A8F5B8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+.link-banner-copy{background:var(--comfy-orange);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;}
+.link-banner-dismiss{position:absolute;top:14px;right:16px;background:none;border:none;color:#8FA393;font-size:18px;cursor:pointer;}
 
-/* Список обідів */
-.board-title{
-  font-size:13px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:0.08em;
-  color:var(--ink-soft);
-  margin:0 0 14px 4px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.board-title .dot{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--comfy-orange);
-  box-shadow:0 0 0 3px rgba(255,102,0,0.25);
-}
+.board-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin:0 0 14px 4px;display:flex;align-items:center;gap:8px;}
+.board-title .dot{width:8px;height:8px;border-radius:50%;background:var(--comfy-orange);}
 
 .entries{display:flex;flex-direction:column;gap:12px;}
-
 .entry{
-  background:var(--surface);
-  border:1.5px solid var(--line);
-  border-radius:var(--radius);
-  padding:16px 18px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.02);
-  transition:all 0.2s;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 15px rgba(0,0,0,0.02);
 }
-.entry.mine{border-color:var(--comfy-green); box-shadow:0 4px 20px rgba(56,179,74,0.12);}
-.entry.eating{border-color:var(--comfy-orange); background:linear-gradient(to right, #FFFFFF, #FFF9F5);}
+.entry.mine{border-color:var(--comfy-green);}
+.entry.eating{border-color:var(--comfy-orange);background:var(--comfy-orange-light);}
 
 .entry-avatar{
-  width:42px;height:42px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:800;color:#fff;flex-shrink:0;
-  box-shadow:inset 0 -3px 6px rgba(0,0,0,0.2);
+  width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:#fff;flex-shrink:0;cursor:pointer;background-size:cover;background-position:center;
 }
 .entry-body{flex:1;min-width:0;}
 .entry-name-row{display:flex;align-items:center;gap:8px;}
-.entry-name{font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.you-badge{
-  font-size:10px;font-weight:800;color:var(--comfy-green-dark);
-  background:var(--lime-badge);padding:2px 8px;border-radius:6px;flex-shrink:0;
-}
-.entry-time{
-  font-family:'JetBrains Mono',monospace;
-  font-size:12.5px;
-  color:var(--ink-soft);
-  margin-top:3px;
-  font-weight:600;
-}
-.entry-cancel{
-  background:none;border:none;color:var(--red);
-  font-size:12px;font-weight:700;cursor:pointer;
-  text-decoration:underline;margin-top:6px;padding:0;
-  display:inline-block;
-}
+.entry-name{font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+.you-badge{font-size:10px;font-weight:800;color:var(--comfy-green-dark);background:var(--lime-badge);padding:2px 8px;border-radius:6px;}
+.entry-time{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:3px;font-weight:600;}
 
-.entry-countdown{text-align:right;flex-shrink:0;}
-.countdown-label{
-  font-size:10px;
-  text-transform:uppercase;
-  letter-spacing:0.06em;
-  color:var(--ink-soft);
-  font-weight:700;
-  display:block;
-  margin-bottom:2px;
+.entry-actions{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.mini-action-btn{
+  background:var(--bg);border:1px solid var(--line);padding:4px 10px;border-radius:6px;
+  font-size:11px;font-weight:700;color:var(--ink);cursor:pointer;
 }
-.countdown-digits{
-  font-family:'JetBrains Mono',monospace;
-  font-size:17px;
-  font-weight:800;
-}
+.mini-action-btn.accent{background:var(--lime-badge);color:var(--comfy-green-dark);border-color:var(--comfy-green);}
 
-.empty-state{
-  text-align:center;
-  padding:40px 20px;
-  color:var(--ink-soft);
-  font-size:14px;
+/* Інтерактивні запити обміну */
+.swap-request-banner{
+  background:var(--comfy-orange-light);border:1.5px dashed var(--comfy-orange);border-radius:12px;
+  padding:12px;margin-top:10px;font-size:13px;
 }
-.empty-state strong{display:block;font-size:16px;color:var(--ink);margin-bottom:6px;font-weight:800;}
+.swap-buttons{display:flex;gap:8px;margin-top:8px;}
+.swap-btn-accept{background:var(--comfy-green);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:800;cursor:pointer;font-size:12px;}
+.swap-btn-deny{background:var(--red);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:800;cursor:pointer;font-size:12px;}
 
-.loading-row{
-  text-align:center;
-  padding:30px;
-  color:var(--ink-soft);
-  font-size:13.5px;
-  font-family:'JetBrains Mono',monospace;
-}
-
-/* FAB Кнопка знизу */
 .fab{
-  position:fixed;
-  left:16px;right:16px;
-  bottom:calc(20px + var(--safe-bottom));
-  max-width:468px;
-  margin:0 auto;
-  background:linear-gradient(135deg, var(--comfy-orange) 0%, #E65C00 100%);
-  color:#fff;
-  border:none;
-  border-radius:var(--radius);
-  padding:18px;
-  font-size:16px;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow:0 10px 30px rgba(255,102,0,0.4);
-  z-index:50;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  transition:transform 0.15s, box-shadow 0.15s;
+  position:fixed;left:16px;right:16px;bottom:calc(20px + var(--safe-bottom));max-width:468px;margin:0 auto;
+  background:linear-gradient(135deg, var(--comfy-orange) 0%, #E65C00 100%);color:#fff;border:none;
+  border-radius:var(--radius);padding:18px;font-size:16px;font-weight:800;cursor:pointer;
+  box-shadow:0 10px 30px rgba(255,102,0,0.4);z-index:50;display:flex;align-items:center;justify-content:center;gap:10px;
 }
-.fab:active{transform:scale(0.98);box-shadow:0 5px 15px rgba(255,102,0,0.3);}
 
-/* Шторка броні */
-.sheet-backdrop{
-  position:fixed;inset:0;
-  background:rgba(20,28,22,0.6);
-  backdrop-filter:blur(4px);
-  z-index:100;
-  opacity:0;pointer-events:none;
-  transition:opacity 0.25s ease;
-}
+/* Модалки / Шторки */
+.sheet-backdrop{position:fixed;inset:0;background:rgba(20,28,22,0.6);backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:opacity 0.25s;}
 .sheet-backdrop.open{opacity:1;pointer-events:auto;}
-
 .sheet{
-  position:fixed;
-  left:0;right:0;bottom:0;
-  background:var(--surface);
-  border-radius:24px 24px 0 0;
-  padding:12px 20px calc(28px + var(--safe-bottom));
-  max-width:500px;margin:0 auto;
-  transform:translateY(100%);
-  transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);
-  z-index:101;
-  max-height:85vh;
-  overflow-y:auto;
-  box-shadow:0 -10px 40px rgba(0,0,0,0.15);
+  position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-radius:24px 24px 0 0;
+  padding:12px 20px calc(28px + var(--safe-bottom));max-width:500px;margin:0 auto;
+  transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);z-index:101;max-height:85vh;overflow-y:auto;
 }
 .sheet.open{transform:translateY(0);}
-.sheet-handle{
-  width:40px;height:5px;background:var(--line);border-radius:99px;
-  margin:0 auto 18px;
-}
+.sheet-handle{width:40px;height:5px;background:var(--line);border-radius:99px;margin:0 auto 18px;}
 .sheet-title{font-size:20px;font-weight:800;margin-bottom:4px;}
 .sheet-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:20px;}
 
-.chip-group-label{
-  font-size:11.5px;font-weight:800;text-transform:uppercase;
-  letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:10px;
-}
-.chip-row{
-  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;
-  max-height: 160px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-.chip-row::-webkit-scrollbar{width:4px;}
-.chip-row::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
-
+.chip-group-label{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:10px;}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;max-height:160px;overflow-y:auto;}
 .chip{
-  padding:10px 14px;
-  border-radius:10px;
-  border:1.5px solid var(--line);
-  background:#FAFCF9;
-  font-family:'JetBrains Mono',monospace;
-  font-size:13.5px;
-  font-weight:700;
-  cursor:pointer;
-  color:var(--ink);
-  transition:all 0.15s;
+  padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);
+  font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:700;cursor:pointer;color:var(--ink);
 }
-.chip:hover{border-color:var(--comfy-green);}
-.chip.selected{
-  background:var(--comfy-green);
-  border-color:var(--comfy-green);
-  color:#fff;
-  box-shadow:0 4px 12px rgba(56,179,74,0.3);
-}
-
-.custom-toggle{
-  font-size:13px;
-  color:var(--comfy-green-dark);
-  font-weight:800;
-  cursor:pointer;
-  margin-bottom:16px;
-  display:inline-block;
-  text-decoration:underline;
-}
-.custom-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
-
-.summary-box{
-  background:var(--bg);
-  border:1.5px solid var(--line);
-  border-radius:var(--radius-sm);
-  padding:14px 16px;
-  font-size:14px;
-  margin-bottom:20px;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.summary-box .val{
-  font-family:'JetBrains Mono',monospace;
-  font-weight:800;
-  color:var(--comfy-green-dark);
-  font-size:15px;
-}
+.chip.selected{background:var(--comfy-green);border-color:var(--comfy-green);color:#fff;}
 </style>
 </head>
 <body>
@@ -526,34 +236,37 @@ button{-webkit-appearance:none; appearance:none;}
         <span class="comfy-brand-text">Comfy Dinner</span>
         <div class="comfy-dot"></div>
       </div>
-      <div class="brand-eyebrow">by fearblader</div>
+      <div class="brand-eyebrow">К-19 • PRO Edition</div>
     </div>
-    <div id="headerRight"></div>
+    <div class="header-controls">
+      <button class="icon-btn" id="themeToggleBtn" title="Тема">🌙</button>
+      <button class="icon-btn" id="skinToggleBtn" title="Скін">🎨</button>
+      <div id="headerRight"></div>
+    </div>
   </div>
 
+  <div class="stats-counter-bar" id="statsBar"></div>
   <div id="statusStripSlot"></div>
 
   <div class="store-row">
-    <span class="store-label">Магазин:</span>
+    <span style="color:var(--ink-soft)">Магазин:</span>
     <span class="store-pill">К-19</span>
-    <span class="store-more">🍔 Їжте смачно і не обляпайтесь :)</span>
+    <span style="color:var(--ink-soft);margin-left:auto;font-size:12px;">🍔 Всім смачного!</span>
   </div>
 
   <div id="linkBannerSlot"></div>
   <div id="authSlot"></div>
-
-  <div id="boardSlot">
-    <div class="loading-row">⏳ завантаження дошки…</div>
-  </div>
+  <div id="boardSlot"><div style="text-align:center;padding:30px;color:var(--ink-soft);">⏳ завантаження…</div></div>
 </div>
 
 <button class="fab" id="fabBtn" style="display:none;">🍔 Забронювати обід</button>
 
+<!-- Шторка Броні -->
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <div class="sheet" id="bookingSheet">
   <div class="sheet-handle"></div>
   <div class="sheet-title">Коли обідаєш? 🕒</div>
-  <div class="sheet-sub">Обери зручний час початку та тривалість.</div>
+  <div class="sheet-sub">Обери час та тривалість перерви.</div>
 
   <div class="chip-group-label">Початок (з 12:30 до 18:30)</div>
   <div class="chip-row" id="startChips"></div>
@@ -565,33 +278,21 @@ button{-webkit-appearance:none; appearance:none;}
     <button class="chip" data-dur="60">1 год</button>
   </div>
 
-  <span class="custom-toggle" id="customToggle">Встановити точний час вручну</span>
-  <div class="custom-row" id="customRow" style="display:none;">
-    <div class="field" style="margin-bottom:0;">
-      <label>Початок</label>
-      <input type="time" id="customStart">
-    </div>
-    <div class="field" style="margin-bottom:0;">
-      <label>Кінець</label>
-      <input type="time" id="customEnd">
-    </div>
-  </div>
-
-  <div class="summary-box">
-    <span>Ти обідаєш</span>
-    <span class="val" id="summaryText">— оберіть час —</span>
-  </div>
-
   <div class="form-error" id="sheetError" style="display:none;"></div>
-
   <button class="btn" id="confirmBookingBtn" style="margin-bottom:10px;">Підтвердити бронь</button>
   <button class="btn btn-ghost" id="cancelSheetBtn">Скасувати</button>
+</div>
+
+<!-- Шторка профілю та статистики -->
+<div class="sheet" id="profileSheet">
+  <div class="sheet-handle"></div>
+  <div id="profileSheetContent"></div>
 </div>
 
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSy26dy-OT-YH8I.haKpX6mQCVn85VN43w",
@@ -606,7 +307,7 @@ button{-webkit-appearance:none; appearance:none;}
   const db = getFirestore(app);
 
   window.db = db;
-  window.FB = { collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, query, where, getDocs };
+  window.FB = { collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, query, where, updateDoc };
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
@@ -618,17 +319,37 @@ let sheetStart = null;
 let sheetDurationMin = null;
 let unsubscribeEntries = null;
 
-const AVATAR_COLORS = ['#38B34A','#FF6600','#2E7D4F','#E03C31','#3D6FB4','#9C27B0','#00897B'];
+// Налаштування теми та скінів
+let currentTheme = localStorage.getItem('comfy_theme') || 'light';
+let currentSkin = localStorage.getItem('comfy_skin') || 'default';
+document.documentElement.setAttribute('data-theme', currentTheme);
+document.documentElement.setAttribute('data-skin', currentSkin);
 
+const SKINS = ['default', 'birthday', 'ny', 'valentin', 'cyber'];
+const SKIN_NAMES = { default: 'Comfy Standard', birthday: 'День Народження', ny: 'Новий Рік 🎄', valentin: 'День Закоханих ❤️', cyber: 'Кіберпанк 🟢' };
+
+document.getElementById('themeToggleBtn').addEventListener('click', () => {
+  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  localStorage.setItem('comfy_theme', currentTheme);
+  document.getElementById('themeToggleBtn').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+});
+
+document.getElementById('skinToggleBtn').addEventListener('click', () => {
+  const nextIdx = (SKINS.indexOf(currentSkin) + 1) % SKINS.length;
+  currentSkin = SKINS[nextIdx];
+  document.documentElement.setAttribute('data-skin', currentSkin);
+  localStorage.setItem('comfy_skin', currentSkin);
+  alert('Скін змінено на: ' + SKIN_NAMES[currentSkin]);
+});
+
+// Утиліти
+const AVATAR_COLORS = ['#38B34A','#FF6600','#2E7D4F','#E03C31','#3D6FB4','#9C27B0','#00897B'];
 function colorForName(name){
     let hash = 0;
-    for(let i = 0; i < name.length; i++){
-        hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const index = Math.abs(hash) % AVATAR_COLORS.length;
-    return AVATAR_COLORS[index];
+    for(let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
-
 function initialsForName(name){
   const parts = name.trim().split(/\s+/);
   return ((parts[0]?.[0]||'') + (parts[1]?.[0]||'')).toUpperCase();
@@ -647,9 +368,7 @@ function timeStrToDate(timeStr, dateISO){
 function addMinutes(timeStr, minutes){
   const [h,m] = timeStr.split(':').map(Number);
   const total = h*60 + m + minutes;
-  const nh = Math.floor((total % (24*60)) / 60);
-  const nm = total % 60;
-  return pad(nh) + ':' + pad(nm);
+  return pad(Math.floor((total % (24*60)) / 60)) + ':' + pad(total % 60);
 }
 function formatCountdown(ms){
   if(ms < 0) ms = 0;
@@ -657,557 +376,304 @@ function formatCountdown(ms){
   const h = Math.floor(totalSec/3600);
   const m = Math.floor((totalSec%3600)/60);
   const s = totalSec%60;
-  if(h > 0) return pad(h)+':'+pad(m)+':'+pad(s);
-  return pad(m)+':'+pad(s);
+  return h > 0 ? pad(h)+':'+pad(m)+':'+pad(s) : pad(m)+':'+pad(s);
 }
-function escapeHtml(str){
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-function genId(prefix){
-  return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
-}
-function normalizeName(name){
-  return name.trim().toLowerCase().replace(/\s+/g,' ');
-}
-function randomToken(){
-  return Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
-}
+function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+function genId(prefix){ return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
+function normalizeName(name){ return name.trim().toLowerCase().replace(/\s+/g,' '); }
 
 async function getProfile(normName){
   try{
-    const ref = window.FB.doc(window.db, 'profiles', normName);
-    const snap = await window.FB.getDoc(ref);
+    const snap = await window.FB.getDoc(window.FB.doc(window.db, 'profiles', normName));
     return snap.exists() ? snap.data() : null;
   }catch(e){ return null; }
 }
 
 async function register(name, pin){
   const norm = normalizeName(name);
-  const existing = await getProfile(norm);
-  if(existing) return { ok:false, reason:'taken' };
-
-  const token = randomToken();
-  const profile = { name: name.trim(), pin, store: STORE, token, createdAt: Date.now() };
-  try {
-    await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
-    session = { id: norm, name: profile.name };
-    localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
-    return { ok:true, id: norm, token };
-  } catch(e){
-    return { ok:false, reason:'save_failed' };
-  }
-}
-
-async function login(name, pin){
-  const norm = normalizeName(name);
-  const profile = await getProfile(norm);
-  if(!profile) return { ok:false, reason:'not_found' };
-  if(profile.pin !== pin) return { ok:false, reason:'wrong_pin' };
-
+  if(await getProfile(norm)) return { ok:false, reason:'taken' };
+  const profile = { name: name.trim(), pin, store: STORE, token: Math.random().toString(36).slice(2), avatarUrl: '', thanksCount: 0, achivs: ['Новачок 🟢'], history: [] };
+  await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
   session = { id: norm, name: profile.name };
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
   return { ok:true, id: norm, token: profile.token };
 }
 
-async function addEntryToDb(entry){
-  try{
-    await window.FB.setDoc(window.FB.doc(window.db, 'lunches', entry.id), entry);
-    return true;
-  }catch(e){ return false; }
+async function login(name, pin){
+  const norm = normalizeName(name);
+  const profile = await getProfile(norm);
+  if(!profile || profile.pin !== pin) return { ok:false };
+  session = { id: norm, name: profile.name };
+  localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
+  return { ok:true, id: norm, token: profile.token };
 }
 
-async function removeEntryFromDb(id){
-  try{
-    await window.FB.deleteDoc(window.FB.doc(window.db, 'lunches', id));
-    return true;
-  }catch(e){ return false; }
+// Повідомлення (Браузерні пуші за 15, 10, 5 хв)
+function requestNotificationPermission(){
+  if("Notification" in window && Notification.permission !== "granted"){
+    Notification.requestPermission();
+  }
 }
 
-function initRealtimeEntries(){
-  if(unsubscribeEntries) unsubscribeEntries();
-  const q = window.FB.query(
-    window.FB.collection(window.db, 'lunches'),
-    window.FB.where('store', '==', STORE),
-    window.FB.where('date', '==', todayISO())
-  );
-  
-  unsubscribeEntries = window.FB.onSnapshot(q, (snapshot) => {
-    entries = [];
-    snapshot.forEach((doc) => {
-      entries.push(doc.data());
-    });
-    if(!document.getElementById('bookingSheet').classList.contains('open')){
-      renderStatusStrip();
-      renderBoard();
+function checkDinnerNotifications(){
+  if(!session || Notification.permission !== "granted") return;
+  const now = new Date();
+  entries.forEach(e => {
+    if(e.ownerId === session.id){
+      const startD = timeStrToDate(e.start, todayISO());
+      const diffMin = Math.round((startD - now) / 60000);
+      if([15, 10, 5].includes(diffMin) && !e[`notified_${diffMin}`]){
+        new Notification("Comfy Dinner 🍔", { body: `Твій обід почнеться через ${diffMin} хв (${e.start})!` });
+        e[`notified_${diffMin}`] = true;
+      }
     }
-  }, (error) => {
-    console.error("Firestore error: ", error);
   });
 }
 
-async function checkUrlSession(){
-  const savedSession = localStorage.getItem('obed_session');
-  if(savedSession){
-    try {
-      const parsed = JSON.parse(savedSession);
-      const profile = await getProfile(parsed.id);
-      if(profile && profile.token === parsed.token){
-        session = { id: parsed.id, name: profile.name };
-        return true;
-      }
-    } catch(e) {}
-  }
-
-  const params = new URLSearchParams(window.location.search);
-  const u = params.get('u');
-  const t = params.get('t');
-  if(!u || !t) return false;
-  const profile = await getProfile(u);
-  if(profile && profile.token === t){
-    session = { id: u, name: profile.name };
-    localStorage.setItem('obed_session', JSON.stringify({ id: u, token: profile.token }));
-    return true;
-  }
-  return false;
+// Завантаження даних в реальному часі
+function initRealtimeEntries(){
+  if(unsubscribeEntries) unsubscribeEntries();
+  const q = window.FB.query(window.FB.collection(window.db, 'lunches'), window.FB.where('store', '==', STORE), window.FB.where('date', '==', todayISO()));
+  unsubscribeEntries = window.FB.onSnapshot(q, (snapshot) => {
+    entries = [];
+    snapshot.forEach(doc => entries.push(doc.data()));
+    renderAll();
+    checkDinnerNotifications();
+  });
 }
 
-function personalLink(id, token){
-  const base = window.location.origin + window.location.pathname;
-  return base + '?u=' + encodeURIComponent(id) + '&t=' + encodeURIComponent(token);
+// Інтерактивні запити обміну місцями
+async function sendSwapRequest(targetEntryId){
+  await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', targetEntryId), {
+    swapRequest: { fromId: session.id, fromName: session.name, status: 'pending' }
+  });
+  alert('Запит на обмін надіслано колезі!');
 }
 
+async function respondSwap(entryId, accept, targetEntry){
+  if(accept){
+    // Знаходимо нашу бронь і міняємо час місцями
+    const myEntry = entries.find(e => e.ownerId === session.id);
+    if(myEntry){
+      await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', myEntry.id), { start: targetEntry.start, end: targetEntry.end });
+      await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', entryId), { start: myEntry.start, end: myEntry.end, swapRequest: null });
+      alert('Успішно помінялися часом!');
+      return;
+    }
+  }
+  await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', entryId), { swapRequest: { status: 'denied' } });
+  alert('Запит відхилено.');
+}
+
+// Рендер інтерфейсу
 function renderHeaderRight(){
   const slot = document.getElementById('headerRight');
   if(session){
     slot.innerHTML = `
-      <div class="profile-chip" id="profileChipBtn">
+      <div class="profile-chip" id="openProfileBtn">
         <div class="avatar" style="background:${colorForName(session.name)}">${initialsForName(session.name)}</div>
         <span class="profile-chip-name">${escapeHtml(session.name.split(' ')[0])}</span>
       </div>`;
-    document.getElementById('profileChipBtn').addEventListener('click', logout);
+    document.getElementById('openProfileBtn').addEventListener('click', openProfileModal);
   } else {
     slot.innerHTML = '';
   }
 }
 
-function logout(){
-  if(!confirm('Вийти з профілю на цьому пристрої?')) return;
-  session = null;
-  const url = window.location.origin + window.location.pathname;
-  window.history.replaceState({}, '', url);
-  renderAll();
+function renderStatsBar(){
+  const bar = document.getElementById('statsBar');
+  const done = entries.filter(e => timeStrToDate(e.end, todayISO()) < new Date()).length;
+  const eating = entries.filter(e => {
+    const now = new Date();
+    return now >= timeStrToDate(e.start, todayISO()) && now < timeStrToDate(e.end, todayISO());
+  }).length;
+  const upcoming = entries.length - done - eating;
+
+  bar.innerHTML = `
+    <div class="stat-box"><div class="stat-num">${eating}</div><div class="stat-lbl">Їдять зараз</div></div>
+    <div class="stat-box"><div class="stat-num">${upcoming}</div><div class="stat-lbl">Запланували</div></div>
+    <div class="stat-box"><div class="stat-num">${done}</div><div class="stat-lbl">Пообідали</div></div>`;
 }
 
 function renderStatusStrip(){
   const slot = document.getElementById('statusStripSlot');
   const now = new Date();
-  const today = todayISO();
-
-  const active = entries.filter(e => {
-    const s = timeStrToDate(e.start, today);
-    const en = timeStrToDate(e.end, today);
-    return now >= s && now < en;
-  });
+  const active = entries.filter(e => now >= timeStrToDate(e.start, todayISO()) && now < timeStrToDate(e.end, todayISO()));
 
   if(active.length === 0){
-    slot.innerHTML = `
-      <div class="status-strip free">
-        <span class="status-icon">☕️</span>
-        <span class="status-text">Столик вільний — ніхто зараз не обідає</span>
-      </div>`;
+    slot.innerHTML = `<div class="status-strip free"><span>☕️</span><span>Столик вільний — ніхто зараз не обідає</span></div>`;
     return;
   }
-
-  let soonest = active[0];
-  active.forEach(e => {
-    const en = timeStrToDate(e.end, today);
-    const soonestEnd = timeStrToDate(soonest.end, today);
-    if(en < soonestEnd) soonest = e;
-  });
-  const soonestEnd = timeStrToDate(soonest.end, today);
-  const ms = soonestEnd - now;
-
-  const namesText = active.length === 1
-    ? escapeHtml(active[0].name)
-    : active.map(e => escapeHtml(e.name.split(' ')[0])).join(', ');
-
-  slot.innerHTML = `
-    <div class="status-strip busy">
-      <span class="status-icon">🔥</span>
-      <span class="status-text">Зараз обідає: ${namesText}</span>
-      <span class="status-countdown">${formatCountdown(ms)}</span>
-    </div>`;
+  slot.innerHTML = `<div class="status-strip busy"><span>🔥</span><span>Зараз обідає: ${active.map(e => escapeHtml(e.name)).join(', ')}</span></div>`;
 }
 
 let authMode = 'register';
 function renderAuth(){
   const slot = document.getElementById('authSlot');
-  const bannerSlot = document.getElementById('linkBannerSlot');
-  if(session){
-    slot.innerHTML = '';
-    return;
-  }
-  bannerSlot.innerHTML = '';
-
+  if(session){ slot.innerHTML = ''; return; }
   slot.innerHTML = `
     <div class="card auth-card">
       <div class="auth-tabs">
         <button class="auth-tab ${authMode==='login'?'active':''}" data-mode="login">Вхід</button>
         <button class="auth-tab ${authMode==='register'?'active':''}" data-mode="register">Реєстрація</button>
       </div>
-      <div class="field">
-        <label>Ім'я та Прізвище</label>
-        <input type="text" id="authName" placeholder="Введіть дані:" autocomplete="name">
-      </div>
-      <div class="field">
-        <label>PIN-код (4 цифри)</label>
-        <input type="text" id="authPin" placeholder="••••" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">
-        ${authMode==='register' ? '<div class="pin-hint">🔐 Придумай будь-які 4 цифри — це твій постійний пароль для входу.</div>' : ''}
-      </div>
-      <button class="btn" id="authSubmitBtn">${authMode==='login' ? 'Увійти в систему' : 'Створити профіль'}</button>
+      <div class="field"><label>Ім'я та Прізвище</label><input type="text" id="authName" placeholder="Введіть дані"></div>
+      <div class="field"><label>PIN-код (4 цифри)</label><input type="password" id="authPin" maxlength="4"></div>
+      <button class="btn" id="authSubmitBtn">${authMode==='login' ? 'Увійти' : 'Створити профіль'}</button>
       <div class="form-error" id="authError" style="display:none;"></div>
     </div>`;
-
-  slot.querySelectorAll('.auth-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      authMode = tab.getAttribute('data-mode');
-      renderAuth();
-    });
-  });
-
-  document.getElementById('authSubmitBtn').addEventListener('click', handleAuthSubmit);
-}
-
-async function handleAuthSubmit(){
-  const errorBox = document.getElementById('authError');
-  errorBox.style.display = 'none';
-  const name = document.getElementById('authName').value.trim();
-  const pin = document.getElementById('authPin').value.trim();
-
-  if(!name || name.length < 2){
-    errorBox.textContent = "Вкажи правильне ім'я та прізвище.";
-    errorBox.style.display = 'block';
-    return;
-  }
-  if(!/^[0-9]{4}$/.test(pin)){
-    errorBox.textContent = 'PIN-код має складатись рівно з 4 цифр.';
-    errorBox.style.display = 'block';
-    return;
-  }
-
-  const btn = document.getElementById('authSubmitBtn');
-  btn.disabled = true;
-  btn.textContent = authMode === 'register' ? 'Створюємо профіль…' : 'Входимо…';
-
-  let result;
-  if(authMode === 'register'){
-    result = await register(name, pin);
-    if(!result.ok){
-      btn.disabled = false;
-      btn.textContent = 'Створити профіль';
-      errorBox.textContent = result.reason === 'taken' ? '⚠️ Профіль з таким ім\'ям вже існує.' : '⚠️ Помилка з\'єднання з базою.';
-      errorBox.style.display = 'block';
-      return;
-    }
-    showLinkBanner(result.id, result.token, true);
-  } else {
-    result = await login(name, pin);
-    if(!result.ok){
-      btn.disabled = false;
-      btn.textContent = 'Увійти в систему';
-      errorBox.textContent = result.reason === 'not_found' ? '⚠️ Профіль не знайдено.' : '⚠️ Невірний PIN-код.';
-      errorBox.style.display = 'block';
-      return;
-    }
-    showLinkBanner(result.id, result.token, false);
-  }
-
-  btn.disabled = false;
-  renderAll();
-}
-
-let bannerDismissed = false;
-function showLinkBanner(id, token, justRegistered){
-  bannerDismissed = false;
-  window._pendingBanner = { id, token, justRegistered };
-}
-
-function renderLinkBanner(){
-  const bannerSlot = document.getElementById('linkBannerSlot');
-  if(!session || bannerDismissed || !window._pendingBanner){
-    bannerSlot.innerHTML = '';
-    return;
-  }
-  const { id, token, justRegistered } = window._pendingBanner;
-  const link = personalLink(id, token);
-  bannerSlot.innerHTML = `
-    <div class="link-banner">
-      <button class="link-banner-dismiss" id="dismissBanner">✕</button>
-      <div class="link-banner-title">${justRegistered ? '🎉 Профіль успішно створено!' : '✨ Вхід виконано'}</div>
-      <div class="link-banner-sub">Збережи це персональне посилання, щоб входити в один клік без введення PIN-коду.</div>
-      <div class="link-banner-row">
-        <span class="link-banner-url">${link}</span>
-        <button class="link-banner-copy" id="copyLinkBtn">Копіювати</button>
-      </div>
-    </div>`;
-  document.getElementById('dismissBanner').addEventListener('click', () => {
-    bannerDismissed = true;
-    renderLinkBanner();
-  });
-  document.getElementById('copyLinkBtn').addEventListener('click', async () => {
-    await navigator.clipboard.writeText(link);
-    const btn = document.getElementById('copyLinkBtn');
-    btn.textContent = 'Скопійовано! ✅';
-    setTimeout(() => { btn.textContent = 'Копіювати'; }, 2000);
+  slot.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => { authMode = t.dataset.mode; renderAuth(); }));
+  document.getElementById('authSubmitBtn').addEventListener('click', async () => {
+    const name = document.getElementById('authName').value.trim();
+    const pin = document.getElementById('authPin').value.trim();
+    const res = authMode === 'register' ? await register(name, pin) : await login(name, pin);
+    if(!res.ok){ alert('Помилка авторизації'); return; }
+    requestNotificationPermission();
+    renderAll();
   });
 }
 
 function renderBoard(){
   const slot = document.getElementById('boardSlot');
   if(entries.length === 0){
-    slot.innerHTML = `
-      <p class="board-title"><span class="dot"></span>Графік обідів на сьогодні — К-19</p>
-      <div class="card empty-state">
-        <strong>🍽 Столик поки що вільний</strong>
-        ${session ? 'Тисни помаранчеву кнопку внизу, щоб зайняти свій час першим!' : "Увійди у свій профіль вище, щоб забронювати обід."}
-      </div>`;
-    updateFab();
+    slot.innerHTML = `<p class="board-title"><span class="dot"></span>Графік обідів</p><div class="card" style="text-align:center;">🍽 Столик вільний. Займи свій час першим!</div>`;
     return;
   }
-
-  const sorted = [...entries].sort((a,b) => a.start.localeCompare(b.start));
-  const now = new Date();
-  const today = todayISO();
-
-  let html = '<p class="board-title"><span class="dot"></span>Графік обідів на сьогодні — К-19</p><div class="entries">';
-
-  sorted.forEach(entry => {
-    const startD = timeStrToDate(entry.start, today);
-    const endD = timeStrToDate(entry.end, today);
-    const isMine = session && entry.ownerId === session.id;
-
-    let state = 'upcoming';
-    let isEatingNow = false;
-
-    if(now >= startD && now < endD){
-      state = 'eating';
-      isEatingNow = true;
-    } else if(now >= endD){
-      state = 'done';
-    }
-
-    let countdownBlock;
-    if(isEatingNow){
-      const ms = endD - now;
-      const soon = ms < 5*60*1000;
-      countdownBlock = `
-        <div class="entry-countdown">
-          <span class="countdown-label">Залишилось</span>
-          <span class="countdown-digits" style="color:${soon ? 'var(--red)' : 'var(--comfy-orange)'}">${formatCountdown(ms)}</span>
-        </div>`;
-    } else if(state === 'done'){
-      countdownBlock = `
-        <div class="entry-countdown">
-          <span class="countdown-label">Завершено</span>
-        </div>`;
-    } else {
-      countdownBlock = `
-        <div class="entry-countdown">
-          <span class="countdown-label">Початок о</span>
-          <span class="countdown-digits" style="color:var(--ink-soft); font-size:15px;">${entry.start}</span>
-        </div>`;
+  let html = '<p class="board-title"><span class="dot"></span>Графік обідів на сьогодні</p><div class="entries">';
+  entries.sort((a,b)=>a.start.localeCompare(b.start)).forEach(e => {
+    const isMine = session && e.ownerId === session.id;
+    
+    let swapBlock = '';
+    if(e.swapRequest && e.swapRequest.status === 'pending'){
+      if(isMine){
+        swapBlock = `<div class="swap-request-banner">🔄 Запит обміну від <b>${escapeHtml(e.swapRequest.fromName)}</b>!
+          <div class="swap-buttons">
+            <button class="swap-btn-accept" onclick="window.acceptSwap('${e.id}', true)">Прийняти</button>
+            <button class="swap-btn-deny" onclick="window.acceptSwap('${e.id}', false)">Відмовити</button>
+          </div></div>`;
+      } else {
+        swapBlock = `<div style="font-size:11px;color:var(--comfy-orange);margin-top:4px;">⏳ Очікує підтвердження обміну...</div>`;
+      }
     }
 
     html += `
-      <div class="entry ${state} ${isMine?'mine':''}">
-        <div class="entry-avatar" style="background:${colorForName(entry.name)}">${initialsForName(entry.name)}</div>
+      <div class="entry ${isMine?'mine':''}">
+        <div class="entry-avatar" style="background:${colorForName(e.name)}">${initialsForName(e.name)}</div>
         <div class="entry-body">
           <div class="entry-name-row">
-            <span class="entry-name">${escapeHtml(entry.name)}</span>
+            <span class="entry-name">${escapeHtml(e.name)}</span>
             ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
           </div>
-          <div class="entry-time">🕒 ${entry.start} – ${entry.end}</div>
-          ${isMine ? `<button class="entry-cancel" data-id="${entry.id}">Скасувати бронь</button>` : ''}
+          <div class="entry-time">🕒 ${e.start} – ${e.end}</div>
+          ${!isMine && session ? `<div class="entry-actions"><button class="mini-action-btn" onclick="window.sendSwap('${e.id}')">🔄 Помінятися</button><button class="mini-action-btn accent" onclick="window.sendThanks('${e.ownerId}')">⭐ Подяка</button></div>` : ''}
+          ${swapBlock}
         </div>
-        ${countdownBlock}
       </div>`;
   });
-
   html += '</div>';
   slot.innerHTML = html;
-
-  slot.querySelectorAll('.entry-cancel').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const id = btn.getAttribute('data-id');
-      btn.disabled = true;
-      btn.textContent = 'Скасовуємо…';
-      await removeEntryFromDb(id);
-    });
-  });
-
-  updateFab();
+  document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
 }
 
-function updateFab(){
-  const fab = document.getElementById('fabBtn');
-  fab.style.display = session ? 'flex' : 'none';
-}
-
-/* Генерація часу з 12:30 до 18:30 з кроком 15 хв */
-function generateStartOptions(){
-  const opts = [];
-  let cur = 12*60 + 30; // 12:30
-  const end = 18*60 + 30; // 18:30
-  while(cur <= end){
-    opts.push(pad(Math.floor(cur/60)) + ':' + pad(cur%60));
-    cur += 15;
+window.sendSwap = (id) => sendSwapRequest(id);
+window.acceptSwap = (id, accept) => respondSwap(id, accept, entries.find(x=>x.id===id));
+window.sendThanks = async (ownerId) => {
+  const profile = await getProfile(ownerId);
+  if(profile){
+    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', ownerId), { thanksCount: (profile.thanksCount||0) + 1 });
+    alert('⭐ Подяку успішно надіслано!');
   }
-  return opts;
+};
+
+// Профіль та статистика
+async function openProfileModal(){
+  const profile = await getProfile(session.id);
+  const sheet = document.getElementById('profileSheet');
+  document.getElementById('profileSheetContent').innerHTML = `
+    <div class="sheet-title">Мій профіль 👤</div>
+    <div class="sheet-sub">Статистика та досягнення</div>
+    <div class="card" style="margin-bottom:16px;">
+      <p><b>Ім'я:</b> ${escapeHtml(profile.name)}</p>
+      <p><b>Отримано подяк:</b> ⭐ ${profile.thanksCount || 0}</p>
+      <p><b>Досягнення:</b> ${profile.achivs?.join(', ') || 'Немає'}</p>
+      <div class="field" style="margin-top:12px;"><label>Аватар (URL картинки)</label><input type="text" id="avatarInput" value="${profile.avatarUrl||''}" placeholder="https://..."></div>
+      <button class="btn" id="saveAvatarBtn" style="margin-top:10px;">Зберегти аватарку</button>
+    </div>
+    <button class="btn btn-ghost" onclick="document.getElementById('profileSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">Закрити</button>`;
+  
+  document.getElementById('sheetBackdrop').classList.add('open');
+  sheet.classList.add('open');
+
+  document.getElementById('saveAvatarBtn').addEventListener('click', async () => {
+    const url = document.getElementById('avatarInput').value.trim();
+    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', session.id), { avatarUrl: url });
+    alert('Збережено!');
+  });
 }
 
+// Модалка броні
 function renderStartChips(){
   const wrap = document.getElementById('startChips');
   wrap.innerHTML = '';
-  generateStartOptions().forEach(t => {
+  let cur = 12*60 + 30;
+  while(cur <= 18*60 + 30){
+    const t = pad(Math.floor(cur/60)) + ':' + pad(cur%60);
     const chip = document.createElement('button');
-    chip.className = 'chip';
-    chip.textContent = t;
-    chip.dataset.time = t;
+    chip.className = 'chip'; chip.textContent = t;
     chip.addEventListener('click', () => {
       sheetStart = t;
-      document.getElementById('customRow').style.display = 'none';
-      document.getElementById('customToggle').textContent = 'Встановити точний час вручну';
       wrap.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
       chip.classList.add('selected');
-      updateSummary();
     });
     wrap.appendChild(chip);
-  });
+    cur += 15;
+  }
 }
 
-document.getElementById('durationChips').querySelectorAll('.chip').forEach(chip => {
+document.querySelectorAll('#durationChips .chip').forEach(chip => {
   chip.addEventListener('click', () => {
     sheetDurationMin = parseInt(chip.dataset.dur, 10);
     document.querySelectorAll('#durationChips .chip').forEach(c => c.classList.remove('selected'));
     chip.classList.add('selected');
-    updateSummary();
   });
 });
 
-document.getElementById('customToggle').addEventListener('click', () => {
-  const row = document.getElementById('customRow');
-  const isOpen = row.style.display !== 'none';
-  row.style.display = isOpen ? 'none' : 'grid';
-  document.getElementById('customToggle').textContent = isOpen ? 'Встановити точний час вручну' : 'Сховати точний час';
-  if(!isOpen){
-    document.getElementById('startChips').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-    document.querySelectorAll('#durationChips .chip').forEach(c => c.classList.remove('selected'));
-    sheetStart = null; sheetDurationMin = null;
-  }
-});
-
-document.getElementById('customStart').addEventListener('input', updateSummary);
-document.getElementById('customEnd').addEventListener('input', updateSummary);
-
-function getEffectiveTimes(){
-  const customOpen = document.getElementById('customRow').style.display !== 'none';
-  if(customOpen){
-    const s = document.getElementById('customStart').value;
-    const e = document.getElementById('customEnd').value;
-    return { start: s || null, end: e || null };
-  }
-  if(sheetStart && sheetDurationMin){
-    return { start: sheetStart, end: addMinutes(sheetStart, sheetDurationMin) };
-  }
-  return { start: null, end: null };
-}
-
-function updateSummary(){
-  const { start, end } = getEffectiveTimes();
-  const summary = document.getElementById('summaryText');
-  summary.textContent = start && end ? start + ' – ' + end : '— оберіть час —';
-}
-
-function openSheet(){
+document.getElementById('fabBtn').addEventListener('click', () => {
   document.getElementById('sheetBackdrop').classList.add('open');
   document.getElementById('bookingSheet').classList.add('open');
-  document.getElementById('sheetError').style.display = 'none';
-}
-function closeSheet(){
+});
+document.getElementById('cancelSheetBtn').addEventListener('click', () => {
   document.getElementById('sheetBackdrop').classList.remove('open');
   document.getElementById('bookingSheet').classList.remove('open');
-}
-
-document.getElementById('fabBtn').addEventListener('click', openSheet);
-document.getElementById('sheetBackdrop').addEventListener('click', closeSheet);
-document.getElementById('cancelSheetBtn').addEventListener('click', closeSheet);
+});
 
 document.getElementById('confirmBookingBtn').addEventListener('click', async () => {
-  const errorBox = document.getElementById('sheetError');
-  errorBox.style.display = 'none';
-  const { start, end } = getEffectiveTimes();
-
-  if(!start || !end){
-    errorBox.textContent = 'Обери час початку та тривалість обіду.';
-    errorBox.style.display = 'block';
-    return;
-  }
-  if(start >= end){
-    errorBox.textContent = 'Час кінця має бути пізніше за час початку.';
-    errorBox.style.display = 'block';
-    return;
-  }
-
-  const btn = document.getElementById('confirmBookingBtn');
-  btn.disabled = true;
-  btn.textContent = 'Зберігаємо у базу…';
-
-  const saved = await addEntryToDb({
-    id: genId('e'),
-    ownerId: session.id,
-    name: session.name,
-    store: STORE,
-    start, end,
-    date: todayISO()
+  if(!sheetStart || !sheetDurationMin){ alert('Обери час та тривалість!'); return; }
+  const end = addMinutes(sheetStart, sheetDurationMin);
+  await window.FB.setDoc(window.FB.doc(window.db, 'lunches', genId('e')), {
+    id: genId('e'), ownerId: session.id, name: session.name, store: STORE, start: sheetStart, end, date: todayISO()
   });
-
-  if(!saved){
-    errorBox.textContent = 'Не вдалося зберегти бронь. Спробуй ще раз.';
-    errorBox.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Підтвердити бронь';
-    return;
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Підтвердити бронь';
-  closeSheet();
-
-  sheetStart = null; sheetDurationMin = null;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-  document.getElementById('customStart').value = '';
-  document.getElementById('customEnd').value = '';
-  document.getElementById('customRow').style.display = 'none';
-  updateSummary();
+  document.getElementById('sheetBackdrop').classList.remove('open');
+  document.getElementById('bookingSheet').classList.remove('open');
 });
 
 function renderAll(){
   renderHeaderRight();
+  renderStatsBar();
   renderStatusStrip();
   renderAuth();
-  renderLinkBanner();
   renderBoard();
 }
 
 window.addEventListener('firebase-ready', async () => {
-  await checkUrlSession();
+  const saved = localStorage.getItem('obed_session');
+  if(saved){
+    const parsed = JSON.parse(saved);
+    const p = await getProfile(parsed.id);
+    if(p && p.token === parsed.token) session = { id: parsed.id, name: p.name };
+  }
   renderStartChips();
   initRealtimeEntries();
-  renderAll();
-
-  setInterval(() => { renderStatusStrip(); renderBoard(); }, 1000);
 });
 </script>
 </body>
