@@ -507,7 +507,6 @@ button{-webkit-appearance:none; appearance:none;}
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // СЮДИ ВСТАВ СВОЇ ДАНІ З FIREBASE КОНСОЛІ
   const firebaseConfig = {
     apiKey: "AIzaSy26dy-OT-YH8I.haKpX6mQCVn85VN43w",
     authDomain: "obedcomfy.firebaseapp.com",
@@ -525,6 +524,8 @@ button{-webkit-appearance:none; appearance:none;}
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
+<!-- ОСЬ ТУТ БУЛА ПРОБЛЕМА: ЗАГОРНУЛИ ВЕСЬ КОД У ТЕГ SCRIPT -->
+<script>
 const STORE = 'K-19';
 let entries = [];
 let session = null;
@@ -586,7 +587,6 @@ function randomToken(){
   return Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
 }
 
-// --- Firestore Database operations ---
 async function getProfile(normName){
   try{
     const ref = window.FB.doc(window.db, 'profiles', normName);
@@ -605,7 +605,6 @@ async function register(name, pin){
   try {
     await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
     session = { id: norm, name: profile.name };
-    // Зберігаємо сесію в пам'яті браузера
     localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
     return { ok:true, id: norm, token };
   } catch(e){
@@ -620,7 +619,6 @@ async function login(name, pin){
   if(profile.pin !== pin) return { ok:false, reason:'wrong_pin' };
 
   session = { id: norm, name: profile.name };
-  // Зберігаємо сесію в пам'яті браузера
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
   return { ok:true, id: norm, token: profile.token };
 }
@@ -662,7 +660,6 @@ function initRealtimeEntries(){
 }
 
 async function checkUrlSession(){
-  // Спочатку перевіряємо localStorage, чи є збережений користувач
   const savedSession = localStorage.getItem('obed_session');
   if(savedSession){
     try {
@@ -675,7 +672,6 @@ async function checkUrlSession(){
     } catch(e) {}
   }
 
-  // Якщо в localStorage нічого немає, перевіряємо посилання
   const params = new URLSearchParams(window.location.search);
   const u = params.get('u');
   const t = params.get('t');
@@ -694,7 +690,6 @@ function personalLink(id, token){
   return base + '?u=' + encodeURIComponent(id) + '&t=' + encodeURIComponent(token);
 }
 
-/* Rendering */
 function renderHeaderRight(){
   const slot = document.getElementById('headerRight');
   if(session){
