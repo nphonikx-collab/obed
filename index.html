@@ -27,27 +27,14 @@
   --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
 
-html[data-skin="birthday"]{
-  --comfy-green:#8B5CF6; --comfy-green-dark:#6D28D9; --comfy-orange:#EC4899; --comfy-orange-light:#FCE7F3; --lime-badge:#EDE9FE;
-}
-html[data-skin="ny"]{
-  --comfy-green:#0EA5E9; --comfy-green-dark:#0284C7; --comfy-orange:#EF4444; --comfy-orange-light:#FEE2E2; --lime-badge:#E0F2FE;
-}
-html[data-skin="valentin"]{
-  --comfy-green:#F43F5E; --comfy-green-dark:#BE123C; --comfy-orange:#FB7185; --comfy-orange-light:#FFE4E6; --lime-badge:#FFF1F2;
-}
-html[data-skin="cyber"]{
-  --comfy-green:#10B981; --comfy-green-dark:#059669; --comfy-orange:#F59E0B; --comfy-orange-light:#FEF3C7; --lime-badge:#D1FAE5;
-}
+html[data-skin="birthday"]{ --comfy-green:#8B5CF6; --comfy-green-dark:#6D28D9; --comfy-orange:#EC4899; --comfy-orange-light:#FCE7F3; --lime-badge:#EDE9FE; }
+html[data-skin="ny"]{ --comfy-green:#0EA5E9; --comfy-green-dark:#0284C7; --comfy-orange:#EF4444; --comfy-orange-light:#FEE2E2; --lime-badge:#E0F2FE; }
+html[data-skin="valentin"]{ --comfy-green:#F43F5E; --comfy-green-dark:#BE123C; --comfy-orange:#FB7185; --comfy-orange-light:#FFE4E6; --lime-badge:#FFF1F2; }
+html[data-skin="cyber"]{ --comfy-green:#10B981; --comfy-green-dark:#059669; --comfy-orange:#F59E0B; --comfy-orange-light:#FEF3C7; --lime-badge:#D1FAE5; }
 
 html[data-theme="dark"]{
-  --bg:#0F1411;
-  --surface:#1A231C;
-  --ink:#F3F4F6;
-  --ink-soft:#9CA3AF;
-  --line:#2A382E;
-  --comfy-orange-light:#2A1D15;
-  --lime-badge:#14331C;
+  --bg:#0F1411; --surface:#1A231C; --ink:#F3F4F6; --ink-soft:#9CA3AF; --line:#2A382E;
+  --comfy-orange-light:#2A1D15; --lime-badge:#14331C;
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -166,7 +153,8 @@ button{-webkit-appearance:none; appearance:none;}
 .entry-name:hover{color:var(--comfy-green);}
 .you-badge{font-size:10px;font-weight:800;color:var(--comfy-green-dark);background:var(--lime-badge);padding:2px 8px;border-radius:6px;}
 .admin-badge{font-size:10px;font-weight:800;color:#fff;background:var(--comfy-orange);padding:2px 8px;border-radius:6px;}
-.entry-time{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:3px;font-weight:600;}
+.entry-time{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink);margin-top:4px;font-weight:700;}
+.entry-meta-info{font-size:11px;color:var(--ink-soft);margin-top:2px;font-family:'JetBrains Mono',monospace;}
 
 .entry-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
 .mini-action-btn{
@@ -176,7 +164,7 @@ button{-webkit-appearance:none; appearance:none;}
 .mini-action-btn.accent{background:var(--lime-badge);color:var(--comfy-green-dark);border-color:var(--comfy-green);}
 .mini-action-btn.danger{background:rgba(224,60,49,0.1);color:var(--red);border-color:rgba(224,60,49,0.3);}
 
-.chat-container{display:flex;flex-direction:column;gap:12px;}
+.chat-container{display:flex;flex-direction:column;gap:12px;position:relative;}
 .date-divider{text-align:center;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--ink-soft);margin:10px 0;position:relative;}
 .date-divider span{background:var(--bg);padding:0 12px;position:relative;z-index:2;}
 .date-divider::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line);z-index:1;}
@@ -189,6 +177,19 @@ button{-webkit-appearance:none; appearance:none;}
 .chat-author{font-size:13px;font-weight:800;color:var(--comfy-green-dark);cursor:pointer;}
 .chat-time{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);}
 .chat-text{font-size:14px;line-height:1.4;word-break:break-word;}
+.mention-tag{background:var(--lime-badge);color:var(--comfy-green-dark);padding:2px 6px;border-radius:4px;font-weight:700;}
+
+/* Меню вибору користувача при введенні @ */
+.mention-dropdown{
+  position:absolute;bottom:90px;left:16px;right:16px;background:var(--surface);
+  border:1.5px solid var(--comfy-green);border-radius:var(--radius-sm);box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  max-height:160px;overflow-y:auto;z-index:60;display:none;
+}
+.mention-item{
+  padding:10px 14px;font-size:13.5px;font-weight:700;cursor:pointer;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:8px;
+}
+.mention-item:hover{background:var(--lime-badge);color:var(--comfy-green-dark);}
 
 .fab{
   position:fixed;left:16px;right:16px;bottom:calc(20px + var(--safe-bottom));max-width:468px;margin:0 auto;
@@ -684,6 +685,7 @@ function renderBoardTab(){
     const canDelete = session && (isMine || session.isAdmin);
     const bgStyle = colorForName(e.name);
     const init = initialsForName(e.name);
+    const createdText = e.createdAt ? `Створено: ${e.createdAt}` : '';
     html += `
       <div class="entry ${isMine?'mine':''}">
         <div class="entry-avatar" id="board_av_${e.ownerId}" style="background:${bgStyle};" onclick="window.openProfile('${e.ownerId}')">${init}</div>
@@ -693,7 +695,8 @@ function renderBoardTab(){
             ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
             ${e.ownerId === normalizeName("Максим Лебідь") ? '<span class="admin-badge">⚡️ ADMIN</span>' : ''}
           </div>
-          <div class="entry-time">🕒 ${e.start} – ${e.end} (30 хв)</div>
+          <div class="entry-time">🕒 Обід: ${e.start} – ${e.end} (30 хв)</div>
+          ${createdText ? `<div class="entry-meta-info">👤 Хто та коли: ${escapeHtml(e.name)} • ${createdText}</div>` : ''}
           ${canDelete ? `<div class="entry-actions"><button class="mini-action-btn ${session.isAdmin && !isMine?'danger':''}" onclick="window.cancelBooking('${e.id}')">${session.isAdmin && !isMine?'🗑 Видалити (Адмін)':'❌ Скасувати бронь'}</button></div>` : ''}
         </div>
       </div>`;
@@ -785,9 +788,10 @@ function renderChatTab(){
   const slot = document.getElementById('mainTabContent');
   let chatHtml = `
     <p class="board-title"><span class="dot"></span>Робочий чат магазину (${currentStore})</p>
-    <div class="card" style="margin-bottom:16px;">
-      <div class="field" style="margin-bottom:10px;">
-        <textarea id="chatInputText" rows="2" placeholder="${session ? 'Написати повідомлення у чат...' : 'Увійдіть, щоб писати у чат'}"></textarea>
+    <div class="card" style="margin-bottom:16px; position:relative;">
+      <div class="field" style="margin-bottom:10px; position:relative;">
+        <textarea id="chatInputText" rows="2" placeholder="${session ? 'Написати повідомлення (використовуйте @ для згадки)...' : 'Увійдіть, щоб писати у чат'}"></textarea>
+        <div class="mention-dropdown" id="mentionDropdown"></div>
       </div>
       <button class="btn" id="sendChatBtn" ${!session?'disabled':''}>Надіслати в чат 💬</button>
     </div>
@@ -806,23 +810,69 @@ function renderChatTab(){
         lastDateStr = prettyDate;
         chatHtml += `<div class="date-divider"><span>${prettyDate}</span></div>`;
       }
+      
+      // Підсвітка згадок @імя
+      let formattedText = escapeHtml(m.text);
+      profilesList.forEach(p => {
+        const mentionRegex = new RegExp(`@${p.name}`, 'gi');
+        formattedText = formattedText.replace(mentionRegex, `<span class="mention-tag">@${p.name}</span>`);
+      });
+
       chatHtml += `
         <div class="chat-bubble">
           <div class="chat-header">
             <span class="chat-author" onclick="window.openProfile('${m.authorId}')">${escapeHtml(m.authorName)}</span>
             <span class="chat-time">${m.time || ''}</span>
           </div>
-          <div class="chat-text">${escapeHtml(m.text)}</div>
+          <div class="chat-text">${formattedText}</div>
         </div>`;
     });
   }
 
   chatHtml += '</div>';
-  slot.innerHTML = chatHtml;
+  slot.innerHTML = html;
 
   if(session){
+    const chatInput = document.getElementById('chatInputText');
+    const mentionDropdown = document.getElementById('mentionDropdown');
+
+    chatInput.addEventListener('input', (e) => {
+      const val = chatInput.value;
+      const cursorIdx = chatInput.selectionStart;
+      const textBeforeCursor = val.slice(0, cursorIdx);
+      const match = textBeforeCursor.match(/@([\wА-Яа-яЄєІіЇї]*)$/);
+
+      if(match){
+        const queryStr = match[1].toLowerCase();
+        const filtered = profilesList.filter(p => p.name.toLowerCase().includes(queryStr));
+        if(filtered.length > 0){
+          mentionDropdown.style.display = 'block';
+          mentionDropdown.innerHTML = filtered.map(p => `
+            <div class="mention-item" onclick="window.selectMention('${p.name}')">
+              <div class="avatar" style="width:24px;height:24px;font-size:10px;background:${colorForName(p.name)}">${initialsForName(p.name)}</div>
+              <span>${escapeHtml(p.name)}</span>
+            </div>`).join('');
+        } else {
+          mentionDropdown.style.display = 'none';
+        }
+      } else {
+        mentionDropdown.style.display = 'none';
+      }
+    });
+
+    window.selectMention = (name) => {
+      const val = chatInput.value;
+      const cursorIdx = chatInput.selectionStart;
+      const textBeforeCursor = val.slice(0, cursorIdx);
+      const textAfterCursor = val.slice(cursorIdx);
+      const updatedBefore = textBeforeCursor.replace(/@[\wА-Яа-яЄєІіЇї]*$/, `@${name} `);
+      chatInput.value = updatedBefore + textAfterCursor;
+      mentionDropdown.style.display = 'none';
+      chatInput.focus();
+    };
+
     document.getElementById('sendChatBtn').addEventListener('click', async () => {
-      const text = document.getElementById('chatInputText').value.trim();
+      const text = chatInput.value.trim();
       if(!text) return;
       playSound('click');
       const now = new Date();
@@ -831,7 +881,8 @@ function renderChatTab(){
         id: genId('msg'), store: currentStore, authorId: session.id, authorName: session.name,
         text, date: todayISO(), time: timeStr, timestamp: Date.now()
       });
-      document.getElementById('chatInputText').value = '';
+      chatInput.value = '';
+      mentionDropdown.style.display = 'none';
     });
   }
 
@@ -1020,9 +1071,11 @@ document.getElementById('confirmBookingBtn').addEventListener('click', async () 
   const end = addMinutes(sheetStart, 30);
   const lunchId = genId('e');
   const today = todayISO();
+  const now = new Date();
+  const createdTimeStr = today + ' о ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
 
   await window.FB.setDoc(window.FB.doc(window.db, 'lunches', lunchId), {
-    id: lunchId, ownerId: session.id, name: session.name, store: currentStore, start: sheetStart, end, date: today
+    id: lunchId, ownerId: session.id, name: session.name, store: currentStore, start: sheetStart, end, date: today, createdAt: createdTimeStr
   });
 
   const profile = await getProfile(session.id);
