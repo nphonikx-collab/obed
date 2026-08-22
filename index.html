@@ -98,7 +98,6 @@ button{-webkit-appearance:none; appearance:none;}
   cursor:pointer;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);
 }
 
-/* Панель лічильника колег */
 .stats-counter-bar{
   display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:16px;
 }
@@ -125,7 +124,6 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .status-strip.free{background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);}
 .status-strip.busy{background:var(--comfy-orange-light);border:1px solid rgba(255,102,0,0.25);color:var(--comfy-orange);}
-.status-countdown{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;background:rgba(255,102,0,0.15);padding:4px 8px;border-radius:8px;}
 
 .store-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:13px;padding:0 4px;}
 .store-pill{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--comfy-green-dark);}
@@ -151,17 +149,6 @@ button{-webkit-appearance:none; appearance:none;}
 .btn-ghost{background:none;color:var(--ink-soft);border:1.5px solid var(--line);box-shadow:none;}
 .form-error{color:var(--red);font-size:13px;margin-top:12px;font-weight:700;background:rgba(224,60,49,0.1);padding:10px 14px;border-radius:10px;}
 
-.link-banner{
-  background:linear-gradient(135deg, #1C3B24 0%, #112617 100%);color:#fff;border-radius:var(--radius);
-  padding:20px;margin-bottom:20px;position:relative;border:1px solid rgba(56,179,74,0.3);
-}
-.link-banner-title{font-size:15px;font-weight:800;margin-bottom:6px;color:#7FEB94;}
-.link-banner-sub{font-size:12.5px;color:#C2E8CC;line-height:1.5;margin-bottom:14px;}
-.link-banner-row{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;}
-.link-banner-url{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#A8F5B8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
-.link-banner-copy{background:var(--comfy-orange);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;}
-.link-banner-dismiss{position:absolute;top:14px;right:16px;background:none;border:none;color:#8FA393;font-size:18px;cursor:pointer;}
-
 .board-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);margin:0 0 14px 4px;display:flex;align-items:center;gap:8px;}
 .board-title .dot{width:8px;height:8px;border-radius:50%;background:var(--comfy-orange);}
 
@@ -171,7 +158,6 @@ button{-webkit-appearance:none; appearance:none;}
   padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 15px rgba(0,0,0,0.02);
 }
 .entry.mine{border-color:var(--comfy-green);}
-.entry.eating{border-color:var(--comfy-orange);background:var(--comfy-orange-light);}
 
 .entry-avatar{
   width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
@@ -180,6 +166,7 @@ button{-webkit-appearance:none; appearance:none;}
 .entry-body{flex:1;min-width:0;}
 .entry-name-row{display:flex;align-items:center;gap:8px;}
 .entry-name{font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+.entry-name:hover{color:var(--comfy-green);}
 .you-badge{font-size:10px;font-weight:800;color:var(--comfy-green-dark);background:var(--lime-badge);padding:2px 8px;border-radius:6px;}
 .entry-time{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-soft);margin-top:3px;font-weight:600;}
 
@@ -190,7 +177,6 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .mini-action-btn.accent{background:var(--lime-badge);color:var(--comfy-green-dark);border-color:var(--comfy-green);}
 
-/* Інтерактивні запити обміну */
 .swap-request-banner{
   background:var(--comfy-orange-light);border:1.5px dashed var(--comfy-orange);border-radius:12px;
   padding:12px;margin-top:10px;font-size:13px;
@@ -206,7 +192,6 @@ button{-webkit-appearance:none; appearance:none;}
   box-shadow:0 10px 30px rgba(255,102,0,0.4);z-index:50;display:flex;align-items:center;justify-content:center;gap:10px;
 }
 
-/* Модалки / Шторки */
 .sheet-backdrop{position:fixed;inset:0;background:rgba(20,28,22,0.6);backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:opacity 0.25s;}
 .sheet-backdrop.open{opacity:1;pointer-events:auto;}
 .sheet{
@@ -254,7 +239,6 @@ button{-webkit-appearance:none; appearance:none;}
     <span style="color:var(--ink-soft);margin-left:auto;font-size:12px;">🍔 Всім смачного!</span>
   </div>
 
-  <div id="linkBannerSlot"></div>
   <div id="authSlot"></div>
   <div id="boardSlot"><div style="text-align:center;padding:30px;color:var(--ink-soft);">⏳ завантаження…</div></div>
 </div>
@@ -319,7 +303,6 @@ let sheetStart = null;
 let sheetDurationMin = null;
 let unsubscribeEntries = null;
 
-// Налаштування теми та скінів
 let currentTheme = localStorage.getItem('comfy_theme') || 'light';
 let currentSkin = localStorage.getItem('comfy_skin') || 'default';
 document.documentElement.setAttribute('data-theme', currentTheme);
@@ -343,7 +326,6 @@ document.getElementById('skinToggleBtn').addEventListener('click', () => {
   alert('Скін змінено на: ' + SKIN_NAMES[currentSkin]);
 });
 
-// Утиліти
 const AVATAR_COLORS = ['#38B34A','#FF6600','#2E7D4F','#E03C31','#3D6FB4','#9C27B0','#00897B'];
 function colorForName(name){
     let hash = 0;
@@ -370,14 +352,6 @@ function addMinutes(timeStr, minutes){
   const total = h*60 + m + minutes;
   return pad(Math.floor((total % (24*60)) / 60)) + ':' + pad(total % 60);
 }
-function formatCountdown(ms){
-  if(ms < 0) ms = 0;
-  const totalSec = Math.floor(ms/1000);
-  const h = Math.floor(totalSec/3600);
-  const m = Math.floor((totalSec%3600)/60);
-  const s = totalSec%60;
-  return h > 0 ? pad(h)+':'+pad(m)+':'+pad(s) : pad(m)+':'+pad(s);
-}
 function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function genId(prefix){ return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
 function normalizeName(name){ return name.trim().toLowerCase().replace(/\s+/g,' '); }
@@ -392,11 +366,11 @@ async function getProfile(normName){
 async function register(name, pin){
   const norm = normalizeName(name);
   if(await getProfile(norm)) return { ok:false, reason:'taken' };
-  const profile = { name: name.trim(), pin, store: STORE, token: Math.random().toString(36).slice(2), avatarUrl: '', thanksCount: 0, achivs: ['Новачок 🟢'], history: [] };
+  const profile = { name: name.trim(), pin, store: STORE, token: Math.random().toString(36).slice(2), avatarBase64: '', thanksCount: 0, achivs: ['Новачок 🟢'] };
   await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
   session = { id: norm, name: profile.name };
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
-  return { ok:true, id: norm, token: profile.token };
+  return { ok:true };
 }
 
 async function login(name, pin){
@@ -405,10 +379,9 @@ async function login(name, pin){
   if(!profile || profile.pin !== pin) return { ok:false };
   session = { id: norm, name: profile.name };
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
-  return { ok:true, id: norm, token: profile.token };
+  return { ok:true };
 }
 
-// Повідомлення (Браузерні пуші за 15, 10, 5 хв)
 function requestNotificationPermission(){
   if("Notification" in window && Notification.permission !== "granted"){
     Notification.requestPermission();
@@ -430,7 +403,6 @@ function checkDinnerNotifications(){
   });
 }
 
-// Завантаження даних в реальному часі
 function initRealtimeEntries(){
   if(unsubscribeEntries) unsubscribeEntries();
   const q = window.FB.query(window.FB.collection(window.db, 'lunches'), window.FB.where('store', '==', STORE), window.FB.where('date', '==', todayISO()));
@@ -442,7 +414,6 @@ function initRealtimeEntries(){
   });
 }
 
-// Інтерактивні запити обміну місцями
 async function sendSwapRequest(targetEntryId){
   await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', targetEntryId), {
     swapRequest: { fromId: session.id, fromName: session.name, status: 'pending' }
@@ -452,7 +423,6 @@ async function sendSwapRequest(targetEntryId){
 
 async function respondSwap(entryId, accept, targetEntry){
   if(accept){
-    // Знаходимо нашу бронь і міняємо час місцями
     const myEntry = entries.find(e => e.ownerId === session.id);
     if(myEntry){
       await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', myEntry.id), { start: targetEntry.start, end: targetEntry.end });
@@ -465,16 +435,21 @@ async function respondSwap(entryId, accept, targetEntry){
   alert('Запит відхилено.');
 }
 
-// Рендер інтерфейсу
 function renderHeaderRight(){
   const slot = document.getElementById('headerRight');
   if(session){
     slot.innerHTML = `
-      <div class="profile-chip" id="openProfileBtn">
-        <div class="avatar" style="background:${colorForName(session.name)}">${initialsForName(session.name)}</div>
+      <div class="profile-chip" id="openMyProfileBtn">
+        <div class="avatar" id="headerAvatarEl" style="background:${colorForName(session.name)}">${initialsForName(session.name)}</div>
         <span class="profile-chip-name">${escapeHtml(session.name.split(' ')[0])}</span>
       </div>`;
-    document.getElementById('openProfileBtn').addEventListener('click', openProfileModal);
+    document.getElementById('openMyProfileBtn').addEventListener('click', () => openProfileModal(session.id));
+    getProfile(session.id).then(p => {
+      if(p && p.avatarBase64){
+        const av = document.getElementById('headerAvatarEl');
+        if(av){ av.style.backgroundImage = `url(${p.avatarBase64})`; av.textContent = ''; }
+      }
+    });
   } else {
     slot.innerHTML = '';
   }
@@ -558,10 +533,10 @@ function renderBoard(){
 
     html += `
       <div class="entry ${isMine?'mine':''}">
-        <div class="entry-avatar" style="background:${colorForName(e.name)}">${initialsForName(e.name)}</div>
+        <div class="entry-avatar" id="board_av_${e.ownerId}" style="background:${colorForName(e.name)}" onclick="window.openProfile('${e.ownerId}')">${initialsForName(e.name)}</div>
         <div class="entry-body">
           <div class="entry-name-row">
-            <span class="entry-name">${escapeHtml(e.name)}</span>
+            <span class="entry-name" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</span>
             ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
           </div>
           <div class="entry-time">🕒 ${e.start} – ${e.end}</div>
@@ -572,46 +547,112 @@ function renderBoard(){
   });
   html += '</div>';
   slot.innerHTML = html;
+
+  // Підтягуємо реальні аватарки у список броні, якщо вони є
+  entries.forEach(async (e) => {
+    const p = await getProfile(e.ownerId);
+    if(p && p.avatarBase64){
+      const el = document.getElementById(`board_av_${e.ownerId}`);
+      if(el){ el.style.backgroundImage = `url(${p.avatarBase64})`; el.textContent = ''; }
+    }
+  });
+
   document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
 }
 
 window.sendSwap = (id) => sendSwapRequest(id);
 window.acceptSwap = (id, accept) => respondSwap(id, accept, entries.find(x=>x.id===id));
+window.openProfile = (ownerId) => openProfileModal(ownerId);
 window.sendThanks = async (ownerId) => {
   const profile = await getProfile(ownerId);
   if(profile){
     await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', ownerId), { thanksCount: (profile.thanksCount||0) + 1 });
     alert('⭐ Подяку успішно надіслано!');
+    if(document.getElementById('profileSheet').classList.contains('open')) openProfileModal(ownerId);
   }
 };
 
-// Профіль та статистика
-async function openProfileModal(){
-  const profile = await getProfile(session.id);
+// Відкриття профілю (свого чи чужого) з вибором фото з галереї телефона
+async function openProfileModal(profileId){
+  const profile = await getProfile(profileId);
+  if(!profile) return;
+  const isMe = session && session.id === profileId;
   const sheet = document.getElementById('profileSheet');
+
   document.getElementById('profileSheetContent').innerHTML = `
-    <div class="sheet-title">Мій профіль 👤</div>
-    <div class="sheet-sub">Статистика та досягнення</div>
-    <div class="card" style="margin-bottom:16px;">
-      <p><b>Ім'я:</b> ${escapeHtml(profile.name)}</p>
-      <p><b>Отримано подяк:</b> ⭐ ${profile.thanksCount || 0}</p>
-      <p><b>Досягнення:</b> ${profile.achivs?.join(', ') || 'Немає'}</p>
-      <div class="field" style="margin-top:12px;"><label>Аватар (URL картинки)</label><input type="text" id="avatarInput" value="${profile.avatarUrl||''}" placeholder="https://..."></div>
-      <button class="btn" id="saveAvatarBtn" style="margin-top:10px;">Зберегти аватарку</button>
+    <div class="sheet-title">${isMe ? 'Мій профіль 👤' : 'Профіль колеги 🧑‍💻'}</div>
+    <div class="sheet-sub">Інформація та статистика</div>
+    
+    <div class="card" style="margin-bottom:16px;text-align:center;">
+      <div class="avatar" id="modalAvatarPreview" style="width:72px;height:72px;margin:0 auto 12px;font-size:24px;background:${colorForName(profile.name)};${profile.avatarBase64?`background-image:url(${profile.avatarBase64});background-size:cover;`:''}">
+        ${profile.avatarBase64 ? '' : initialsForName(profile.name)}
+      </div>
+      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)}</h3>
+      <p style="color:var(--ink-soft);font-size:13px;margin:0 0 16px;">Магазин: ${profile.store || STORE}</p>
+      
+      <div style="display:flex;justify-content:space-around;background:var(--bg);border-radius:12px;padding:12px;margin-bottom:16px;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--comfy-green);">⭐ ${profile.thanksCount || 0}</div>
+          <div style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;">Подяки</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--comfy-orange);">${profile.achivs?.length || 0}</div>
+          <div style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;">Ачівки</div>
+        </div>
+      </div>
+
+      <p style="font-size:13px;text-align:left;margin-bottom:6px;"><b>Досягнення та бейджики:</b></p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+        ${profile.achivs?.map(a => `<span style="background:var(--lime-badge);color:var(--comfy-green-dark);padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;">${escapeHtml(a)}</span>`).join('') || 'Немає'}
+      </div>
+
+      ${isMe ? `
+        <div class="field" style="text-align:left;margin-bottom:10px;">
+          <label>Змінити фото профілю з галереї</label>
+          <input type="file" id="phoneImageInput" accept="image/*" style="padding:10px;">
+        </div>
+      ` : `
+        <button class="btn" onclick="window.sendThanks('${profileId}')">⭐ Подякувати колезі</button>
+      `}
     </div>
+
     <button class="btn btn-ghost" onclick="document.getElementById('profileSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">Закрити</button>`;
-  
+
   document.getElementById('sheetBackdrop').classList.add('open');
   sheet.classList.add('open');
 
-  document.getElementById('saveAvatarBtn').addEventListener('click', async () => {
-    const url = document.getElementById('avatarInput').value.trim();
-    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', session.id), { avatarUrl: url });
-    alert('Збережено!');
-  });
+  if(isMe){
+    document.getElementById('phoneImageInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        // Стискаємо зображення через canvas для бази даних
+        const img = new Image();
+        img.onload = async () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 200;
+          let w = img.width, h = img.height;
+          if(w > h){ if(w > maxDim){ h *= maxDim / w; w = maxDim; } }
+          else { if(h > maxDim){ w *= maxDim / h; h = maxDim; } }
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const base64Str = canvas.toDataURL('image/jpeg', 0.8);
+
+          await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', profileId), { avatarBase64: base64Str });
+          alert('✅ Аватарку успішно оновлено!');
+          openProfileModal(profileId);
+          renderHeaderRight();
+          renderBoard();
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 }
 
-// Модалка броні
 function renderStartChips(){
   const wrap = document.getElementById('startChips');
   wrap.innerHTML = '';
