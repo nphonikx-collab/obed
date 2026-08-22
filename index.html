@@ -525,7 +525,6 @@ button{-webkit-appearance:none; appearance:none;}
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
-<script>
 const STORE = 'K-19';
 let entries = [];
 let session = null;
@@ -606,6 +605,8 @@ async function register(name, pin){
   try {
     await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
     session = { id: norm, name: profile.name };
+    // Зберігаємо сесію в пам'яті браузера
+    localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
     return { ok:true, id: norm, token };
   } catch(e){
     return { ok:false, reason:'save_failed' };
@@ -619,6 +620,8 @@ async function login(name, pin){
   if(profile.pin !== pin) return { ok:false, reason:'wrong_pin' };
 
   session = { id: norm, name: profile.name };
+  // Зберігаємо сесію в пам'яті браузера
+  localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
   return { ok:true, id: norm, token: profile.token };
 }
 
@@ -659,6 +662,20 @@ function initRealtimeEntries(){
 }
 
 async function checkUrlSession(){
+  // Спочатку перевіряємо localStorage, чи є збережений користувач
+  const savedSession = localStorage.getItem('obed_session');
+  if(savedSession){
+    try {
+      const parsed = JSON.parse(savedSession);
+      const profile = await getProfile(parsed.id);
+      if(profile && profile.token === parsed.token){
+        session = { id: parsed.id, name: profile.name };
+        return true;
+      }
+    } catch(e) {}
+  }
+
+  // Якщо в localStorage нічого немає, перевіряємо посилання
   const params = new URLSearchParams(window.location.search);
   const u = params.get('u');
   const t = params.get('t');
@@ -666,6 +683,7 @@ async function checkUrlSession(){
   const profile = await getProfile(u);
   if(profile && profile.token === t){
     session = { id: u, name: profile.name };
+    localStorage.setItem('obed_session', JSON.stringify({ id: u, token: profile.token }));
     return true;
   }
   return false;
