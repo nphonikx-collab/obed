@@ -101,6 +101,7 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .status-strip.free{background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);}
 .status-strip.busy{background:var(--comfy-orange-light);border:1px solid rgba(255,102,0,0.25);color:var(--comfy-orange);}
+.status-strip.dnd{background:rgba(224,60,49,0.1);border:1px solid rgba(224,60,49,0.3);color:var(--red);}
 
 .timeline-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
 .timeline-title{font-size:12px;font-weight:800;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;display:flex;justify-content:space-between;}
@@ -192,6 +193,11 @@ button{-webkit-appearance:none; appearance:none;}
 }
 .chip.selected{background:var(--comfy-green);border-color:var(--comfy-green);color:#fff;}
 .chip.disabled{opacity:0.35;pointer-events:none;background:var(--line);}
+
+.notification-banner{
+  background:var(--surface); border:1.5px solid var(--comfy-orange); border-radius:var(--radius-sm);
+  padding:12px 16px; margin-bottom:16px; box-shadow:0 4px 15px rgba(255,102,0,0.15);
+}
 </style>
 </head>
 <body>
@@ -218,6 +224,7 @@ button{-webkit-appearance:none; appearance:none;}
   <div class="stats-counter-bar" id="statsBar"></div>
   <div id="statusStripSlot"></div>
   <div id="timelineSlot"></div>
+  <div id="incomingSwapSlot"></div>
 
   <div id="authSlot"></div>
   <div id="mainTabContent"></div>
@@ -237,6 +244,14 @@ button{-webkit-appearance:none; appearance:none;}
   <div class="form-error" id="sheetError" style="display:none;"></div>
   <button class="btn" id="confirmBookingBtn" style="margin-bottom:10px;">Підтвердити бронь</button>
   <button class="btn btn-ghost" id="cancelSheetBtn">Скасувати</button>
+</div>
+
+<div class="sheet" id="swapSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Обмін обідами 🔄</div>
+  <div class="sheet-sub" id="swapSheetSub">Обери свій слот, який хочеш віддати колезі</div>
+  <div class="chip-row" id="mySwapChips"></div>
+  <button class="btn btn-ghost" onclick="document.getElementById('swapSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">Скасувати</button>
 </div>
 
 <div class="sheet" id="profileSheet">
@@ -286,11 +301,14 @@ button{-webkit-appearance:none; appearance:none;}
 let currentStore = 'К-19';
 let entries = [];
 let profilesList = [];
+let swapsList = [];
 let session = null;
 let sheetStart = null;
 let activeTab = 'board';
 let unsubscribeEntries = null;
 let unsubscribeProfiles = null;
+let unsubscribeSwaps = null;
+let targetSwapEntryId = null;
 
 let currentTheme = localStorage.getItem('comfy_theme') || 'light';
 let currentSkin = localStorage.getItem('comfy_skin') || 'default';
@@ -299,6 +317,20 @@ document.documentElement.setAttribute('data-skin', currentSkin);
 
 const SKINS = ['default', 'birthday', 'ny', 'valentin', 'cyber'];
 const SKIN_NAMES = { default: 'Comfy Standard 🟢', birthday: 'День Народження 🥳', ny: 'Новий Рік 🎄', valentin: 'День Закоханих ❤️', cyber: 'Кіберпанк ⚡️' };
+
+function requestNotificationPermission(){
+  if("Notification" in window && Notification.permission === "default"){
+    Notification.requestPermission();
+  }
+}
+
+function sendSystemNotification(title, body){
+  if("Notification" in window && Notification.permission === "granted"){
+    try {
+      new Notification(title, { body, icon: 'https://cdn-icons-png.flaticon.com/512/3076/3076139.png' });
+    } catch(e){}
+  }
+}
 
 function playSound(type){
   try{
@@ -342,10 +374,7 @@ async function setTheme(theme){
   currentTheme = theme;
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('comfy_theme', theme);
-  if(session) {
-    await updateProfileField(session.id, { theme });
-    await checkAndAwardAchievements(session.id);
-  }
+  if(session) await updateProfileField(session.id, { theme });
   renderSkinModalChoices();
 }
 
@@ -353,10 +382,7 @@ async function setSkin(skin){
   currentSkin = skin;
   document.documentElement.setAttribute('data-skin', skin);
   localStorage.setItem('comfy_skin', skin);
-  if(session) {
-    await updateProfileField(session.id, { skin });
-    await checkAndAwardAchievements(session.id);
-  }
+  if(session) await updateProfileField(session.id, { skin });
   renderSkinModalChoices();
 }
 
@@ -428,97 +454,10 @@ async function updateProfileField(normName, fields){
   }catch(e){}
 }
 
-async function checkAndAwardAchievements(profileId){
-  const p = await getProfile(profileId);
-  if(!p) return;
-  let achivs = [...(p.achivs || [])];
-  let changed = false;
-
-  const isFounder = (profileId === normalizeName("Максим Лебідь"));
-  if(isFounder && !achivs.includes('ЗАСНОВНИК 🏆')){
-    // Очистимо старий варіант якщо був з помилкою
-    achivs = achivs.filter(a => a !== 'ЗААСНОВНИК 🏆');
-    achivs.push('ЗАСНОВНИК 🏆');
-    changed = true;
-  }
-  if(p.isAdmin && !achivs.includes('Адміністратор ⚡️')){
-    achivs.push('Адміністратор ⚡️');
-    changed = true;
-  }
-
-  const history = p.history || [];
-  if(history.length >= 5 && !achivs.includes('Гурман 🍔')){
-    achivs.push('Гурман 🍔');
-    changed = true;
-  }
-
-  if((p.thanksCount || 0) >= 5 && !achivs.includes('Душа компанії 🌟')){
-    achivs.push('Душа компанії 🌟');
-    changed = true;
-  }
-
-  if(history.length >= 10 && !achivs.includes('Майстер продуктивності 🚀')){
-    achivs.push('Майстер продуктивності 🚀');
-    changed = true;
-  }
-
-  if(history.some(h => h.start === '12:30') && !achivs.includes('Рання пташка ☕️')){
-    achivs.push('Рання пташка ☕️');
-    changed = true;
-  }
-
-  if(history.some(h => {
-    if(!h.createdAt) return false;
-    const parts = h.createdAt.split(' о ');
-    if(parts[1]){
-      const [hh] = parts[1].split(':').map(Number);
-      return hh >= 21;
-    }
-    return false;
-  }) && !achivs.includes('Нічний дозор 🦉')){
-    achivs.push('Нічний дозор 🦉');
-    changed = true;
-  }
-
-  if((p.thanksCount || 0) >= 15 && !achivs.includes('Колекціонер зірок ⭐')){
-    achivs.push('Колекціонер зірок ⭐');
-    changed = true;
-  }
-
-  const sentThanksCount = Object.keys(p.thanksCooldowns || {}).length;
-  if(sentThanksCount >= 20 && !achivs.includes('Філантроп 🙌')){
-    achivs.push('Філантроп 🙌');
-    changed = true;
-  }
-
-  if((p.avatarBase64 || p.skin !== 'default' || p.theme !== 'light') && !achivs.includes('Дизайнер інтерфейсу 🎨')){
-    achivs.push('Дизайнер інтерфейсу 🎨');
-    changed = true;
-  }
-
-  if(p.registeredAt){
-    const regDate = new Date(p.registeredAt);
-    const now = new Date();
-    const diffDays = (now - regDate) / (1000 * 60 * 60 * 24);
-    if(diffDays >= 30 && !achivs.includes('Ветеран Comfy 🏛️')){
-      achivs.push('Ветеран Comfy 🏛️');
-      changed = true;
-    }
-  }
-
-  if(changed){
-    await updateProfileField(profileId, { achivs });
-  }
-}
-
 async function ensureAdminExists(){
   const adminNorm = normalizeName("Максим Лебідь");
   const existing = await getProfile(adminNorm);
   
-  let cleanAchivs = (existing?.achivs || []).filter(a => a !== 'ЗААСНОВНИК 🏆');
-  if(!cleanAchivs.includes('ЗАСНОВНИК 🏆')) cleanAchivs.push('ЗАСНОВНИК 🏆');
-  if(!cleanAchivs.includes('Адміністратор ⚡️')) cleanAchivs.push('Адміністратор ⚡️');
-
   const adminData = {
     id: adminNorm,
     name: "Максим Лебідь",
@@ -527,7 +466,7 @@ async function ensureAdminExists(){
     token: existing?.token || Math.random().toString(36).slice(2),
     avatarBase64: existing?.avatarBase64 || '',
     thanksCount: existing?.thanksCount || 0,
-    achivs: cleanAchivs,
+    achivs: ['Засновник 🏆', 'Адміністратор ⚡️'],
     position: 'Головний Адміністратор',
     quote: 'Повний контроль над системою Comfy Dinner!',
     theme: existing?.theme || currentTheme,
@@ -538,7 +477,6 @@ async function ensureAdminExists(){
     registeredAt: existing?.registeredAt || new Date().toISOString()
   };
   await window.FB.setDoc(window.FB.doc(window.db, 'profiles', adminNorm), adminData, { merge: true });
-  await checkAndAwardAchievements(adminNorm);
 }
 
 async function register(name, pin, store){
@@ -547,14 +485,13 @@ async function register(name, pin, store){
   const isAdminUser = (norm === normalizeName("Максим Лебідь"));
   const profile = {
     id: norm, name: name.trim(), pin, store, token: Math.random().toString(36).slice(2),
-    avatarBase64: '', thanksCount: 0, achivs: isAdminUser ? ['Адміністратор ⚡️', 'ЗАСНОВНИК 🏆'] : ['Новачок 🟢', 'Командний гравець 🤝'],
+    avatarBase64: '', thanksCount: 0, achivs: isAdminUser ? ['Адміністратор ⚡️', 'Засновник 🏆'] : ['Новачок 🟢'],
     position: isAdminUser ? 'Головний Адміністратор' : 'Продавець-консультант', 
     quote: isAdminUser ? 'Повний контроль над системою Comfy Dinner!' : 'Працюємо на результат у Comfy!',
     theme: currentTheme, skin: currentSkin, isAdmin: isAdminUser, history: [], thanksCooldowns: {},
     registeredAt: new Date().toISOString()
   };
   await window.FB.setDoc(window.FB.doc(window.db, 'profiles', norm), profile);
-  await checkAndAwardAchievements(norm);
   session = { id: norm, name: profile.name, store: profile.store, isAdmin: profile.isAdmin };
   currentStore = profile.store;
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
@@ -575,11 +512,9 @@ async function login(name, pin){
   if(profile.theme) { currentTheme = profile.theme; document.documentElement.setAttribute('data-theme', currentTheme); }
   if(profile.skin) { currentSkin = profile.skin; document.documentElement.setAttribute('data-skin', currentSkin); }
   localStorage.setItem('obed_session', JSON.stringify({ id: norm, token: profile.token }));
-  await checkAndAwardAchievements(norm);
   return { ok:true };
 }
 
-// Функція виходу з профілю
 window.logoutUser = () => {
   if(!confirm('Ви дійсно хочете вийти з акаунта?')) return;
   playSound('click');
@@ -593,6 +528,7 @@ window.logoutUser = () => {
 function initRealtimeData(){
   if(unsubscribeEntries) unsubscribeEntries();
   if(unsubscribeProfiles) unsubscribeProfiles();
+  if(unsubscribeSwaps) unsubscribeSwaps();
 
   const qE = window.FB.query(window.FB.collection(window.db, 'lunches'), window.FB.where('store', '==', currentStore), window.FB.where('date', '==', todayISO()));
   unsubscribeEntries = window.FB.onSnapshot(qE, (snapshot) => {
@@ -606,6 +542,13 @@ function initRealtimeData(){
     profilesList = [];
     snapshot.forEach(doc => profilesList.push(doc.data()));
     if(activeTab === 'colleagues') renderColleaguesTab();
+  });
+
+  const qS = window.FB.query(window.FB.collection(window.db, 'swaps'), window.FB.where('store', '==', currentStore));
+  unsubscribeSwaps = window.FB.onSnapshot(qS, (snapshot) => {
+    swapsList = [];
+    snapshot.forEach(doc => swapsList.push(doc.data()));
+    renderIncomingSwaps();
   });
 }
 
@@ -660,12 +603,18 @@ function renderStatusStrip(){
   const slot = document.getElementById('statusStripSlot');
   const now = new Date();
   const active = entries.filter(e => now >= timeStrToDate(e.start, todayISO()) && now < timeStrToDate(e.end, todayISO()));
+  const isMyMealActive = session && active.some(e => e.ownerId === session.id);
+
+  if(isMyMealActive){
+    slot.innerHTML = `<div class="status-strip dnd"><span>🔕</span><span>У вас зараз О Б І Д! Тихий режим активний (Не турбувати).</span></div>`;
+    return;
+  }
 
   if(active.length === 0){
     slot.innerHTML = `<div class="status-strip free"><span>☕️</span><span>Столик вільний — ніхто зараз не обідає</span></div>`;
     return;
   }
-  slot.innerHTML = `<div class="status-strip busy"><span>🔥</span><span>Зараз обідає: ${active.map(e => `<b style="cursor:pointer;" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</b>`).join(', ')}</span></div>`;
+  slot.innerHTML = `<div class="status-strip busy"><span>🔥</span><span>Зараз обідає: ${active.map(e => `<b style="cursor:pointer;" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</b> (${e.start}–${e.end})`).join(', ')}</span></div>`;
 }
 
 function renderTimeline(){
@@ -691,6 +640,59 @@ function renderTimeline(){
       <div class="timeline-bar">${segmentsHtml}</div>
     </div>`;
 }
+
+function renderIncomingSwaps(){
+  const slot = document.getElementById('incomingSwapSlot');
+  if(!session){ slot.innerHTML = ''; return; }
+  const mySwaps = swapsList.filter(s => s.targetOwnerId === session.id && s.status === 'pending');
+  if(mySwaps.length === 0){ slot.innerHTML = ''; return; }
+
+  let html = '';
+  mySwaps.forEach(sw => {
+    html += `
+      <div class="notification-banner">
+        <div style="font-weight:800;margin-bottom:4px;">🔄 Запит на обмін обідом!</div>
+        <div style="font-size:13px;margin-bottom:10px;"><b>${escapeHtml(sw.fromName)}</b> пропонує помінятися: віддає свій слот <b>${sw.fromStart}–${sw.fromEnd}</b> в обмін на ваш <b>${sw.targetStart}–${sw.targetEnd}</b>.</div>
+        <div style="display:flex;gap:8px;">
+          <button class="mini-action-btn accent" onclick="window.acceptSwap('${sw.id}')">✅ Прийняти</button>
+          <button class="mini-action-btn danger" onclick="window.rejectSwap('${sw.id}')">❌ Відхилити</button>
+        </div>
+      </div>`;
+  });
+  slot.innerHTML = html;
+}
+
+window.acceptSwap = async (swapId) => {
+  playSound('success');
+  const swapSnap = await window.FB.getDoc(window.FB.doc(window.db, 'swaps', swapId));
+  if(!swapSnap.exists()) return;
+  const sw = swapSnap.data();
+
+  // Оновлюємо слоти в базі (міняємо ownerId)
+  const qE = window.FB.query(window.FB.collection(window.db, 'lunches'), window.FB.where('store', '==', currentStore), window.FB.where('date', '==', todayISO()));
+  // Знайдемо два броні та поміняємо власників
+  // Для простоти виконання в реальному часі:
+  const lunch1Snap = await window.FB.getDoc(window.FB.doc(window.db, 'lunches', sw.fromLunchId));
+  const lunch2Snap = await window.FB.getDoc(window.FB.doc(window.db, 'lunches', sw.targetLunchId));
+
+  if(lunch1Snap.exists() && lunch2Snap.exists()){
+    const l1 = lunch1Snap.data();
+    const l2 = lunch2Snap.data();
+
+    await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', l1.id), { ownerId: l2.ownerId, name: l2.name });
+    await window.FB.updateDoc(window.FB.doc(window.db, 'lunches', l2.id), { ownerId: l1.ownerId, name: l1.name });
+  }
+
+  await window.FB.updateDoc(window.FB.doc(window.db, 'swaps', swapId), { status: 'accepted' });
+  sendSystemNotification("Обмін успішний!", "Ви успішно помінялися часом обіду.");
+  alert('✅ Обмін успішно здійснено!');
+};
+
+window.rejectSwap = async (swapId) => {
+  playSound('click');
+  await window.FB.updateDoc(window.FB.doc(window.db, 'swaps', swapId), { status: 'rejected' });
+  alert('❌ Запит на обмін відхилено.');
+};
 
 let authMode = 'register';
 function renderAuth(){
@@ -722,6 +724,7 @@ function renderAuth(){
   }));
   document.getElementById('authSubmitBtn').addEventListener('click', async () => {
     playSound('click');
+    requestNotificationPermission();
     const name = document.getElementById('authName').value.trim();
     const pin = document.getElementById('authPin').value.trim();
     const storeSel = authMode === 'register' ? document.getElementById('authStore').value : currentStore;
@@ -761,11 +764,14 @@ function renderBoardTab(){
           <div class="entry-name-row">
             <span class="entry-name" onclick="window.openProfile('${e.ownerId}')">${escapeHtml(e.name)}</span>
             ${isMine ? '<span class="you-badge">ТИ</span>' : ''}
-            ${isFounder ? '<span class="founder-badge">🏆 ЗАСНОВНИК</span>' : (e.ownerId === normalizeName("Максим Лебідь") || e.isAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
+            ${isFounder ? '<span class="founder-badge">🏆 Засновник</span>' : (e.ownerId === normalizeName("Максим Лебідь") || e.isAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
           </div>
           <div class="entry-time">🕒 Обід: ${e.start} – ${e.end} (30 хв)</div>
           ${createdText ? `<div class="entry-meta-info">👤 Хто та коли: ${escapeHtml(e.name)} • ${createdText}</div>` : ''}
-          ${canDelete ? `<div class="entry-actions"><button class="mini-action-btn ${session.isAdmin && !isMine?'danger':''}" onclick="window.cancelBooking('${e.id}')">${session.isAdmin && !isMine?'🗑 Видалити (Адмін)':'❌ Скасувати бронь'}</button></div>` : ''}
+          <div class="entry-actions">
+            ${canDelete ? `<button class="mini-action-btn ${session.isAdmin && !isMine?'danger':''}" onclick="window.cancelBooking('${e.id}')">${session.isAdmin && !isMine?'🗑 Видалити (Адмін)':'❌ Скасувати бронь'}</button>` : ''}
+            ${session && !isMine ? `<button class="mini-action-btn accent" onclick="window.openSwapModal('${e.id}')">🔄 Помінятися</button>` : ''}
+          </div>
         </div>
       </div>`;
   });
@@ -788,6 +794,52 @@ function renderBoardTab(){
 
   document.getElementById('fabBtn').style.display = session ? 'flex' : 'none';
 }
+
+window.openSwapModal = (targetEntryId) => {
+  if(!session){ alert('Увійдіть в систему!'); return; }
+  const myEntry = entries.find(e => e.ownerId === session.id);
+  if(!myEntry){ alert('У вас немає активної броні на сьогодні, щоб пропонувати обмін!'); return; }
+  targetSwapEntryId = targetEntryId;
+  const targetEntry = entries.find(e => e.id === targetEntryId);
+
+  playSound('click');
+  document.getElementById('swapSheetSub').textContent = `Ви пропонуєте обмін для ${targetEntry.name} (${targetEntry.start}–${targetEntry.end}). Виберіть свій слот:`;
+  
+  const wrap = document.getElementById('mySwapChips');
+  wrap.innerHTML = `<button class="chip selected" style="background:var(--comfy-green);color:#fff;">Мій слот: ${myEntry.start} – ${myEntry.end}</button>`;
+  
+  document.getElementById('sheetBackdrop').classList.add('open');
+  document.getElementById('swapSheet').classList.add('open');
+
+  // Кнопка відправки запиту обміну
+  document.getElementById('swapSheet').onclick = async () => {
+    const targetEntryObj = entries.find(e => e.id === targetSwapEntryId);
+    if(!targetEntryObj || !myEntry) return;
+
+    const swapId = genId('swap');
+    const swapData = {
+      id: swapId,
+      store: currentStore,
+      fromOwnerId: session.id,
+      fromName: session.name,
+      fromLunchId: myEntry.id,
+      fromStart: myEntry.start,
+      fromEnd: myEntry.end,
+      targetOwnerId: targetEntryObj.ownerId,
+      targetLunchId: targetEntryObj.id,
+      targetStart: targetEntryObj.start,
+      targetEnd: targetEntryObj.end,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+
+    await window.FB.setDoc(window.FB.doc(window.db, 'swaps', swapId), swapData);
+    sendSystemNotification("Запит на обмін надіслано!", `Чекаємо підтвердження від ${targetEntryObj.name}`);
+    alert('🔄 Запит на обмін успішно надіслано колезі!');
+    document.getElementById('swapSheet').classList.remove('open');
+    document.getElementById('sheetBackdrop').classList.remove('open');
+  };
+};
 
 window.cancelBooking = async (id) => {
   if(!confirm('Видалити цю бронь?')) return;
@@ -816,12 +868,11 @@ function renderColleaguesTab(){
           <div class="entry-name-row">
             <span class="entry-name" onclick="window.openProfile('${p.id}')">${escapeHtml(p.name)}</span>
             ${isMe ? '<span class="you-badge">ТИ</span>' : ''}
-            ${isFounder ? '<span class="founder-badge">🏆 ЗАСНОВНИК</span>' : (isTargetAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
+            ${isFounder ? '<span class="founder-badge">🏆 Засновник</span>' : (isTargetAdmin ? '<span class="admin-badge">⚡️ ADMIN</span>' : '')}
           </div>
           <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">${escapeHtml(p.position || 'Продавець')}</div>
           <div class="entry-actions">
             <button class="mini-action-btn" onclick="window.openProfile('${p.id}')">👤 Профіль</button>
-            ${!isMe && session ? `<button class="mini-action-btn accent" onclick="window.sendThanks('${p.id}')">⭐ Подякувати</button>` : ''}
             ${session && session.isAdmin && !isMe && !isFounder ? `<button class="mini-action-btn danger" onclick="window.deleteProfile('${p.id}')">🗑 Видалити акаунт</button>` : ''}
           </div>
         </div>
@@ -848,7 +899,7 @@ function renderColleaguesTab(){
 
 window.deleteProfile = async (profileId) => {
   if(profileId === normalizeName("Максим Лебідь")){
-    alert('⚠️ Неможливо видалити головного засновника!');
+    alert('⚠️ Неможливо видалити засновника!');
     return;
   }
   if(!confirm('УВАГА: Ви впевнені, що хочете видалити цього користувача з додатку?')) return;
@@ -859,38 +910,7 @@ window.deleteProfile = async (profileId) => {
 
 window.openProfile = (profileId) => openProfileModal(profileId);
 
-window.sendThanks = async (profileId) => {
-  if(!session) return;
-  const myProfile = await getProfile(session.id);
-  const now = Date.now();
-  const cooldowns = myProfile.thanksCooldowns || {};
-  const lastThanked = cooldowns[profileId] || 0;
-  const ONE_DAY = 24 * 60 * 60 * 1000;
-
-  if(!session.isAdmin && (now - lastThanked < ONE_DAY)){
-    const hoursLeft = Math.ceil((ONE_DAY - (now - lastThanked)) / (1000 * 60 * 60));
-    alert(`Ви вже дякували цьому колезі сьогодні! Спробуйте через ${hoursLeft} год.`);
-    return;
-  }
-
-  const targetProfile = await getProfile(profileId);
-  if(targetProfile){
-    playSound('success');
-    cooldowns[profileId] = now;
-    await updateProfileField(session.id, { thanksCooldowns: cooldowns });
-    await checkAndAwardAchievements(session.id);
-    
-    const newThanks = (targetProfile.thanksCount || 0) + 1;
-    await window.FB.updateDoc(window.FB.doc(window.db, 'profiles', profileId), { thanksCount: newThanks });
-    await checkAndAwardAchievements(profileId);
-
-    alert('⭐ Подяку успішно надіслано!');
-    if(document.getElementById('profileSheet').classList.contains('open')) openProfileModal(profileId);
-  }
-};
-
 async function openProfileModal(profileId){
-  await checkAndAwardAchievements(profileId);
   const profile = await getProfile(profileId);
   if(!profile) return;
   const isMe = session && session.id === profileId;
@@ -902,32 +922,16 @@ async function openProfileModal(profileId){
 
   document.getElementById('profileSheetContent').innerHTML = `
     <div class="sheet-title">${isMe ? 'Мій профіль 👤' : 'Профіль колеги 🧑‍💻'}</div>
-    <div class="sheet-sub">Інформація, історія та досягнення</div>
+    <div class="sheet-sub">Інформація та історія обідів</div>
     
     <div class="card" style="margin-bottom:16px;text-align:center;">
       <div class="avatar" id="modalAvatarPreview" style="width:72px;height:72px;margin:0 auto 12px;font-size:22px;background:${bgStyle};${profile.avatarBase64?`background:url(${profile.avatarBase64}) center/cover;`:''}">
         ${profile.avatarBase64 ? '' : init}
       </div>
-      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)} ${isFounder ? '<span class="founder-badge">ЗАСНОВНИК</span>' : (isAdminTarget ? '<span class="admin-badge">ADMIN</span>' : '')}</h3>
+      <h3 style="margin:0 0 4px;font-size:18px;">${escapeHtml(profile.name)} ${isFounder ? '<span class="founder-badge">Засновник</span>' : (isAdminTarget ? '<span class="admin-badge">ADMIN</span>' : '')}</h3>
       <p style="color:var(--ink-soft);font-size:13px;margin:0 0 4px;">Магазин: ${profile.store || currentStore}</p>
       <p style="font-weight:700;font-size:13.5px;color:var(--comfy-green-dark);margin:0 0 12px;">${escapeHtml(profile.position || 'Працівник Comfy')}</p>
       <p style="font-style:italic;font-size:13px;color:var(--ink-soft);margin:0 0 16px;">«${escapeHtml(profile.quote || 'Без цитати')}»</p>
-      
-      <div style="display:flex;justify-content:space-around;background:var(--bg);border-radius:12px;padding:12px;margin-bottom:16px;">
-        <div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--comfy-green);">⭐ ${profile.thanksCount || 0}</div>
-          <div style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;">Подяки</div>
-        </div>
-        <div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--comfy-orange);">${profile.achivs?.length || 0}</div>
-          <div style="font-size:11px;color:var(--ink-soft);text-transform:uppercase;">Ачівки</div>
-        </div>
-      </div>
-
-      <p style="font-size:13px;text-align:left;margin-bottom:6px;"><b>Публічні досягнення (${profile.achivs?.length || 0}):</b></p>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
-        ${profile.achivs?.map(a => `<span style="background:var(--lime-badge);color:var(--comfy-green-dark);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;">${escapeHtml(a)}</span>`).join('') || 'Немає'}
-      </div>
 
       <p style="font-size:13px;text-align:left;margin-bottom:6px;"><b>Історія обідів:</b></p>
       <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:left;max-height:120px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12px;margin-bottom:16px;">
@@ -944,7 +948,6 @@ async function openProfileModal(profileId){
           <button class="btn btn-danger" style="margin-top:12px;" onclick="window.logoutUser()">🚪 Вийти з акаунта</button>
         </div>
       ` : `
-        <button class="btn" onclick="window.sendThanks('${profileId}')">⭐ Подякувати колезі</button>
         ${session && session.isAdmin && !isFounder ? `<button class="btn btn-danger" style="margin-top:10px;" onclick="window.deleteProfile('${profileId}');document.getElementById('profileSheet').classList.remove('open');document.getElementById('sheetBackdrop').classList.remove('open')">🗑 Видалити акаунт (Адмін)</button>` : ''}
       `}
     </div>
@@ -960,7 +963,6 @@ async function openProfileModal(profileId){
       const position = document.getElementById('editPosition').value.trim();
       const quote = document.getElementById('editQuote').value.trim();
       await updateProfileField(profileId, { position, quote });
-      await checkAndAwardAchievements(profileId);
       alert('✅ Збережено!');
       openProfileModal(profileId);
     });
@@ -983,7 +985,6 @@ async function openProfileModal(profileId){
           const base64Str = canvas.toDataURL('image/jpeg', 0.8);
 
           await updateProfileField(profileId, { avatarBase64: base64Str });
-          await checkAndAwardAchievements(profileId);
           playSound('success');
           alert('✅ Аватарку оновлено!');
           openProfileModal(profileId);
@@ -1058,7 +1059,8 @@ document.getElementById('confirmBookingBtn').addEventListener('click', async () 
   history.push({ date: today, start: sheetStart, end, createdAt: createdTimeStr });
   
   await updateProfileField(session.id, { history });
-  await checkAndAwardAchievements(session.id);
+
+  sendSystemNotification("Новий обід у Comfy!", `${session.name} обідає з ${sheetStart} до ${end}`);
 
   document.getElementById('sheetBackdrop').classList.remove('open');
   document.getElementById('bookingSheet').classList.remove('open');
@@ -1071,6 +1073,7 @@ function renderAll(){
   renderStatsBar();
   renderStatusStrip();
   renderTimeline();
+  renderIncomingSwaps();
   renderAuth();
   renderMainContent();
 }
