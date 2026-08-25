@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0" />
+<meta name="theme-color" content="#38B34A" />
+<title>Comfy Dinner · К-19</title>
+<style>
+  :root{
+    --primary:#38B34A;
+    --primary-dark:#2C8F3B;
+    --primary-soft:#E4F5E6;
+    --bg:#F5FAF4;
+    --surface:#FFFFFF;
+    --surface-alt:#EEF7EC;
+    --text:#16241A;
+    --text-muted:#657467;
+    --border:#DEEBDD;
+    --danger:#E2574C;
+    --warning:#F2A93B;
+    --info:#3B82C4;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow: 0 2px 14px rgba(24,54,28,.08);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  [data-theme="dark"]{
+    --primary:#4CD964;
+    --primary-dark:#38B34A;
+    --primary-soft:#1B3320;
+    --bg:#0F1712;
+    --surface:#182018;
+    --surface-alt:#1E2B21;
+    --text:#EAF3EA;
+    --text-muted:#8FA694;
+    --border:#26362A;
+    --shadow: 0 2px 14px rgba(0,0,0,.4);
+  }
+  [data-skin="orange"]{ --primary:#F2793D; --primary-dark:#D9622B; --primary-soft:#FCE6D8; }
+  [data-theme="dark"][data-skin="orange"]{ --primary-soft:#3A2415; }
+  [data-skin="blue"]{ --primary:#3B82C4; --primary-dark:#2E679E; --primary-soft:#DCEBF7; }
+  [data-theme="dark"][data-skin="blue"]{ --primary-soft:#152634; }
+  [data-skin="purple"]{ --primary:#8B5CF6; --primary-dark:#6D3FD1; --primary-soft:#EAE0FE; }
+  [data-theme="dark"][data-skin="purple"]{ --primary-soft:#251A3A; }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    padding-bottom:84px;
+  }
+  .hidden{display:none !important;}
+
+  /* ---------- Auth screen ---------- */
+  .auth-wrap{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:32px 24px;
+    gap:22px;
+  }
+  .auth-logo{
+    text-align:center;
+    margin-bottom:6px;
+  }
+  .auth-logo .emoji{font-size:44px;}
+  .auth-logo h1{font-size:24px;margin:8px 0 2px;letter-spacing:-.3px;}
+  .auth-logo p{color:var(--text-muted);margin:0;font-size:14px;}
+  .auth-card{
+    background:var(--surface);
+    border-radius:var(--radius-lg);
+    padding:22px;
+    box-shadow:var(--shadow);
+    border:1px solid var(--border);
+  }
+  .auth-switch{
+    display:flex;
+    background:var(--surface-alt);
+    border-radius:999px;
+    padding:4px;
+    margin-bottom:18px;
+  }
+  .auth-switch button{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:10px 0;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--text-muted);
+    cursor:pointer;
+    transition:all .25s ease;
+  }
+  .auth-switch button.active{
+    background:var(--primary);
+    color:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+  }
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12.5px;color:var(--text-muted);margin-bottom:6px;font-weight:600;}
+  .field input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:var(--radius-sm);
+    border:1.5px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    font-size:15px;
+    outline:none;
+    transition:border-color .2s;
+  }
+  .field input:focus{border-color:var(--primary);}
+  .btn{
+    width:100%;
+    padding:13px 0;
+    border-radius:var(--radius-sm);
+    border:none;
+    background:var(--primary);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .15s, background .2s;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn:disabled{opacity:.55;cursor:not-allowed;}
+  .btn.secondary{background:var(--surface-alt);color:var(--text);}
+  .btn.ghost{background:transparent;color:var(--primary);}
+  .btn.danger{background:var(--danger);}
+  .error-msg{
+    background:#FCE7E5;
+    color:#A5342A;
+    border-radius:var(--radius-sm);
+    padding:10px 12px;
+    font-size:13px;
+    margin-bottom:14px;
+  }
+  [data-theme="dark"] .error-msg{background:#3A1D1A;color:#F2A79E;}
+  .hint{font-size:12px;color:var(--text-muted);text-align:center;margin-top:14px;line-height:1.5;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    padding:18px 18px 12px;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:10;
+  }
+  .topbar-row{display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .emoji{font-size:26px;}
+  .brand-text h2{margin:0;font-size:17px;letter-spacing:-.2px;}
+  .brand-text span{font-size:12px;color:var(--text-muted);}
+  .icon-btn{
+    background:var(--surface-alt);
+    border:none;
+    width:38px;height:38px;
+    border-radius:12px;
+    font-size:17px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color:var(--text);
+  }
+  .plaques{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
+    overflow-x:auto;
+  }
+  .plaque{
+    flex:1;
+    min-width:0;
+    background:var(--surface-alt);
+    border-radius:var(--radius-sm);
+    padding:9px 10px;
+    border:1px solid var(--border);
+  }
+  .plaque .role-label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);font-weight:700;}
+  .plaque .role-name{font-size:13px;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .plaque .role-status{font-size:11px;margin-top:2px;font-weight:600;}
+
+  /* ---------- Content ---------- */
+  .content{padding:16px 18px 8px;flex:1;}
+  .section-title{font-size:15px;font-weight:800;margin:6px 0 12px;display:flex;align-items:center;gap:6px;}
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:16px;
+    margin-bottom:14px;
+    box-shadow:var(--shadow);
+  }
+  .muted{color:var(--text-muted);font-size:13px;}
+
+  /* user row */
+  .user-row{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .user-row:last-child{border-bottom:none;}
+  .avatar{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--primary-soft);
+    color:var(--primary-dark);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:14px;flex-shrink:0;
+  }
+  .user-meta{flex:1;min-width:0;}
+  .user-meta .uname{font-weight:700;font-size:14.5px;}
+  .role-badge{
+    display:inline-block;
+    font-size:10.5px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:999px;
+    margin-top:3px;
+  }
+  .rb-засновник{background:#FCEBB6;color:#8A6A00;}
+  .rb-директор{background:var(--primary-soft);color:var(--primary-dark);}
+  .rb-зам{background:#D8F0EC;color:#0F766E;}
+  .rb-it-leader{background:#DDE6FB;color:#3646B5;}
+  .rb-продавець{background:var(--surface-alt);color:var(--text-muted);}
+  .status-pill{
+    font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;
+  }
+  .status-перекур{background:#FDECC8;color:#9A6400;}
+  .status-обід{background:#D9F0DC;color:var(--primary-dark);}
+  .status-відійшов{background:#FADCDA;color:#A5342A;}
+
+  /* slots grid */
+  .slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+  .slot{
+    padding:11px 0;
+    text-align:center;
+    border-radius:var(--radius-sm);
+    border:1.5px solid var(--border);
+    background:var(--surface-alt);
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+    color:var(--text);
+  }
+  .slot.busy{background:var(--border);color:var(--text-muted);cursor:not-allowed;opacity:.7;}
+  .slot.mine{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .slot.offered{background:var(--warning);color:#fff;border-color:var(--warning);}
+
+  /* roles select */
+  select{
+    padding:9px 10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);
+    background:var(--bg);color:var(--text);font-size:13px;font-weight:600;
+  }
+
+  /* theme options */
+  .toggle-row{display:flex;gap:10px;margin-bottom:16px;}
+  .toggle-opt{
+    flex:1;padding:14px 8px;text-align:center;border-radius:var(--radius-md);
+    border:1.5px solid var(--border);background:var(--surface-alt);cursor:pointer;font-weight:700;font-size:13.5px;
+  }
+  .toggle-opt.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);}
+  .skin-row{display:flex;gap:10px;}
+  .skin-dot{
+    width:40px;height:40px;border-radius:50%;cursor:pointer;border:3px solid transparent;
+    display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;
+  }
+  .skin-dot.active{border-color:var(--text);}
+
+  /* bottom nav */
+  .bottomnav{
+    position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+    width:100%;max-width:480px;
+    background:var(--surface);
+    border-top:1px solid var(--border);
+    display:flex;
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    z-index:20;
+  }
+  .navbtn{
+    flex:1;border:none;background:transparent;color:var(--text-muted);
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    font-size:10.5px;font-weight:700;padding:6px 0;cursor:pointer;border-radius:12px;
+  }
+  .navbtn .ic{font-size:19px;}
+  .navbtn.active{color:var(--primary);background:var(--primary-soft);}
+
+  /* modal */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(10,20,12,.45);
+    display:flex;align-items:flex-end;justify-content:center;z-index:50;
+  }
+  .modal-sheet{
+    width:100%;max-width:480px;background:var(--surface);
+    border-radius:22px 22px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));
+    box-shadow:0 -6px 24px rgba(0,0,0,.2);
+  }
+  .modal-sheet h3{margin:0 0 4px;font-size:16.5px;}
+  .modal-sheet .sub{color:var(--text-muted);font-size:12.5px;margin-bottom:16px;}
+  .status-opt{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:13px 14px;border-radius:var(--radius-md);
+    background:var(--surface-alt);margin-bottom:10px;cursor:pointer;border:1.5px solid transparent;
+  }
+  .status-opt:active{border-color:var(--primary);}
+  .status-opt .lbl{font-weight:700;font-size:14px;}
+  .status-opt .dur{font-size:12px;color:var(--text-muted);}
+
+  .toast{
+    position:fixed;top:14px;left:50%;transform:translateX(-50%);
+    background:var(--text);color:var(--bg);padding:10px 18px;border-radius:999px;
+    font-size:13px;font-weight:600;z-index:100;box-shadow:0 4px 14px rgba(0,0,0,.2);
+  }
+  .empty-state{text-align:center;padding:26px 10px;color:var(--text-muted);font-size:13.5px;}
+  .empty-state .em{font-size:30px;display:block;margin-bottom:8px;}
+  .divider{height:1px;background:var(--border);margin:14px 0;}
+  .flex-between{display:flex;align-items:center;justify-content:space-between;}
+  .small-btn{
+    border:none;background:var(--surface-alt);color:var(--text);padding:7px 12px;
+    border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;
+  }
+  .small-btn.primary-o{background:var(--primary-soft);color:var(--primary-dark);}
+  .small-btn.danger-o{background:#FADCDA;color:#A5342A;}
+</style>
+</head>
+<body>
+<div id="app"><div style="padding:60px 20px;text-align:center;color:#8FA694;">Завантаження…</div></div>
+
+<script>
+/* ============================= STATE ============================= */
+const FOUNDER_NAME = "Лебідь Максим";
+const ROLE_ORDER = ["засновник","директор","зам","it-leader","продавець"];
+const ROLE_LABEL = {
+  "засновник":"Засновник",
+  "директор":"Директор",
+  "зам":"Зам",
+  "it-leader":"IT-Leader",
+  "продавець":"Продавець-консультант"
+};
+const ASSIGNABLE_ROLES = ["директор","зам","it-leader","продавець"];
+const STATUS_OPTS = [
+  {type:"перекур", label:"Перекур", emoji:"🚬", duration:15},
+  {type:"обід", label:"На обіді", emoji:"🍽", duration:30},
+  {type:"відійшов", label:"Відійшов", emoji:"🚶", duration:60}
+];
+const SLOTS = (()=>{
+  const out=[]; let h=12,m=30;
+  while(h<18 || (h===18 && m<=0)){
+    if(h>18 || (h===18 && m>0)) break;
+    out.push(String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"));
+    m+=30; if(m>=60){m=0;h+=1;}
+  }
+  return out;
+})();
+
+let state = {
+  loaded:false,
+  session:null,      // {username}
+  users:[],          // [{username, pass, displayName, role}]
+  statuses:{},        // {username:{type,start,duration}}
+  bookings:{},         // {"YYYY-MM-DD":[{username,time,offered}]}
+  prefs:{theme:"light", skin:"green"},
+  authMode:"login",
+  authError:"",
+  view:"schedule",
+  modal:null,          // 'status' | 'exchange' | null
+  toast:null,
+};
+
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function enc(s){ try{return btoa(unescape(encodeURIComponent(s)));}catch(e){return s;} }
+function initials(name){
+  return (name||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+}
+function showToast(msg){
+  state.toast = msg;
+  render();
+  setTimeout(()=>{ state.toast=null; render(); }, 2200);
+}
+
+/* ============================= STORAGE ============================= */
+async function loadAll(){
+  try{
+    const u = await window.storage.get("users-directory", true);
+    state.users = u ? JSON.parse(u.value) : [];
+  }catch(e){ state.users = []; }
+  try{
+    const s = await window.storage.get("statuses", true);
+    state.statuses = s ? JSON.parse(s.value) : {};
+  }catch(e){ state.statuses = {}; }
+  try{
+    const b = await window.storage.get("bookings", true);
+    state.bookings = b ? JSON.parse(b.value) : {};
+  }catch(e){ state.bookings = {}; }
+  try{
+    const sess = await window.storage.get("session", false);
+    state.session = sess ? JSON.parse(sess.value) : null;
+  }catch(e){ state.session = null; }
+  try{
+    const p = await window.storage.get("prefs", false);
+    state.prefs = p ? JSON.parse(p.value) : {theme:"light", skin:"green"};
+  }catch(e){ state.prefs = {theme:"light", skin:"green"}; }
+  state.loaded = true;
+}
+async function saveUsers(){ try{ await window.storage.set("users-directory", JSON.stringify(state.users), true); }catch(e){} }
+async function saveStatuses(){ try{ await window.storage.set("statuses", JSON.stringify(state.statuses), true); }catch(e){} }
+async function saveBookings(){ try{ await window.storage.set("bookings", JSON.stringify(state.bookings), true); }catch(e){} }
+async function saveSession(){
+  try{
+    if(state.session) await window.storage.set("session", JSON.stringify(state.session), false);
+    else await window.storage.delete("session", false);
+  }catch(e){}
+}
+async function savePrefs(){ try{ await window.storage.set("prefs", JSON.stringify(state.prefs), false); }catch(e){} }
+
+/* ============================= HELPERS ============================= */
+function currentUser(){
+  if(!state.session) return null;
+  return state.users.find(u=>u.username===state.session.username) || null;
+}
+function canManageRoles(u){
+  return u && (u.role==="засновник" || u.role==="директор" || u.role==="зам");
+}
+function canUseExitMenu(u){
+  return u && (u.role==="директор" || u.role==="зам");
+}
+function activeStatusFor(username){
+  const st = state.statuses[username];
+  if(!st) return null;
+  const elapsedMs = Date.now() - st.start;
+  const remainMs = st.duration*60000 - elapsedMs;
+  if(remainMs <= 0) return null;
+  return {...st, remainMs};
+}
+function fmtRemain(ms){
+  const s = Math.max(0, Math.round(ms/1000));
+  const m = Math.floor(s/60), r = s%60;
+  return m+":"+String(r).padStart(2,"0");
+}
+function plaqueUserFor(role){
+  const list = state.users.filter(u=>u.role===role);
+  return list;
+}
+
+/* ============================= ACTIONS ============================= */
+async function doRegister(displayName, username, pass){
+  displayName=displayName.trim(); username=username.trim().toLowerCase();
+  if(!displayName||!username||!pass){ state.authError="Заповніть усі поля"; render(); return; }
+  if(state.users.some(u=>u.username===username)){ state.authError="Такий логін вже зайнятий"; render(); return; }
+  const isFounder = displayName.toLowerCase() === FOUNDER_NAME.toLowerCase();
+  const role = isFounder ? "засновник" : "продавець";
+  const newUser = {username, pass:enc(pass), displayName, role};
+  state.users.push(newUser);
+  await saveUsers();
+  state.session = {username};
+  await saveSession();
+  state.authError="";
+  showToast(isFounder ? "Вітаємо, засновнику 👑" : "Реєстрація успішна 🎉");
+}
+async function doLogin(username, pass){
+  username=username.trim().toLowerCase();
+  const u = state.users.find(x=>x.username===username);
+  if(!u || u.pass !== enc(pass)){ state.authError="Невірний логін або пароль"; render(); return; }
+  state.session = {username};
+  await saveSession();
+  state.authError="";
+  showToast("Ласкаво просимо, "+u.displayName.split(" ")[0]+" 👋");
+}
+async function doLogout(){
+  state.session=null;
+  await saveSession();
+  state.view="schedule";
+  render();
+}
+async function setRole(username, role){
+  const target = state.users.find(u=>u.username===username);
+  if(!target || target.role==="засновник") return;
+  target.role = role;
+  await saveUsers();
+  showToast(target.displayName+" тепер "+ROLE_LABEL[role]);
+}
+async function setMyStatus(type, duration){
+  const me = currentUser(); if(!me) return;
+  state.statuses[me.username] = {type, start:Date.now(), duration};
+  await saveStatuses();
+  state.modal=null;
+  showToast("Статус оновлено: "+type);
+}
+async function clearMyStatus(){
+  const me = currentUser(); if(!me) return;
+  delete state.statuses[me.username];
+  await saveStatuses();
+  state.modal=null;
+  showToast("Ти знову на місці ✅");
+}
+async function bookSlot(time){
+  const me = currentUser(); if(!me) return;
+  const day = todayKey();
+  const list = state.bookings[day] || [];
+  if(list.some(b=>b.time===time)){ showToast("Цей час вже зайнято"); return; }
+  const filtered = list.filter(b=>b.username!==me.username);
+  filtered.push({username:me.username, time, offered:false});
+  state.bookings[day]=filtered;
+  await saveBookings();
+  showToast("Обід заброньовано на "+time);
+}
+async function cancelMyBooking(){
+  const me = currentUser(); if(!me) return;
+  const day = todayKey();
+  state.bookings[day] = (state.bookings[day]||[]).filter(b=>b.username!==me.username);
+  await saveBookings();
+  showToast("Бронь скасовано");
+}
+async function toggleOffer(){
+  const me = currentUser(); if(!me) return;
+  const day = todayKey();
+  const list = state.bookings[day]||[];
+  const mine = list.find(b=>b.username===me.username);
+  if(!mine) return;
+  mine.offered = !mine.offered;
+  await saveBookings();
+  showToast(mine.offered ? "Слот запропоновано колегам 🔄" : "Пропозицію скасовано");
+}
+async function claimOffered(fromUsername, time){
+  const me = currentUser(); if(!me) return;
+  const day = todayKey();
+  let list = state.bookings[day]||[];
+  list = list.filter(b=>b.username!==me.username);
+  const idx = list.findIndex(b=>b.username===fromUsername && b.time===time);
+  if(idx>=0){ list[idx] = {username:me.username, time, offered:false}; }
+  state.bookings[day]=list;
+  await saveBookings();
+  showToast("Ти забрав(-ла) обід на "+time+" 🍔");
+}
+async function setTheme(theme){ state.prefs.theme=theme; await savePrefs(); render(); }
+async function setSkin(skin){ state.prefs.skin=skin; await savePrefs(); render(); }
+
+/* ============================= RENDER ============================= */
+function applyThemeAttrs(){
+  document.documentElement.setAttribute("data-theme", state.prefs.theme);
+  document.documentElement.setAttribute("data-skin", state.prefs.skin);
+}
+
+function renderAuth(){
+  const isLogin = state.authMode==="login";
+  return `
+  <div class="auth-wrap">
+    <div class="auth-logo">
+      <div class="emoji">🍽</div>
+      <h1>Comfy Dinner</h1>
+      <p>К-19 · by fearblader</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-switch">
+        <button class="${isLogin?'active':''}" onclick="switchAuth('login')">Вхід</button>
+        <button class="${!isLogin?'active':''}" onclick="switchAuth('register')">Реєстрація</button>
+      </div>
+      ${state.authError?`<div class="error-msg">${state.authError}</div>`:""}
+      ${isLogin ? `
+        <div class="field"><label>Логін</label><input id="f-username" placeholder="login" autocomplete="username"/></div>
+        <div class="field"><label>Пароль</label><input id="f-pass" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
+        <button class="btn" onclick="submitLogin()">Увійти</button>
+      ` : `
+        <div class="field"><label>Ім'я та прізвище</label><input id="f-name" placeholder="Логін"/></div>
+        <div class="field"><label>Логін</label><input id="f-username" placeholder="вигадай логін" autocomplete="username"/></div>
+        <div class="field"><label>Пароль</label><input id="f-pass" type="password" placeholder="мінімум 4 символи" autocomplete="new-password"/></div>
+        <button class="btn" onclick="submitRegister()">Зареєструватися</button>
+      `}
+      <div class="hint">Доступ лише для команди К-19. Дані зберігаються локально в цьому застосунку.</div>
+    </div>
+  </div>`;
+}
+
+function renderPlaques(){
+  const roles = ["директор","зам","it-leader"];
+  return `<div class="plaques">${roles.map(r=>{
+    const list = plaqueUserFor(r);
+    let name = list.length ? list.map(u=>u.displayName.split(" ")[0]).join(", ") : "—";
+    let statusHtml = "";
+    if(list.length===1){
+      const as = activeStatusFor(list[0].username);
+      if(as) statusHtml = `<div class="role-status status-${as.type}" style="display:inline-block;padding:1px 6px;border-radius:8px;">${as.type} · ${fmtRemain(as.remainMs)}</div>`;
+    }
+    return `<div class="plaque">
+      <div class="role-label">${ROLE_LABEL[r]}</div>
+      <div class="role-name">${name}</div>
+      ${statusHtml}
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function renderTop(){
+  const me = currentUser();
+  return `
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <div class="emoji">🍽</div>
+        <div class="brand-text"><h2>Comfy Dinner</h2><span>К-19 · ${me?me.displayName:""}</span></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        ${canUseExitMenu(me) ? `<button class="icon-btn" onclick="openModal('status')" title="Мій статус">🕒</button>` : ""}
+        <button class="icon-btn" onclick="doLogout()" title="Вийти">🚪</button>
+      </div>
+    </div>
+    ${renderPlaques()}
+  </div>`;
+}
+
+function renderSchedule(){
+  const me = currentUser();
+  const day = todayKey();
+  const list = state.bookings[day]||[];
+  const rows = list.slice().sort((a,b)=>a.time.localeCompare(b.time));
+  return `
+  <div class="section-title">🍽 Графік на сьогодні</div>
+  <div class="card">
+    ${rows.length ? rows.map(b=>{
+      const u = state.users.find(x=>x.username===b.username);
+      const isMe = b.username===(me&&me.username);
+      return `<div class="user-row">
+        <div class="avatar">${initials(u?u.displayName:b.username)}</div>
+        <div class="user-meta">
+          <div class="uname">${u?u.displayName:b.username}${isMe?' <span class="muted">(ти)</span>':''}</div>
+          <div class="muted">${b.time} · 30 хв ${b.offered?'· 🔄 запропоновано колегам':''}</div>
+        </div>
+      </div>`;
+    }).join("") : `<div class="empty-state"><span class="em">🍽</span>Сьогодні ще ніхто не бронював обід</div>`}
+  </div>
+  <div class="section-title">🔄 Обмін обідами</div>
+  <div class="card">
+    ${(()=>{
+      const offered = rows.filter(b=>b.offered && b.username!==(me&&me.username));
+      if(!offered.length) return `<div class="empty-state"><span class="em">🔄</span>Немає запропонованих слотів</div>`;
+      return offered.map(b=>{
+        const u = state.users.find(x=>x.username===b.username);
+        return `<div class="user-row">
+          <div class="avatar">${initials(u?u.displayName:b.username)}</div>
+          <div class="user-meta">
+            <div class="uname">${u?u.displayName:b.username}</div>
+            <div class="muted">${b.time} · пропонує свій обід</div>
+          </div>
+          <button class="small-btn primary-o" onclick="claimOffered('${b.username}','${b.time}')">Забрати</button>
+        </div>`;
+      }).join("");
+    })()}
+  </div>`;
+}
+
+function renderColleagues(){
+  const me = currentUser();
+  const sorted = state.users.slice().sort((a,b)=> ROLE_ORDER.indexOf(a.role)-ROLE_ORDER.indexOf(b.role) || a.displayName.localeCompare(b.displayName));
+  return `
+  <div class="section-title">👥 Колеги (${state.users.length})</div>
+  <div class="card">
+    ${sorted.map(u=>{
+      const as = activeStatusFor(u.username);
+      return `<div class="user-row">
+        <div class="avatar">${initials(u.displayName)}</div>
+        <div class="user-meta">
+          <div class="uname">${u.displayName}${u.username===(me&&me.username)?' <span class="muted">(ти)</span>':''}</div>
+          <span class="role-badge rb-${u.role}">${ROLE_LABEL[u.role]}</span>
+        </div>
+        ${as ? `<span class="status-pill status-${as.type}">${as.type} · ${fmtRemain(as.remainMs)}</span>` : ""}
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
+function renderBooking(){
+  const me = currentUser();
+  const day = todayKey();
+  const list = state.bookings[day]||[];
+  const mine = list.find(b=>b.username===(me&&me.username));
+  return `
+  <div class="section-title">🍔 Забронювати обід (30 хв)</div>
+  <div class="card">
+    <div class="muted" style="margin-bottom:12px;">Тривалість фіксована — 30 хвилин. Зайнятий час позначено сірим. Обери вільний час (з 12:30 до 18:30).</div>
+    <div class="slots-grid">
+      ${SLOTS.map(t=>{
+        const takenBy = list.find(b=>b.time===t);
+        const isMine = takenBy && takenBy.username===(me&&me.username);
+        const isBusy = takenBy && !isMine;
+        return `<button class="slot ${isMine?'mine':''} ${isBusy?'busy':''}" ${isBusy?'disabled':''} onclick="bookSlot('${t}')">${t}</button>`;
+      }).join("")}
+    </div>
+    ${mine ? `
+      <div class="divider"></div>
+      <div class="flex-between">
+        <div class="muted">Твоя бронь: <b style="color:var(--text)">${mine.time}</b></div>
+        <div style="display:flex;gap:8px;">
+          <button class="small-btn ${mine.offered?'primary-o':''}" onclick="toggleOffer()">${mine.offered?'Скасувати пропозицію':'🔄 Запропонувати'}</button>
+          <button class="small-btn danger-o" onclick="cancelMyBooking()">Скасувати</button>
+        </div>
+      </div>
+    ` : ""}
+  </div>`;
+}
+
+function renderRoles(){
+  const me = currentUser();
+  if(!canManageRoles(me)) return `<div class="empty-state"><span class="em">🔒</span>Немає доступу до цього розділу</div>`;
+  const sorted = state.users.slice().sort((a,b)=> ROLE_ORDER.indexOf(a.role)-ROLE_ORDER.indexOf(b.role) || a.displayName.localeCompare(b.displayName));
+  return `
+  <div class="section-title">⚙️ Управління ролями</div>
+  <div class="card">
+    ${sorted.map(u=>{
+      const locked = u.role==="засновник";
+      return `<div class="user-row">
+        <div class="avatar">${initials(u.displayName)}</div>
+        <div class="user-meta">
+          <div class="uname">${u.displayName}</div>
+          <span class="role-badge rb-${u.role}">${ROLE_LABEL[u.role]}</span>
+        </div>
+        ${locked ? `<span class="muted">незмінно</span>` : `
+          <select onchange="setRole('${u.username}', this.value)">
+            ${ASSIGNABLE_ROLES.map(r=>`<option value="${r}" ${u.role===r?'selected':''}>${ROLE_LABEL[r]}</option>`).join("")}
+          </select>
+        `}
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
+function renderThemeTab(){
+  const p = state.prefs;
+  const skins = [
+    {id:"green", color:"#38B34A", ic:"🍏"},
+    {id:"orange", color:"#F2793D", ic:"🍊"},
+    {id:"blue", color:"#3B82C4", ic:"🫐"},
+    {id:"purple", color:"#8B5CF6", ic:"🍇"},
+  ];
+  return `
+  <div class="section-title">🎨 Вибір теми та скіну</div>
+  <div class="card">
+    <div class="muted" style="margin-bottom:14px;">Змінюй стиль додатку під свій настрій. Твоя тема зберігається у профілі!</div>
+    <label style="font-size:12.5px;font-weight:700;color:var(--text-muted);">Режим оформлення</label>
+    <div class="toggle-row" style="margin-top:8px;">
+      <div class="toggle-opt ${p.theme==='light'?'active':''}" onclick="setTheme('light')">☀️ Світла</div>
+      <div class="toggle-opt ${p.theme==='dark'?'active':''}" onclick="setTheme('dark')">🌙 Темна</div>
+    </div>
+    <label style="font-size:12.5px;font-weight:700;color:var(--text-muted);">Колірний скін</label>
+    <div class="skin-row" style="margin-top:8px;">
+      ${skins.map(s=>`<div class="skin-dot ${p.skin===s.id?'active':''}" style="background:${s.color}" onclick="setSkin('${s.id}')">${p.skin===s.id?'✓':''}</div>`).join("")}
+    </div>
+  </div>`;
+}
+
+function renderModal(){
+  if(!state.modal) return "";
+  if(state.modal==="status"){
+    const me = currentUser();
+    const as = me ? activeStatusFor(me.username) : null;
+    return `<div class="modal-backdrop" onclick="closeModalBg(event)">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <h3>Виходи 🕒</h3>
+        <div class="sub">Обери свій статус — колеги побачать його в реальному часі</div>
+        ${STATUS_OPTS.map(o=>`
+          <div class="status-opt" onclick="setMyStatus('${o.type}', ${o.duration})">
+            <div><span style="margin-right:8px;">${o.emoji}</span><span class="lbl">${o.label}${o.type==='відійшов'?' 60+ хв':' '+o.duration+' хв'}</span></div>
+            <div class="dur">${o.type==='відійшов'?'60+':o.duration} хв</div>
+          </div>
+        `).join("")}
+        ${as ? `<button class="btn secondary" onclick="clearMyStatus()">✅ Я на місці</button>` : ""}
+        <button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Скасувати</button>
+      </div>
+    </div>`;
+  }
+  return "";
+}
+
+function renderNav(){
+  const me = currentUser();
+  const tabs = [
+    {id:"schedule", ic:"🍽", label:"Графік"},
+    {id:"colleagues", ic:"👥", label:"Колеги"},
+    {id:"booking", ic:"🍔", label:"Обід"},
+  ];
+  if(canManageRoles(me)) tabs.push({id:"roles", ic:"⚙️", label:"Ролі"});
+  tabs.push({id:"theme", ic:"🎨", label:"Тема"});
+  return `<div class="bottomnav">
+    ${tabs.map(t=>`<button class="navbtn ${state.view===t.id?'active':''}" onclick="setView('${t.id}')">
+      <span class="ic">${t.ic}</span>${t.label}
+    </button>`).join("")}
+  </div>`;
+}
+
+function renderApp(){
+  let body = "";
+  if(state.view==="schedule") body = renderSchedule();
+  else if(state.view==="colleagues") body = renderColleagues();
+  else if(state.view==="booking") body = renderBooking();
+  else if(state.view==="roles") body = renderRoles();
+  else if(state.view==="theme") body = renderThemeTab();
+
+  return `
+  ${renderTop()}
+  <div class="content">${body}</div>
+  ${renderNav()}
+  ${renderModal()}
+  ${state.toast?`<div class="toast">${state.toast}</div>`:""}
+  `;
+}
+
+function render(){
+  applyThemeAttrs();
+  const root = document.getElementById("app");
+  if(!state.loaded){
+    root.innerHTML = `<div style="padding:60px 20px;text-align:center;color:#8FA694;">Завантаження…</div>`;
+    return;
+  }
+  if(!state.session || !currentUser()){
+    root.innerHTML = renderAuth();
+    return;
+  }
+  root.innerHTML = renderApp();
+}
+
+/* ============================= UI EVENTS ============================= */
+function switchAuth(mode){ state.authMode=mode; state.authError=""; render(); }
+function submitLogin(){
+  const u = document.getElementById("f-username").value;
+  const p = document.getElementById("f-pass").value;
+  doLogin(u,p);
+}
+function submitRegister(){
+  const n = document.getElementById("f-name").value;
+  const u = document.getElementById("f-username").value;
+  const p = document.getElementById("f-pass").value;
+  if(p && p.length<4){ state.authError="Пароль має бути щонайменше 4 символи"; render(); return; }
+  doRegister(n,u,p);
+}
+function setView(v){ state.view=v; render(); }
+function openModal(m){ state.modal=m; render(); }
+function closeModal(){ state.modal=null; render(); }
+function closeModalBg(e){ if(e.target.classList.contains("modal-backdrop")) closeModal(); }
+
+/* live countdown refresh */
+setInterval(()=>{ if(state.session && currentUser()) render(); }, 15000);
+
+/* ============================= INIT ============================= */
+(async function init(){
+  await loadAll();
+  render();
+})();
+</script>
+</body>
+</html>
