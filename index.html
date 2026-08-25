@@ -4,8 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0" />
 <meta name="theme-color" content="#38B34A" />
-<title>Comfy Dinner · К-19</title>
+<title>Comfy Dinner · К-19 by fearblader</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
   :root{
     --primary:#38B34A;
     --primary-dark:#2C8F3B;
@@ -22,8 +24,9 @@
     --radius-lg:20px;
     --radius-md:14px;
     --radius-sm:10px;
-    --shadow: 0 2px 14px rgba(24,54,28,.08);
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --shadow: 0 4px 20px rgba(24,54,28,.06);
+    --font:'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --mono:'JetBrains Mono', monospace;
   }
   [data-theme="dark"]{
     --primary:#4CD964;
@@ -35,7 +38,7 @@
     --text:#EAF3EA;
     --text-muted:#8FA694;
     --border:#26362A;
-    --shadow: 0 2px 14px rgba(0,0,0,.4);
+    --shadow: 0 4px 20px rgba(0,0,0,.4);
   }
   [data-skin="orange"]{ --primary:#F2793D; --primary-dark:#D9622B; --primary-soft:#FCE6D8; }
   [data-theme="dark"][data-skin="orange"]{ --primary-soft:#3A2415; }
@@ -44,7 +47,7 @@
   [data-skin="purple"]{ --primary:#8B5CF6; --primary-dark:#6D3FD1; --primary-soft:#EAE0FE; }
   [data-theme="dark"][data-skin="purple"]{ --primary-soft:#251A3A; }
 
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--bg);
@@ -78,8 +81,8 @@
     margin-bottom:6px;
   }
   .auth-logo .emoji{font-size:44px;}
-  .auth-logo h1{font-size:24px;margin:8px 0 2px;letter-spacing:-.3px;}
-  .auth-logo p{color:var(--text-muted);margin:0;font-size:14px;}
+  .auth-logo h1{font-size:24px;margin:8px 0 2px;letter-spacing:-.3px;font-weight:800;}
+  .auth-logo p{color:var(--text-muted);margin:0;font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;}
   .auth-card{
     background:var(--surface);
     border-radius:var(--radius-lg);
@@ -101,7 +104,7 @@
     padding:10px 0;
     border-radius:999px;
     font-size:14px;
-    font-weight:600;
+    font-weight:700;
     color:var(--text-muted);
     cursor:pointer;
     transition:all .25s ease;
@@ -112,36 +115,38 @@
     box-shadow:0 2px 8px rgba(0,0,0,.12);
   }
   .field{margin-bottom:14px;}
-  .field label{display:block;font-size:12.5px;color:var(--text-muted);margin-bottom:6px;font-weight:600;}
+  .field label{display:block;font-size:11.5px;color:var(--text-muted);margin-bottom:6px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
   .field input{
     width:100%;
-    padding:12px 14px;
+    padding:13px 16px;
     border-radius:var(--radius-sm);
     border:1.5px solid var(--border);
     background:var(--bg);
     color:var(--text);
     font-size:15px;
+    font-family:var(--font);
     outline:none;
     transition:border-color .2s;
   }
   .field input:focus{border-color:var(--primary);}
   .btn{
     width:100%;
-    padding:13px 0;
+    padding:14px 0;
     border-radius:var(--radius-sm);
     border:none;
     background:var(--primary);
     color:#fff;
     font-size:15px;
-    font-weight:700;
+    font-weight:800;
     cursor:pointer;
     transition:transform .15s, background .2s;
+    box-shadow:0 4px 14px rgba(56,179,74,0.25);
   }
   .btn:active{transform:scale(.98);}
   .btn:disabled{opacity:.55;cursor:not-allowed;}
-  .btn.secondary{background:var(--surface-alt);color:var(--text);}
-  .btn.ghost{background:transparent;color:var(--primary);}
-  .btn.danger{background:var(--danger);}
+  .btn.secondary{background:var(--surface-alt);color:var(--text);box-shadow:none;}
+  .btn.ghost{background:transparent;color:var(--primary);box-shadow:none;}
+  .btn.danger{background:var(--danger);box-shadow:0 4px 14px rgba(226,87,76,0.25);}
   .error-msg{
     background:#FCE7E5;
     color:#A5342A;
@@ -149,6 +154,7 @@
     padding:10px 12px;
     font-size:13px;
     margin-bottom:14px;
+    font-weight:700;
   }
   [data-theme="dark"] .error-msg{background:#3A1D1A;color:#F2A79E;}
   .hint{font-size:12px;color:var(--text-muted);text-align:center;margin-top:14px;line-height:1.5;}
@@ -163,14 +169,14 @@
   .topbar-row{display:flex;align-items:center;justify-content:space-between;}
   .brand{display:flex;align-items:center;gap:10px;}
   .brand .emoji{font-size:26px;}
-  .brand-text h2{margin:0;font-size:17px;letter-spacing:-.2px;}
-  .brand-text span{font-size:12px;color:var(--text-muted);}
+  .brand-text h2{margin:0;font-size:17px;letter-spacing:-.2px;font-weight:800;}
+  .brand-text span{font-size:11px;color:var(--text-muted);font-family:var(--mono);text-transform:uppercase;}
   .icon-btn{
     background:var(--surface-alt);
-    border:none;
+    border:1px solid var(--border);
     width:38px;height:38px;
     border-radius:12px;
-    font-size:17px;
+    font-size:16px;
     display:flex;align-items:center;justify-content:center;
     cursor:pointer;
     color:var(--text);
@@ -189,18 +195,18 @@
     padding:9px 10px;
     border:1px solid var(--border);
   }
-  .plaque .role-label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);font-weight:700;}
-  .plaque .role-name{font-size:13px;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .plaque .role-status{font-size:11px;margin-top:2px;font-weight:600;}
+  .plaque .role-label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);font-weight:800;font-family:var(--mono);}
+  .plaque .role-name{font-size:13px;font-weight:800;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .plaque .role-status{font-size:11px;margin-top:2px;font-weight:700;}
 
   /* ---------- Content ---------- */
   .content{padding:16px 18px 8px;flex:1;}
-  .section-title{font-size:15px;font-weight:800;margin:6px 0 12px;display:flex;align-items:center;gap:6px;}
+  .section-title{font-size:13px;font-weight:800;margin:6px 0 12px;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);}
   .card{
     background:var(--surface);
     border:1px solid var(--border);
     border-radius:var(--radius-lg);
-    padding:16px;
+    padding:18px;
     margin-bottom:14px;
     box-shadow:var(--shadow);
   }
@@ -214,21 +220,22 @@
   }
   .user-row:last-child{border-bottom:none;}
   .avatar{
-    width:38px;height:38px;border-radius:50%;
+    width:40px;height:40px;border-radius:50%;
     background:var(--primary-soft);
     color:var(--primary-dark);
     display:flex;align-items:center;justify-content:center;
     font-weight:800;font-size:14px;flex-shrink:0;
   }
   .user-meta{flex:1;min-width:0;}
-  .user-meta .uname{font-weight:700;font-size:14.5px;}
+  .user-meta .uname{font-weight:800;font-size:14.5px;}
   .role-badge{
     display:inline-block;
-    font-size:10.5px;
-    font-weight:700;
+    font-size:10px;
+    font-weight:800;
     padding:2px 8px;
-    border-radius:999px;
+    border-radius:6px;
     margin-top:3px;
+    text-transform:uppercase;
   }
   .rb-засновник{background:#FCEBB6;color:#8A6A00;}
   .rb-директор{background:var(--primary-soft);color:var(--primary-dark);}
@@ -236,7 +243,7 @@
   .rb-it-leader{background:#DDE6FB;color:#3646B5;}
   .rb-продавець{background:var(--surface-alt);color:var(--text-muted);}
   .status-pill{
-    font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;
+    font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap;font-family:var(--mono);
   }
   .status-перекур{background:#FDECC8;color:#9A6400;}
   .status-обід{background:#D9F0DC;color:var(--primary-dark);}
@@ -245,39 +252,46 @@
   /* slots grid */
   .slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
   .slot{
-    padding:11px 0;
+    padding:12px 0;
     text-align:center;
     border-radius:var(--radius-sm);
     border:1.5px solid var(--border);
     background:var(--surface-alt);
     font-size:13.5px;
-    font-weight:700;
+    font-weight:800;
+    font-family:var(--mono);
     cursor:pointer;
     color:var(--text);
+    transition:all .2s;
   }
-  .slot.busy{background:var(--border);color:var(--text-muted);cursor:not-allowed;opacity:.7;}
-  .slot.mine{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .slot.busy{background:var(--border);color:var(--text-muted);cursor:not-allowed;opacity:.6;}
+  .slot.mine{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 12px rgba(56,179,74,0.25);}
   .slot.offered{background:var(--warning);color:#fff;border-color:var(--warning);}
 
   /* roles select */
   select{
-    padding:9px 10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);
-    background:var(--bg);color:var(--text);font-size:13px;font-weight:600;
+    padding:9px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);
+    background:var(--bg);color:var(--text);font-size:13px;font-weight:700;font-family:var(--font);
+    outline:none;cursor:pointer;
   }
 
   /* theme options */
   .toggle-row{display:flex;gap:10px;margin-bottom:16px;}
   .toggle-opt{
     flex:1;padding:14px 8px;text-align:center;border-radius:var(--radius-md);
-    border:1.5px solid var(--border);background:var(--surface-alt);cursor:pointer;font-weight:700;font-size:13.5px;
+    border:1.5px solid var(--border);background:var(--surface-alt);cursor:pointer;font-weight:800;font-size:13.5px;
+    transition:all .2s;
   }
   .toggle-opt.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark);}
-  .skin-row{display:flex;gap:10px;}
+  .skin-row{display:flex;gap:12px;}
   .skin-dot{
-    width:40px;height:40px;border-radius:50%;cursor:pointer;border:3px solid transparent;
+    width:42px;height:42px;border-radius:50%;cursor:pointer;border:3px solid transparent;
     display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    transition:transform .2s;
   }
-  .skin-dot.active{border-color:var(--text);}
+  .skin-dot:active{transform:scale(.92);}
+  .skin-dot.active{border-color:var(--text);transform:scale(1.05);}
 
   /* bottom nav */
   .bottomnav{
@@ -286,61 +300,67 @@
     background:var(--surface);
     border-top:1px solid var(--border);
     display:flex;
-    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom));
     z-index:20;
+    box-shadow:0 -4px 20px rgba(0,0,0,.05);
   }
   .navbtn{
     flex:1;border:none;background:transparent;color:var(--text-muted);
-    display:flex;flex-direction:column;align-items:center;gap:2px;
-    font-size:10.5px;font-weight:700;padding:6px 0;cursor:pointer;border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:10.5px;font-weight:800;padding:8px 0;cursor:pointer;border-radius:var(--radius-sm);
+    transition:all .2s;
   }
-  .navbtn .ic{font-size:19px;}
+  .navbtn .ic{font-size:18px;}
   .navbtn.active{color:var(--primary);background:var(--primary-soft);}
 
   /* modal */
   .modal-backdrop{
-    position:fixed;inset:0;background:rgba(10,20,12,.45);
+    position:fixed;inset:0;background:rgba(10,20,12,.5);
+    backdrop-filter:blur(4px);
     display:flex;align-items:flex-end;justify-content:center;z-index:50;
   }
   .modal-sheet{
     width:100%;max-width:480px;background:var(--surface);
-    border-radius:22px 22px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));
-    box-shadow:0 -6px 24px rgba(0,0,0,.2);
+    border-radius:24px 24px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));
+    box-shadow:0 -10px 30px rgba(0,0,0,.2);
   }
-  .modal-sheet h3{margin:0 0 4px;font-size:16.5px;}
-  .modal-sheet .sub{color:var(--text-muted);font-size:12.5px;margin-bottom:16px;}
+  .modal-sheet h3{margin:0 0 4px;font-size:18px;font-weight:800;}
+  .modal-sheet .sub{color:var(--text-muted);font-size:13px;margin-bottom:18px;}
   .status-opt{
     display:flex;align-items:center;justify-content:space-between;
-    padding:13px 14px;border-radius:var(--radius-md);
+    padding:14px 16px;border-radius:var(--radius-md);
     background:var(--surface-alt);margin-bottom:10px;cursor:pointer;border:1.5px solid transparent;
+    transition:border-color .2s;
   }
   .status-opt:active{border-color:var(--primary);}
-  .status-opt .lbl{font-weight:700;font-size:14px;}
-  .status-opt .dur{font-size:12px;color:var(--text-muted);}
+  .status-opt .lbl{font-weight:800;font-size:14px;}
+  .status-opt .dur{font-size:12px;color:var(--text-muted);font-family:var(--mono);font-weight:700;}
 
   .toast{
-    position:fixed;top:14px;left:50%;transform:translateX(-50%);
-    background:var(--text);color:var(--bg);padding:10px 18px;border-radius:999px;
-    font-size:13px;font-weight:600;z-index:100;box-shadow:0 4px 14px rgba(0,0,0,.2);
+    position:fixed;top:16px;left:50%;transform:translateX(-50%);
+    background:var(--text);color:var(--bg);padding:10px 20px;border-radius:999px;
+    font-size:13.5px;font-weight:800;z-index:100;box-shadow:0 6px 20px rgba(0,0,0,.25);
   }
-  .empty-state{text-align:center;padding:26px 10px;color:var(--text-muted);font-size:13.5px;}
-  .empty-state .em{font-size:30px;display:block;margin-bottom:8px;}
-  .divider{height:1px;background:var(--border);margin:14px 0;}
+  .empty-state{text-align:center;padding:32px 12px;color:var(--text-muted);font-size:14px;font-weight:600;}
+  .empty-state .em{font-size:36px;display:block;margin-bottom:8px;}
+  .divider{height:1px;background:var(--border);margin:16px 0;}
   .flex-between{display:flex;align-items:center;justify-content:space-between;}
   .small-btn{
-    border:none;background:var(--surface-alt);color:var(--text);padding:7px 12px;
-    border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;
+    border:none;background:var(--surface-alt);color:var(--text);padding:8px 14px;
+    border-radius:999px;font-size:12px;font-weight:800;cursor:pointer;
+    transition:transform .1s;
   }
+  .small-btn:active{transform:scale(.96);}
   .small-btn.primary-o{background:var(--primary-soft);color:var(--primary-dark);}
   .small-btn.danger-o{background:#FADCDA;color:#A5342A;}
 </style>
 </head>
 <body>
-<div id="app"><div style="padding:60px 20px;text-align:center;color:#8FA694;">Завантаження…</div></div>
+<div id="app"><div style="padding:60px 20px;text-align:center;color:#8FA694;font-weight:700;">Завантаження…</div></div>
 
 <script>
 /* ============================= STATE ============================= */
-const FOUNDER_NAME = "Лебідь Максим";
+const FOUNDER_NAME = "Максим Лебідь";
 const ROLE_ORDER = ["засновник","директор","зам","it-leader","продавець"];
 const ROLE_LABEL = {
   "засновник":"Засновник",
@@ -367,15 +387,15 @@ const SLOTS = (()=>{
 
 let state = {
   loaded:false,
-  session:null,      // {username}
-  users:[],          // [{username, pass, displayName, role}]
-  statuses:{},        // {username:{type,start,duration}}
-  bookings:{},         // {"YYYY-MM-DD":[{username,time,offered}]}
+  session:null,      
+  users:[],          
+  statuses:{},       
+  bookings:{},       
   prefs:{theme:"light", skin:"green"},
   authMode:"login",
   authError:"",
   view:"schedule",
-  modal:null,          // 'status' | 'exchange' | null
+  modal:null,          
   toast:null,
 };
 
@@ -450,8 +470,7 @@ function fmtRemain(ms){
   return m+":"+String(r).padStart(2,"0");
 }
 function plaqueUserFor(role){
-  const list = state.users.filter(u=>u.role===role);
-  return list;
+  return state.users.filter(u=>u.role===role);
 }
 
 /* ============================= ACTIONS ============================= */
@@ -573,7 +592,7 @@ function renderAuth(){
         <div class="field"><label>Пароль</label><input id="f-pass" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
         <button class="btn" onclick="submitLogin()">Увійти</button>
       ` : `
-        <div class="field"><label>Ім'я та прізвище</label><input id="f-name" placeholder="Логін"/></div>
+        <div class="field"><label>Ім'я та прізвище</label><input id="f-name" placeholder="Максим Лебідь"/></div>
         <div class="field"><label>Логін</label><input id="f-username" placeholder="вигадай логін" autocomplete="username"/></div>
         <div class="field"><label>Пароль</label><input id="f-pass" type="password" placeholder="мінімум 4 символи" autocomplete="new-password"/></div>
         <button class="btn" onclick="submitRegister()">Зареєструватися</button>
@@ -591,7 +610,7 @@ function renderPlaques(){
     let statusHtml = "";
     if(list.length===1){
       const as = activeStatusFor(list[0].username);
-      if(as) statusHtml = `<div class="role-status status-${as.type}" style="display:inline-block;padding:1px 6px;border-radius:8px;">${as.type} · ${fmtRemain(as.remainMs)}</div>`;
+      if(as) statusHtml = `<div class="role-status status-${as.type}" style="display:inline-block;padding:1px 6px;border-radius:6px;">${as.type} · ${fmtRemain(as.remainMs)}</div>`;
     }
     return `<div class="plaque">
       <div class="role-label">${ROLE_LABEL[r]}</div>
@@ -634,7 +653,7 @@ function renderSchedule(){
         <div class="avatar">${initials(u?u.displayName:b.username)}</div>
         <div class="user-meta">
           <div class="uname">${u?u.displayName:b.username}${isMe?' <span class="muted">(ти)</span>':''}</div>
-          <div class="muted">${b.time} · 30 хв ${b.offered?'· 🔄 запропоновано колегам':''}</div>
+          <div class="muted" style="font-family:var(--mono);font-size:12px;margin-top:2px;">${b.time} · 30 хв ${b.offered?'· 🔄 запропоновано':''}</div>
         </div>
       </div>`;
     }).join("") : `<div class="empty-state"><span class="em">🍽</span>Сьогодні ще ніхто не бронював обід</div>`}
@@ -650,7 +669,7 @@ function renderSchedule(){
           <div class="avatar">${initials(u?u.displayName:b.username)}</div>
           <div class="user-meta">
             <div class="uname">${u?u.displayName:b.username}</div>
-            <div class="muted">${b.time} · пропонує свій обід</div>
+            <div class="muted" style="font-family:var(--mono);font-size:12px;margin-top:2px;">${b.time} · пропонує свій обід</div>
           </div>
           <button class="small-btn primary-o" onclick="claimOffered('${b.username}','${b.time}')">Забрати</button>
         </div>`;
@@ -671,7 +690,7 @@ function renderColleagues(){
         <div class="avatar">${initials(u.displayName)}</div>
         <div class="user-meta">
           <div class="uname">${u.displayName}${u.username===(me&&me.username)?' <span class="muted">(ти)</span>':''}</div>
-          <span class="role-badge rb-${u.role}">${ROLE_LABEL[u.role]}</span>
+          <div><span class="role-badge rb-${u.role}">${ROLE_LABEL[u.role]}</span></div>
         </div>
         ${as ? `<span class="status-pill status-${as.type}">${as.type} · ${fmtRemain(as.remainMs)}</span>` : ""}
       </div>`;
@@ -687,7 +706,7 @@ function renderBooking(){
   return `
   <div class="section-title">🍔 Забронювати обід (30 хв)</div>
   <div class="card">
-    <div class="muted" style="margin-bottom:12px;">Тривалість фіксована — 30 хвилин. Зайнятий час позначено сірим. Обери вільний час (з 12:30 до 18:30).</div>
+    <div class="muted" style="margin-bottom:14px;line-height:1.5;">Тривалість фіксована — 30 хвилин. Зайнятий час позначено сірим. Обери вільний час (з 12:30 до 18:30).</div>
     <div class="slots-grid">
       ${SLOTS.map(t=>{
         const takenBy = list.find(b=>b.time===t);
@@ -699,9 +718,9 @@ function renderBooking(){
     ${mine ? `
       <div class="divider"></div>
       <div class="flex-between">
-        <div class="muted">Твоя бронь: <b style="color:var(--text)">${mine.time}</b></div>
+        <div class="muted">Твоя бронь: <b style="color:var(--text);font-family:var(--mono);">${mine.time}</b></div>
         <div style="display:flex;gap:8px;">
-          <button class="small-btn ${mine.offered?'primary-o':''}" onclick="toggleOffer()">${mine.offered?'Скасувати пропозицію':'🔄 Запропонувати'}</button>
+          <button class="small-btn ${mine.offered?'primary-o':''}" onclick="toggleOffer()">${mine.offered?'Скасувати':'🔄 Запропонувати'}</button>
           <button class="small-btn danger-o" onclick="cancelMyBooking()">Скасувати</button>
         </div>
       </div>
@@ -722,9 +741,9 @@ function renderRoles(){
         <div class="avatar">${initials(u.displayName)}</div>
         <div class="user-meta">
           <div class="uname">${u.displayName}</div>
-          <span class="role-badge rb-${u.role}">${ROLE_LABEL[u.role]}</span>
+          <div><span class="role-badge rb-${u.role}">${ROLE_LABEL[u.role]}</span></div>
         </div>
-        ${locked ? `<span class="muted">незмінно</span>` : `
+        ${locked ? `<span class="muted" style="font-size:12px;">незмінно</span>` : `
           <select onchange="setRole('${u.username}', this.value)">
             ${ASSIGNABLE_ROLES.map(r=>`<option value="${r}" ${u.role===r?'selected':''}>${ROLE_LABEL[r]}</option>`).join("")}
           </select>
@@ -745,13 +764,13 @@ function renderThemeTab(){
   return `
   <div class="section-title">🎨 Вибір теми та скіну</div>
   <div class="card">
-    <div class="muted" style="margin-bottom:14px;">Змінюй стиль додатку під свій настрій. Твоя тема зберігається у профілі!</div>
-    <label style="font-size:12.5px;font-weight:700;color:var(--text-muted);">Режим оформлення</label>
+    <div class="muted" style="margin-bottom:16px;line-height:1.5;">Змінюй стиль додатку під свій настрій. Твоя тема зберігається у профілі!</div>
+    <label style="font-size:11.5px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;">Режим оформлення</label>
     <div class="toggle-row" style="margin-top:8px;">
       <div class="toggle-opt ${p.theme==='light'?'active':''}" onclick="setTheme('light')">☀️ Світла</div>
       <div class="toggle-opt ${p.theme==='dark'?'active':''}" onclick="setTheme('dark')">🌙 Темна</div>
     </div>
-    <label style="font-size:12.5px;font-weight:700;color:var(--text-muted);">Колірний скін</label>
+    <label style="font-size:11.5px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;">Колірний скін</label>
     <div class="skin-row" style="margin-top:8px;">
       ${skins.map(s=>`<div class="skin-dot ${p.skin===s.id?'active':''}" style="background:${s.color}" onclick="setSkin('${s.id}')">${p.skin===s.id?'✓':''}</div>`).join("")}
     </div>
@@ -773,8 +792,8 @@ function renderModal(){
             <div class="dur">${o.type==='відійшов'?'60+':o.duration} хв</div>
           </div>
         `).join("")}
-        ${as ? `<button class="btn secondary" onclick="clearMyStatus()">✅ Я на місці</button>` : ""}
-        <button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Скасувати</button>
+        ${as ? `<button class="btn secondary" style="margin-top:4px;" onclick="clearMyStatus()">✅ Я на місці</button>` : ""}
+        <button class="btn ghost" style="margin-top:6px;" onclick="closeModal()">Скасувати</button>
       </div>
     </div>`;
   }
@@ -818,7 +837,7 @@ function render(){
   applyThemeAttrs();
   const root = document.getElementById("app");
   if(!state.loaded){
-    root.innerHTML = `<div style="padding:60px 20px;text-align:center;color:#8FA694;">Завантаження…</div>`;
+    root.innerHTML = `<div style="padding:60px 20px;text-align:center;color:#8FA694;font-weight:700;">Завантаження…</div>`;
     return;
   }
   if(!state.session || !currentUser()){
